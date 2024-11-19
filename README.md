@@ -9,19 +9,8 @@ Nilai kelarutan dalam air molekul organik merupakan salah satu kunci sifat fisik
 Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* yang tidak kecil, mulai dari waktu, instruments, kelihaian penguji, serta sampel fisik yang terbatas. Beberapa metode perhitungan kelarutan dalam air (S) telah dikembangkan seperti [*General Solubility Equation (GSE)*](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685) dengan estimasi kelarutan dalam air (S) sebagai fungsi dari titik lebur (T) dan koefisien partisi oktanol-air (K):
 
 <p align="center">
-  <img src="https://latex.codecogs.com/svg.image?log(S)=-0.01*(T-25%20C)-log(K)+0.50" alt="Equation" width="350">
+  <img src="https://latex.codecogs.com/svg.image?\inline&space;\bg{black}log(S)=-0.01*(T-25&space;C)-log(K)&plus;0.50&space;" width="350">
 </p>
-
-<div style="background-color: #f0f0f0; padding: 10px; text-align: center; display: inline-block; margin: 0 auto;">
-  <img src="https://latex.codecogs.com/svg.image?log(S)=-0.01*(T-25%20C)-log(K)+0.50" alt="Equation" width="350">
-</div>
-
-<p align="center">
-  <div style="background-color: #f0f0f0; padding: 10px; text-align: center; display: inline-block;">
-    <img src="https://latex.codecogs.com/svg.image?log(S)=-0.01*(T-25%20C)-log(K)+0.50" alt="Equation" width="350">
-  </div>
-</p>
-
 
 Nilai partisi oktanol (K) dapat ditentukan berdasarkan struktur senyawa, namun penentuan titik lebur (T) masih memerlukan pengukuran lab. Sehingga metode GSE cocok untuk penentuan kelarutan dalam air suatu molekul jika tersedia data titik lebur-nya (T), sehingga metode yang dapat memanfaatkan struktur molekul untuk estimasi perlu dikembangkan.
 
