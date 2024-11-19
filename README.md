@@ -9,7 +9,7 @@ Nilai kelarutan dalam air molekul organik merupakan salah satu kunci sifat fisik
 Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* yang tidak kecil, mulai dari waktu, instruments, kelihaian penguji, serta sampel fisik yang terbatas. Beberapa metode perhitungan kelarutan dalam air (S) telah dikembangkan seperti [*General Solubility Equation (GSE)*](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685) dengan estimasi kelarutan dalam air (S) sebagai fungsi dari titik lebur (T) dan koefisien partisi oktanol-air (K):
 
 <p align="center">
-  <img src="/images/LogS_GSE.png">
+  <img src="./images/logS_GSE_dark.png">
 </p>
 
 
