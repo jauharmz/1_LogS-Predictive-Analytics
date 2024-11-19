@@ -12,6 +12,16 @@ Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* ya
   <img src="https://latex.codecogs.com/svg.image?log(S)=-0.01*(T-25%20C)-log(K)+0.50" alt="Equation" width="350">
 </p>
 
+<div style="background-color: #f0f0f0; padding: 10px; text-align: center; display: inline-block; margin: 0 auto;">
+  <img src="https://latex.codecogs.com/svg.image?log(S)=-0.01*(T-25%20C)-log(K)+0.50" alt="Equation" width="350">
+</div>
+
+<p align="center">
+  <div style="background-color: #f0f0f0; padding: 10px; text-align: center; display: inline-block;">
+    <img src="https://latex.codecogs.com/svg.image?log(S)=-0.01*(T-25%20C)-log(K)+0.50" alt="Equation" width="350">
+  </div>
+</p>
+
 
 Nilai partisi oktanol (K) dapat ditentukan berdasarkan struktur senyawa, namun penentuan titik lebur (T) masih memerlukan pengukuran lab. Sehingga metode GSE cocok untuk penentuan kelarutan dalam air suatu molekul jika tersedia data titik lebur-nya (T), sehingga metode yang dapat memanfaatkan struktur molekul untuk estimasi perlu dikembangkan.
 
