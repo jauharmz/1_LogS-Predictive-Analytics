@@ -1,53 +1,46 @@
-
 # Laporan Proyek Machine Learning - Jauhar Mumtaz
 
 ## Domain Proyek
 
+<p align="justify">
 Nilai kelarutan dalam air molekul organik merupakan salah satu kunci sifat fisik dalam dunia medis. Karena berbanding lurus dengan absorpsi yang merupakan parameter utama distribusi senyawa aktif biologi dalam makhluk hidup dan lingkungan, sehingga berpengaruh pada potensi bioavailability, efektifitas dan daya jual senyawa aktif tersebut.
+<p>
 
-Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* yang tidak kecil, mulai dari waktu, instruments, kelihaian penguji, serta sampel fisik yang terbatas. Beberapa metode perhitungan kelarutan dalam air (S) telah dikembangkan seperti *General Solubility Equation (GSE)* dengan estimasi kelarutan dalam air (S) sebagai fungsi dari titik lebur (T) dan koefisien partisi oktanol-air (K):
+Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* yang tidak kecil, mulai dari waktu, instruments, kelihaian penguji, serta sampel fisik yang terbatas. Beberapa metode perhitungan kelarutan dalam air (S) telah dikembangkan seperti [*General Solubility Equation (GSE)*](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685) dengan estimasi kelarutan dalam air (S) sebagai fungsi dari titik lebur (T) dan koefisien partisi oktanol-air (K):
 
-logS = −0.01(T−25°C)−logK+0.50
+<p align="center">
+  <img src="https://latex.codecogs.com/svg.image?log(S)=-0.01*(T-25%20C)-log(K)+0.50" alt="Equation" width="350">
+</p>
+
 
 Nilai partisi oktanol (K) dapat ditentukan berdasarkan struktur senyawa, namun penentuan titik lebur (T) masih memerlukan pengukuran lab. Sehingga metode GSE cocok untuk penentuan kelarutan dalam air suatu molekul jika tersedia data titik lebur-nya (T), sehingga metode yang dapat memanfaatkan struktur molekul untuk estimasi perlu dikembangkan.
 
-Metode lain yang telah berkembang dengan memanfaatkan model machine learning yaitu *Estimated Solubility (ESOL)* yang memanfaatkan delapan parameter yang dapat diekstrak menggunakan *molecular descriptor* seperti *clogP*, *molecular weight (molWT)*, *rotatable bond (rb)*, *aromatic proportion (ap)*, *non-carbon proportion*, *H-bond donor (hbd)*, *H-bond acceptor (hba)*, dan *polar surface area (psa)*. Berdasarkan 2874 data latih ESOL menghasilkan estimasi yang lebih *robust* dibandingkan GSE dengan nilai 
+Metode lain yang telah dikembangkan dengan menggunakan model machine learning yaitu [*Estimated Solubility (ESOL)*](https://pubs.acs.org/doi/abs/10.1021/ci034243x) yang memanfaatkan delapan parameter yang diekstrak menggunakan *molecular descriptor* seperti *clogP*, *molecular weight (molWT)*, *rotatable bond (rb)*, *aromatic proportion (ap)*, *non-carbon proportion*, *H-bond donor (hbd)*, *H-bond acceptor (hba)*, dan *polar surface area (psa)*. Berdasarkan 2874 data latih ESOL menghasilkan estimasi yang lebih *robust* dibandingkan GSE dengan nilai:
 
+| | *R*² | SE | MAE |
+| - | - | - | - |
+| ESOL | 0.69 | 1.01 | 0.75 |
+| GSE | 0.67 | 1.05 | 0.47 |
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Jelaskan mengapa dan bagaimana masalah tersebut harus diselesaikan
-- Menyertakan hasil riset terkait atau referensi. Referensi yang diberikan harus berasal dari sumber yang kredibel dan author yang jelas.
-  
-  Format Referensi: [Judul Referensi](https://scholar.google.com/) 
+Metode ESOL juga menyimpulkan bahwa parameter paling signifikan yaitu *clogP* diikuti *molecular weight (molWT)*, *aromatic proportion (ap)*, dan *rotatable bond (rb)*. Dengan seiringnya perkembangan jaman, machine learning telah berkembang mulai dari beragamnya database, hyperparameter tuning, dan model, penulis ingin melanjutkan perkembangan estimasi nilai kelarutan molekul dalam air menggunakan dataset yang lebih besar seperti dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) dengan melakukan descriptor 0D, 1D, 2D, dam 3D dengan total 31 parameter yang digunakan sebagai input beberapa model regressor berbasis machine learning beserta deep learning seperti Neural Network (NN), K-Nearest Neighbors (KNN), Random Forest (RF), Support Vector Regressor (SVR), Elastic Net (EN), Decision Tree (DT), Extreme Gradient Boosting (XGBoost), Extra Trees (ET), dan Light Gradient-Boosting Machine (LightGBM). Tiga model terbaik berdasarkan nilai *Mean Absolute Error* (MAE) dan *Standard Error* (SE) rendah beserta Koefesien Determinasi (R²) akan dilakukan interpretasi model menggunakan SHapley Additive exPlanations (SHAP) sehingga didapatkan beberapa parameter paling signifikan.
 
 ## Business Understanding
-
-Pada bagian ini, kamu perlu menjelaskan proses klarifikasi masalah.
-
-Bagian laporan ini mencakup:
-
 ### Problem Statements
 
-Menjelaskan pernyataan masalah latar belakang:
-- Pernyataan Masalah 1
-- Pernyataan Masalah 2
-- Pernyataan Masalah n
+*   Memprediksi kelarutan dalam air `LogS` suatu molekul `*drug-like*` merupakan tahap utama dalam dunia `*drug discovery*` yang mana dapat mempengaruhi efisiensi dan pengembangan obat. Apakah prediksi `LogS` dapat dilakukan menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana dengan menggunkan fitur yang diekstrak hanya dari anotasi `SMILES` suatu molekul?
+*   Di antara berbagai model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana, model manakah yang memiliki nilai *Mean Absolute Error* (MAE) dan *Standard Error* (SE) rendah beserta Koefesien Determinasi (R²) tinggi dalam memprediksi `LogS` berdasarkan fitur-fitur yang digunakan?
+*   Dari delapan fitur yang digunakan dalam publikasi [ESOL](https://pubs.acs.org/doi/abs/10.1021/ci034243x#) yang dapat diekstraksi menggunakan deskriptor dari `SMILES`, fitur mana yang paling berpengaruh terhadap nilai `LogS`? Apakah terdapat fitur lain yang 
 
 ### Goals
 
-Menjelaskan tujuan dari pernyataan masalah:
-- Jawaban pernyataan masalah 1
-- Jawaban pernyataan masalah 2
-- Jawaban pernyataan masalah n
+*   Mengetahui prediksi LogS hanya dari ekstrakasi fitur dari `SMILES` dapat dilakukan menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana.
+*   Menentukan model *Machine Learning* yang tersedia ataupun Deep Learning sederhana dengan error terkecil untuk memprediksi nilai `LogS` berdasarkan fitur yang digunakan.
+*   Mengidentifikasi fitur yang memiliki pengaruh terbesar terhadap nilai `LogS` (kelarutan molekul dalam air).
 
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
-
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Menambahkan bagian “Solution Statement” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
-
-    ### Solution statements
-    - Mengajukan 2 atau lebih solution statement. Misalnya, menggunakan dua atau lebih algoritma untuk mencapai solusi yang diinginkan atau melakukan improvement pada baseline model dengan hyperparameter tuning.
-    - Solusi yang diberikan harus dapat terukur dengan metrik evaluasi.
+### Solution statements
+*   Melakukan prediksi `LogS` dengan menggunkan fitur yang diekstrak hanya dari anotasi `SMILES` suatu molekul menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana.
+*   Menguji dan mengevaluasi beberapa model dengan *hyperparameter* yang telah ditetapkan sebelumnya, dan menetapkan model terbaik berdasarkan metrik *Mean Absolute Error* (MAE), *Standard Error* (SE), dan koefesien Determinasi (R²) tinggi .
+*   Mengekstrak bobot fitur dari beberapa model.
 
 ## Data Understanding
 Paragraf awal bagian ini menjelaskan informasi mengenai data yang Anda gunakan dalam proyek. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
