@@ -356,9 +356,15 @@ Interpretasi Outlier :
 Yang dapat diartikan bahwa outlier merupakan interpretasi nilai fisika molekuler berdasarkan strukturnya, sehingga dimungkinkan terdapatnya outlier dan tidak dilakukan penghapusan outlier yang dapat berakibat hilangnya sebagian besar dataset.
 
 ### Univariate - Numerical Features
+<p align="center">
+  <img src="./images/Univariate_logS.png">
+  <img src="./images/Univariate_rest.png">
+</p>
 
 ### Multivariate - Numerical Features
-
+<p align="center">
+  <img src="./images/corelation_matrix.png">
+</p>
 
 ## Data Preparation
 Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
