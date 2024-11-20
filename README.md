@@ -112,19 +112,6 @@ Berikut merupakan keterangan tipe data pada dataset.
 Setelah dilakukan pengecekan data `Null`, `NaN` dan data duplikat hanya ditemukan `1` data duplikat sehingga dilakukan `drop` data dan didapatkan deskripsi statistik dataset sebagai berikut.
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -350,7 +337,28 @@ Setelah dilakukan pengecekan data `Null`, `NaN` dan data duplikat hanya ditemuka
 <p>8 rows × 31 columns</p>
 </div>
 
-Dari deskripsi data statistik di atas, dapat disimpulkan bahwa sebaran
+Dari deskripsi data statistik di atas, dapat disimpulkan bahwa sebaran data `mean`, `Q2`, dan `std` yang bervariatif. Outlier diperiksa menggunakan 8 variabel yang digunakan pada penelitian `ESOL` sebagai berikut.
+
+<p align="center">
+  <img src="./images/outlier.png">
+</p>
+
+Interpretasi Outlier :
+1. `log P` : Sebaran data terpusat pada rentang `0.8 - 3.5` dari rentang `-46.6 - 20.8`.
+2. `molWt` : Sebaran data terpusat pada rentang `197.1 - 359.7` dari rentang `16 - 1583.5`.
+3. `rb` : Sebaran data terpusat pada rentang `3 - 9` dari rentang `0 - 59`.
+4. `ap` : Sebaran data terpusat pada rentang `0 - 0.5` dari rentang `0 - 1`.
+5. `ncp` : Sebaran data terpusat pada rentang `0.1 - 0.3` dari rentang `0 - 1`.
+6. `hbd` : Sebaran data terpusat pada rentang `0 - 2` dari rentang `0 - 19`.
+7. `hba` : Sebaran data terpusat pada rentang `2 - 4` dari rentang `0 - 35`.
+8. `tpsa` : Sebaran data terpusat pada rentang `25.3 - 71.4` dari rentang `25.3 - 601.8`.
+
+Yang dapat diartikan bahwa outlier merupakan interpretasi nilai fisika molekuler berdasarkan strukturnya, sehingga dimungkinkan terdapatnya outlier dan tidak dilakukan penghapusan outlier yang dapat berakibat hilangnya sebagian besar dataset.
+
+### Univariate - Numerical Features
+
+### Multivariate - Numerical Features
+
 
 ## Data Preparation
 Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
