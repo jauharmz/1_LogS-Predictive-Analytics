@@ -21,7 +21,9 @@ Metode lain yang telah dikembangkan dengan menggunakan model machine learning ya
 | ESOL | 0.69 | 1.01 | 0.75 |
 | GSE | 0.67 | 1.05 | 0.47 |
 
-Metode ESOL juga menyimpulkan bahwa parameter paling signifikan yaitu *clogP* diikuti *molecular weight (molWT)*, *aromatic proportion (ap)*, dan *rotatable bond (rb)*. Dengan seiringnya perkembangan jaman, machine learning telah berkembang mulai dari beragamnya database, hyperparameter tuning, dan model, penulis ingin melanjutkan perkembangan estimasi nilai kelarutan molekul dalam air menggunakan dataset yang lebih besar dan hanya mengandalkan variabel `smiles` dan `log S` sebagai data `input` dan `label` utama degan menggunakan dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) dengan melakukan descriptor 0D, 1D, 2D, dam 3D pada variable `smiles` dan didapatkan total 31 parameter yang akan digunakan sebagai input beberapa model regressor berbasis machine learning beserta deep learning seperti Neural Network (NN), K-Nearest Neighbors (KNN), Random Forest (RF), Support Vector Regressor (SVR), Elastic Net (EN), Decision Tree (DT), Extreme Gradient Boosting (XGBoost), Extra Trees (ET), dan Light Gradient-Boosting Machine (LightGBM). Tiga model terbaik berdasarkan nilai *Mean Absolute Error* (MAE) dan *Standard Error* (SE) rendah beserta Koefisien Determinasi (R²) akan dilakukan interpretasi model menggunakan SHapley Additive exPlanations (SHAP) sehingga didapatkan beberapa parameter paling signifikan.
+Metode ESOL juga menyimpulkan bahwa parameter paling signifikan yaitu *clogP* diikuti *molecular weight (molWT)*, *aromatic proportion (ap)*, dan *rotatable bond (rb)*. Dengan seiringnya perkembangan jaman, machine learning telah berkembang mulai dari beragamnya database, hyperparameter tuning, dan model, penulis ingin melanjutkan perkembangan estimasi nilai kelarutan molekul dalam air menggunakan dataset yang lebih besar dan hanya mengandalkan variabel `smiles` dan `log S` sebagai data `input` dan `label` utama degan menggunakan dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) dengan melakukan descriptor 0D, 1D, 2D, dam 3D pada variable `smiles` dan didapatkan total 31 parameter yang akan digunakan sebagai input beberapa model. 
+
+Model regressor berbasis machine learning beserta deep learning seperti Neural Network (NN), K-Nearest Neighbors (KNN), Random Forest (RF), Support Vector Regressor (SVR), Elastic Net (EN), Decision Tree (DT), Extreme Gradient Boosting (XGBoost), Extra Trees (ET), dan Light Gradient-Boosting Machine (LightGBM). Tiga model terbaik berdasarkan nilai *Mean Absolute Error* (MAE) dan *Standard Error* (SE) rendah beserta Koefisien Determinasi (R²) akan dilakukan interpretasi model menggunakan SHapley Additive exPlanations (SHAP) sehingga didapatkan beberapa parameter paling signifikan.
 
 ## Business Understanding
 
@@ -444,17 +446,17 @@ Dengan scaler terbaik dengan score `Negative Mean Squared Error (Negative MSE)` 
 
 Terdapat 8 algoritma Machine Learning dan 1 algoritma Deep Learning yang digunakan untuk membuat model, yaitu:
 
-| Model               | Penanganan Fitur       | Risiko Overfitting | Cocok untuk Dimensi Tinggi?  | Kemungkinan Performa-nya Baik |
-|---------------------|------------------------|---------------------|------------------------------|------------------------------|
-| **Neural Network**  | Baik dengan fitur banyak, perlu penyesuaian hati-hati | Sedang-Tinggi      | Ya, jika diatur regulerisasi-nya | **Sedang**: Potensi tinggi, tetapi berisiko overfitting dengan data terbatas |
-| **K-Nearest Neighbors** (KNN) | Kesulitan dengan dimensi tinggi | Rendah | Tidak | **Rendah**: Kemungkinan underperform karena masalah dimensi tinggi |
-| **Random Forest** (RF) | Menangani banyak fitur dengan baik | Rendah (karena rata-rata ensemble) | Ya | **Tinggi**: Efektif dengan data berdimensi tinggi dan fitur biner |
-| **Support Vector Regression** (SVR) | Efektif di dimensi tinggi, perlu penyesuaian | Sedang | Ya, tetapi sensitif terhadap kernel | **Sedang**: Dapat bagus, tetapi butuh penyesuaian parameter |
-| **ElasticNet** (EN) | Cocok untuk data sparsi dan berdimensi tinggi | Sedang | Ya | **Sedang**: Membutuhkan tuning; bagus jika terdapat sparsitas |
-| **Decision Tree** (DT) | Sederhana tetapi mudah overfit | Tinggi | Tidak | **Sedang-Rendah**: Mungkin kesulitan dengan dataset kecil dan overfitting |
-| **XGBoost** (XGB) | Sangat baik untuk data berdimensi tinggi | Rendah | Ya | **Tinggi**: Kandidat kuat karena ketangguhan dan seleksi fitur |
-| **Extra Trees** (ET) | Mirip RF tetapi kurang rentan terhadap noise | Rendah | Ya | **Tinggi**: Andal dan efisien untuk tipe data ini |
-| **LightGBM** (LGBM) | Sangat baik untuk fitur biner/kategori berdimensi tinggi | Rendah | Ya | **Tinggi**: Kandidat kuat, efisien untuk fitur biner |
+| Model               | Deskripsi                                                                | Penanganan Fitur       | Risiko Overfitting | Cocok untuk Dimensi Tinggi?  | Kemungkinan Performa-nya Baik |
+|---------------------|--------------------------------------------------------------------------|------------------------|---------------------|------------------------------|-------------------------------|
+| **Neural Network**  | Model berbasis lapisan neuron; cocok untuk kompleksitas tinggi dengan tuning | Baik dengan fitur banyak, perlu penyesuaian hati-hati | Sedang-Tinggi      | Ya, jika diatur regulerisasi-nya | **Sedang**: Potensi tinggi, tetapi berisiko overfitting dengan data terbatas |
+| **K-Nearest Neighbors** (KNN) | Model berbasis jarak yang sederhana; performa turun pada dimensi tinggi | Kesulitan dengan dimensi tinggi | Rendah | Tidak | **Rendah**: Kemungkinan underperform karena masalah dimensi tinggi |
+| **Random Forest** (RF) | Model ensemble berbasis pohon yang tahan noise dan mudah digunakan         | Menangani banyak fitur dengan baik | Rendah (karena rata-rata ensemble) | Ya | **Tinggi**: Efektif dengan data berdimensi tinggi dan fitur biner |
+| **Support Vector Regression** (SVR) | Model berbasis margin maksimal; sensitif pada kernel dan hyperparameter     | Efektif di dimensi tinggi, perlu penyesuaian | Sedang | Ya, tetapi sensitif terhadap kernel | **Sedang**: Dapat bagus, tetapi butuh penyesuaian parameter |
+| **ElasticNet** (EN) | Kombinasi regularisasi L1 (Lasso) dan L2 (Ridge); cocok untuk sparsitas data | Cocok untuk data sparsi dan berdimensi tinggi | Sedang | Ya | **Sedang**: Membutuhkan tuning; bagus jika terdapat sparsitas |
+| **Decision Tree** (DT) | Model pohon sederhana; sering overfit tanpa pruning                      | Sederhana tetapi mudah overfit | Tinggi | Tidak | **Sedang-Rendah**: Mungkin kesulitan dengan dataset kecil dan overfitting |
+| **XGBoost** (XGB) | Gradient boosting yang sangat cepat dan efisien; populer untuk kompetisi      | Sangat baik untuk data berdimensi tinggi | Rendah | Ya | **Tinggi**: Kandidat kuat karena ketangguhan dan seleksi fitur |
+| **Extra Trees** (ET) | Variasi Random Forest; lebih cepat karena splitting acak                   | Mirip RF tetapi kurang rentan terhadap noise | Rendah | Ya | **Tinggi**: Andal dan efisien untuk tipe data ini |
+| **LightGBM** (LGBM) | Model boosting berbasis histogram; sangat efisien untuk dataset besar       | Sangat baik untuk fitur biner/kategori berdimensi tinggi | Rendah | Ya | **Tinggi**: Kandidat kuat, efisien untuk fitur biner |
 
 ### Sifat Model
 
