@@ -690,3 +690,10 @@ Berikut merupakan total kehadiran fitur dalam top 10 fitur untuk masing-masing m
 
 1. Untuk meningkatkan akurasi `deskriptor`, geometri molekul dapat dioptimasi menggunakan pendekatan `Quantum Mechanic` seperti `B3LYP` daripada menggunakan `MMFF94` atau `UFF` tentu dengan `computational cost` yang lebih besar.
 2. Tahap pengembangan selanjutnya dapat fokus pada beberapa aspek seperti. Fokus pada satu `Model` dengan melakukan `Hyperparameter Tunning`, Data Engineering (`Un-balanced Dataset`, `PCA`, `Standarisasi`), Pemilihan dan penggunaan `Deskriptor` yang signifikan, Perbandingan `Performa Model` berdasarkan `Matriks-nya` dengan `Formula` maupun `Model` yang telah dipublis di jurnal seperti `GSE`, `ESOL` dan `SwissADME` menggunakan set molekul beragam berdasarkan `Lipinski’s Rule of 5`.
+
+## Refrensi
+1. Ahmad I, Kuznetsov AE, Pirzada AS, Alsharif KF, Daglia M, Khan H. 2023. Computational pharmacology and computational chemistry of 4-hydroxyisoleucine: Physicochemical, pharmacokinetic, and DFT-based approaches. Front Chem. 11 April:1–15. doi:10.3389/fchem.2023.1145974.
+2. Daina A, Michielin O, Zoete V. 2017. SwissADME: a free web tool to evaluate pharmacokinetics, drug-likeness and medicinal chemistry friendliness of small molecules. Sci Rep. 7(1):42717. doi:10.1038/srep42717.
+3. Delaney JS. 2004. ESOL: Estimating aqueous solubility directly from molecular structure. J Chem Inf Comput Sci. 44(3):1000–1005. doi:10.1021/ci034243x.
+4. Ranjith D RC. 2019. SwissADME predictions of pharmacokinetics and drug-likeness properties of small molecules present in Ipomoea mauritiana Jacq. J Pharmacogn Phytochem. 8(5):2063–2073. https://www.phytojournal.com/archives/2019.v8.i5.9904/swissadme-predictions-of-pharmacokinetics-and-drug-likeness-properties-of-small-molecules-present-in-ltemgtipomoea-mauritiana-ltemgtjacq.
+5. Sanghvi T, Jain N, Yang G, Yalkowsky SH. 2003. Estimation of Aqueous Solubility By The General Solubility Equation (GSE) The Easy Way. QSAR Comb Sci. 22(2):258–262. doi:10.1002/qsar.200390020.
