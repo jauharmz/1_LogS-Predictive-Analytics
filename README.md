@@ -12,8 +12,7 @@ Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* ya
   <img src="./images/logS_GSE_dark.png">
 </p>
 
-
-Nilai partisi oktanol (K) dapat ditentukan berdasarkan struktur senyawa, namun penentuan titik lebur (T) masih memerlukan pengukuran lab. Sehingga metode GSE cocok untuk penentuan kelarutan dalam air suatu molekul jika tersedia data titik lebur-nya (T), sehingga metode yang dapat memanfaatkan struktur molekul untuk estimasi perlu dikembangkan.
+Nilai partisi oktanol (P) dapat ditentukan berdasarkan struktur senyawa, namun penentuan titik lebur (T) masih memerlukan pengukuran lab. Sehingga metode GSE cocok untuk penentuan kelarutan dalam air suatu molekul jika tersedia data titik lebur-nya (T), sehingga metode yang dapat memanfaatkan struktur molekul untuk estimasi perlu dikembangkan.
 
 Metode lain yang telah dikembangkan dengan menggunakan model machine learning yaitu [*Estimated Solubility (ESOL)*](https://pubs.acs.org/doi/abs/10.1021/ci034243x) yang memanfaatkan delapan parameter yang diekstrak menggunakan *molecular descriptor* seperti *clogP*, *molecular weight (molWT)*, *rotatable bond (rb)*, *aromatic proportion (ap)*, *non-carbon proportion*, *H-bond donor (hbd)*, *H-bond acceptor (hba)*, dan *polar surface area (psa)*. Berdasarkan 2874 data latih ESOL menghasilkan estimasi yang lebih *robust* dibandingkan GSE dengan nilai:
 
@@ -25,27 +24,30 @@ Metode lain yang telah dikembangkan dengan menggunakan model machine learning ya
 Metode ESOL juga menyimpulkan bahwa parameter paling signifikan yaitu *clogP* diikuti *molecular weight (molWT)*, *aromatic proportion (ap)*, dan *rotatable bond (rb)*. Dengan seiringnya perkembangan jaman, machine learning telah berkembang mulai dari beragamnya database, hyperparameter tuning, dan model, penulis ingin melanjutkan perkembangan estimasi nilai kelarutan molekul dalam air menggunakan dataset yang lebih besar dan hanya mengandalkan variabel `smiles` dan `log S` sebagai data `input` dan `label` utama degan menggunakan dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) dengan melakukan descriptor 0D, 1D, 2D, dam 3D pada variable `smiles` dan didapatkan total 31 parameter yang akan digunakan sebagai input beberapa model regressor berbasis machine learning beserta deep learning seperti Neural Network (NN), K-Nearest Neighbors (KNN), Random Forest (RF), Support Vector Regressor (SVR), Elastic Net (EN), Decision Tree (DT), Extreme Gradient Boosting (XGBoost), Extra Trees (ET), dan Light Gradient-Boosting Machine (LightGBM). Tiga model terbaik berdasarkan nilai *Mean Absolute Error* (MAE) dan *Standard Error* (SE) rendah beserta Koefesien Determinasi (R²) akan dilakukan interpretasi model menggunakan SHapley Additive exPlanations (SHAP) sehingga didapatkan beberapa parameter paling signifikan.
 
 ## Business Understanding
+
 ### Problem Statements
 
-*   Memprediksi kelarutan dalam air `LogS` suatu molekul `*drug-like*` merupakan tahap utama dalam dunia `*drug discovery*` yang mana dapat mempengaruhi efisiensi dan pengembangan obat. Apakah prediksi `LogS` dapat dilakukan menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana dengan menggunkan fitur yang diekstrak hanya dari anotasi `SMILES` suatu molekul?
-*   Di antara berbagai model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana, model manakah yang memiliki nilai *Mean Absolute Error* (MAE) dan *Standard Error* (SE) rendah beserta Koefesien Determinasi (R²) tinggi dalam memprediksi `LogS` berdasarkan fitur-fitur yang digunakan?
-*   Dari delapan fitur yang digunakan dalam publikasi [ESOL](https://pubs.acs.org/doi/abs/10.1021/ci034243x#) yang dapat diekstraksi menggunakan deskriptor dari `SMILES`, fitur mana yang paling berpengaruh terhadap nilai `LogS`? Apakah terdapat fitur lain yang 
+* Memprediksi kelarutan dalam air `LogS` suatu molekul `*drug-like*` merupakan tahap utama dalam dunia `*drug discovery*` yang mana dapat mempengaruhi efisiensi dan pengembangan obat. Apakah prediksi `LogS` dapat dilakukan menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana dengan menggunkan fitur yang diekstrak hanya dari anotasi `SMILES` suatu molekul?
+* Di antara berbagai model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana, model manakah yang memiliki nilai *Mean Absolute Error* (MAE) dan *Standard Error* (SE) rendah beserta Koefesien Determinasi (R²) tinggi dalam memprediksi `LogS` berdasarkan fitur-fitur yang digunakan?
+* Dari delapan fitur yang digunakan dalam publikasi [ESOL](https://pubs.acs.org/doi/abs/10.1021/ci034243x#) yang dapat diekstraksi menggunakan deskriptor dari `SMILES`, fitur mana yang paling berpengaruh terhadap nilai `LogS`? Apakah terdapat fitur lain yang
 
 ### Goals
 
-*   Mengetahui prediksi LogS hanya dari ekstrakasi fitur dari `SMILES` dapat dilakukan menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana.
-*   Menentukan model *Machine Learning* yang tersedia ataupun Deep Learning sederhana dengan error terkecil untuk memprediksi nilai `LogS` berdasarkan fitur yang digunakan.
-*   Mengidentifikasi fitur yang memiliki pengaruh terbesar terhadap nilai `LogS` (kelarutan molekul dalam air).
+* Mengetahui prediksi LogS hanya dari ekstrakasi fitur dari `SMILES` dapat dilakukan menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana.
+* Menentukan model *Machine Learning* yang tersedia ataupun Deep Learning sederhana dengan error terkecil untuk memprediksi nilai `LogS` berdasarkan fitur yang digunakan.
+* Mengidentifikasi fitur yang memiliki pengaruh terbesar terhadap nilai `LogS` (kelarutan molekul dalam air).
 
 ### Solution statements
-*   Melakukan prediksi `LogS` dengan menggunkan fitur yang diekstrak hanya dari anotasi `SMILES` suatu molekul menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana.
-*   Menguji dan mengevaluasi beberapa model dengan *hyperparameter* yang telah ditetapkan sebelumnya, dan menetapkan model terbaik berdasarkan metrik *Mean Absolute Error* (MAE), *Standard Error* (SE), dan koefesien Determinasi (R²) tinggi .
-*   Mengekstrak bobot fitur dari beberapa model.
+
+* Melakukan prediksi `LogS` dengan menggunkan fitur yang diekstrak hanya dari anotasi `SMILES` suatu molekul menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana.
+* Menguji dan mengevaluasi beberapa model dengan *hyperparameter* yang telah ditetapkan sebelumnya, dan menetapkan model terbaik berdasarkan metrik *Mean Absolute Error* (MAE), *Standard Error* (SE), dan koefesien Determinasi (R²) tinggi .
+* Mengekstrak bobot fitur dari beberapa model.
 
 ## Data Understanding
+
 Dataset yang digunakan untuk memprediksi nilai `log S` suatu molekul diambil dari dataset [GitHub](https://github.com/summer-cola/smiles-enumeration-datasets) yang dipublish oleh `summer-cola` dengan nama repository [`SMILES-enumeration-datasets`](https://github.com/summer-cola/smiles-enumeration-datasets). Repository ini berisi beberapa dataset berisi sifat fisik suatu molekul seperti `log D`, `log P`, dan `log S`. Untuk dataset yang digunakan pada prediksi kali ini berada pada directory `logS` dengan nama file `traintest.csv` yang berisi 7954 baris data.
 
-### Informasi Keterangan Variabel pada Dataset.
+### Informasi Keterangan Variabel pada Dataset
 
 Dataset memiliki 8 variabel dengan keterangan sebagai berikut.
 
@@ -59,7 +61,6 @@ Dataset memiliki 8 variabel dengan keterangan sebagai berikut.
 | logP | Nilai logaritmik dari koefisien partisi oktanol-air (P), yang menunjukkan lipofilisitas atau kecenderungan senyawa untuk larut dalam lemak atau air. | 3.504 |
 | MW  | Massa molekul (Molecular Weight), yaitu total massa atom dari molekul dalam satuan dalton (Da). | 274.357 |
 | smi | Representasi alternative SMILES | C C C C C ( C O C ( = O ) N ) ( C O C ( = O ) N C ( C ) C ) C |
-
 
 Dengan memanfaatkan `Descriptor` `0D`, `1D`, `2D`, dan `3D` variabel yang digunakan pada dari dataset yaitu `smiles` sebagai data `input mentah` dan `logS` sebagai `label`. Setelah dilakukan `Descriptor` pada varibel `smiles` didapatkan 31 variabel baru beserta ketaranganya sebagai berikut.
 
@@ -105,7 +106,6 @@ Berikut merupakan keterangan tipe data pada dataset.
 | Float | logS, molWt, molMR, ap, logP, tpsa, balabanJ, bertzCT, hallKierAlpha, ipc, chi0, chi1, kappa1, kappa2, kappa3, fractionCSP3, asphericity, eccentricity, inertialShapeFactor, radiusOfGyration, spherocityIndex, dan ncp | Data hasil kalkulasi matematis dan fraksi. |
 | Integer | numAtoms, rings, aromatic, chiralC, hbd, hba, rb, nh2, dan oh | Data penjumlahan satuan |
 | List | ecfp | Data berisi 2048 bit interpretasi molekul.  |
-
 
 ## Data Cleaning
 
@@ -344,6 +344,7 @@ Dari deskripsi data statistik di atas, dapat disimpulkan bahwa sebaran data `mea
 </p>
 
 Interpretasi Outlier :
+
 1. `log P` : Sebaran data terpusat pada rentang `0.8 - 3.5` dari rentang `-46.6 - 20.8`.
 2. `molWt` : Sebaran data terpusat pada rentang `197.1 - 359.7` dari rentang `16 - 1583.5`.
 3. `rb` : Sebaran data terpusat pada rentang `3 - 9` dari rentang `0 - 59`.
@@ -356,46 +357,283 @@ Interpretasi Outlier :
 Yang dapat diartikan bahwa outlier merupakan interpretasi nilai fisika molekuler berdasarkan strukturnya, sehingga dimungkinkan terdapatnya outlier dan tidak dilakukan penghapusan outlier yang dapat berakibat hilangnya sebagian besar dataset.
 
 ### Univariate - Numerical Features
+
 <p align="center">
   <img src="./images/Univariate_logS.png">
+</p>
+
+Berdasarkan sebaran label `logS` di atas, persebaran terpusat pada rentang `-7 - 0.1` yang memiliki `≥100` dataset yang merupakan daerah antara *poorly* hingga *highly Solubility* dari skala [SwissADME](https://www.nature.com/articles/srep42717).
+
+<p align="center">
+  <img src="./images/logS_SwissADME_scale.png">
+</p>
+
+<p align="center">
   <img src="./images/Univariate_rest.png">
 </p>
 
+Pengamatan Umum:
+
+* Skewness: Banyak fitur menunjukkan distribusi yang miring ke kanan, mengindikasikan ekor panjang ke arah nilai yang lebih tinggi.
+* Clustering: Fitur seperti `rings`, `hbd`, `hba`, `rb`, dan `chio` menunjukkan cluster yang berbeda, yang mengindikasikan kelompok tertentu dalam data.
+* Distribusi Normal: Beberapa fitur seperti `ap` dan `tpsa` tampak mengikuti distribusi normal.
+
+Pemahaman Fitur Spesifik:
+
+* Sifat Molekuler: Fitur seperti `molWt`, `numAtoms`, dan `molMR` menunjukkan korelasi positif, mengindikasikan molekul yang lebih besar cenderung memiliki nilai yang lebih tinggi.
+* Ikatan Hidrogen: `hbd` dan `hba` tampaknya memiliki korelasi negatif, menunjukkan bahwa molekul dengan lebih banyak donor ikatan hidrogen mungkin memiliki lebih sedikit akseptor.
+* Struktur Cincin: `rings` dan `aromatic` merupakan fitur terkait, dikarenakan dengan cincin aromatik masuk kategori cincin namun tidak berlaku untuk sebaliknya.
+* Deskripsi Bentuk: Fitur seperti `asphericity`, `eccentricity`, dan `spherocityIndex` memberikan wawasan tentang bentuk dan distribusi molekul.
+
 ### Multivariate - Numerical Features
+
 <p align="center">
   <img src="./images/corelation_matrix.png">
 </p>
 
-## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+Korelasi Positif `Kuat` dengan LogS:
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+* Molekul yang lebih besar (`berat molekul`, `jumlah atom`, dan `refraksi molar` yang lebih `tinggi`) cenderung memiliki `kelarutan` yang lebih `rendah`.
+* Molekul yang lebih `kompleks` dengan `cincin` dan struktur `aromatik` cenderung memiliki `kelarutan` yang lebih `rendah` karena seringnya terjadi `resonansi` atau `stabilisasi PEB (Pasangan Elektron Bebas}`.
+
+Korelasi Positif `Sedang` dengan LogS:
+
+* Molekul yang lebih `lipofilik` (`logP` lebih `tinggi`) cenderung memiliki `kelarutan` yang lebih `rendah`.
+* Molekul dengan `luas permukaan polar` yang lebih `besar` cenderung memiliki `kelarutan` yang lebih `rendah`.
+
+Korelasi `Lemah` atau `Tidak Signifikan` dengan LogS:
+
+* Banyak deskriptor molekuler lainnya memiliki korelasi `lemah` atau `tidak signifikan` dengan LogS. Ini menunjukkan bahwa fitur-fitur ini mungkin `tidak terlalu berpengaruh` dalam memprediksi kelarutan.
+
+Korelasi `tinggi` antar deskriptor:
+
+* Banyaknya fitur yang memiliki korelasi positif seperti `molWt`, `numAtoms`, `molWt`, `bertzCT`, `chi0`, dan `chi1`. Fitur-fitur tersebut diduga memiliki bobot nilai yang sama kuat pada prediksi `logS` pada model.
+
+## Data Preparation
+
+### Unpack List Feature
+
+Unpack list feature dilakukan terhadap variabel `ecfp` karena berisi list 2048 `1` untuk `True` dan `0` untuk `False` sehingga didapatkan 2048 kolom baru untuk masing-masing interpretasi yang berisi nilai `1` untuk `True` atau `0` untuk `False`.
+
+### Data Splitting Train dan Test
+
+Dataset dibagi menjadi 2 yaitu:
+
+* Train : Sebagai data latih model.
+* Test : Sebagai data validasi model dan matriks evaluasi.
+Pembagian data dilakukan dengan perbandingan `90:10` dari `7953` dataset.
+
+### Standarisasi
+
+Tahap ini dilakukan pada variabel dengan tipe `float` saja, dikarenakan kebanyakan variabel dengan tipe `int` merupakan penjumlahan satuan bilangan bulat dan menghindari perubahan `bobot` dari variabel itu tersendiri.
+
+Standarisasi dilakukan pada beberapa `Scaler` dengan rincian sebagai berikut:
+
+| **Scaler**               | **Deskripsi**                                                                                                   | **Rumus**                                                                                    | **Efek pada Data**                              |
+|--------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------|
+| **StandardScaler**       | Skala data agar memiliki mean 0 dan standar deviasi 1. Berguna ketika data mengikuti distribusi normal.         | z = (x - mean(x)) / std(x)                                                                   | Menyelaraskan data (mean = 0) dengan variansi 1 (std = 1).           |
+| **MinMaxScaler**         | Mengubah skala data ke rentang tertentu (default 0 hingga 1). Berguna untuk transformasi dalam batas tertentu.   | z = (x - min(x)) / (max(x) - min(x))                                                         | Menggeser dan menskalakan data agar sesuai dalam rentang tertentu, biasanya [0, 1]. |
+| **RobustScaler**         | Menggunakan median dan interquartile range (IQR) untuk mengurangi pengaruh outlier dalam skala data.            | z = (x - median(x)) / IQR(x)                                                                 | Menyelaraskan data menggunakan median dan menskalakan berdasarkan IQR, mengurangi dampak outlier. |
+| **QuantileTransformerN** | Mengubah data agar mengikuti distribusi normal. Menerapkan transformasi peringkat, berguna untuk data non-Gaussian. | Memetakan kuantil data ke distribusi normal standar.                                          | Membuat distribusi data menjadi normal, menggeser mean dan standar deviasi. |
+| **QuantileTransformerU** | Mengubah data agar mengikuti distribusi uniform. Berguna untuk membuat distribusi lebih seragam.                | Memetakan kuantil data ke distribusi uniform (sering dalam [0, 1]).                           | Mengubah data menjadi sebaran seragam, tanpa terpusat pada mean. |
+| **PowerTransformer**     | Menerapkan transformasi daya (Box-Cox atau Yeo-Johnson) untuk menstabilkan variansi dan membuat data lebih mendekati distribusi Gaussian. | z = (x^λ - 1) / λ (Box-Cox); x = log(x) untuk Yeo-Johnson | Menggeser dan menskalakan data, sering kali mengurangi skewness untuk mendekati distribusi Gaussian. |
+
+Dengan scaler terbaik dengan score `Negative Mean Squared Error (Negative MSE)` : `-1.4793369599164947`, `QuantileTransformer` dengan distribusi `Uniform` dipilih.
 
 ## Modeling
-Tahapan ini membahas mengenai model machine learning yang digunakan untuk menyelesaikan permasalahan. Anda perlu menjelaskan tahapan dan parameter yang digunakan pada proses pemodelan.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan kelebihan dan kekurangan dari setiap algoritma yang digunakan.
-- Jika menggunakan satu algoritma pada solution statement, lakukan proses improvement terhadap model dengan hyperparameter tuning. **Jelaskan proses improvement yang dilakukan**.
-- Jika menggunakan dua atau lebih algoritma pada solution statement, maka pilih model terbaik sebagai solusi. **Jelaskan mengapa memilih model tersebut sebagai model terbaik**.
+Terdapat 8 algoritma Machine Learning dan 1 algoritma Deep Learning yang digunakan untuk membuat model, yaitu:
+
+| Model               | Penanganan Fitur       | Risiko Overfitting | Cocok untuk Dimensi Tinggi?  | Kemungkinan Performanya Baik |
+|---------------------|------------------------|---------------------|------------------------------|------------------------------|
+| **Neural Network**  | Baik dengan fitur banyak, perlu penyesuaian hati-hati | Sedang-Tinggi      | Ya, jika diatur regulerisasinya | **Sedang**: Potensi tinggi, tetapi berisiko overfitting dengan data terbatas |
+| **K-Nearest Neighbors** (KNN) | Kesulitan dengan dimensi tinggi | Rendah | Tidak | **Rendah**: Kemungkinan underperform karena masalah dimensi tinggi |
+| **Random Forest** (RF) | Menangani banyak fitur dengan baik | Rendah (karena rata-rata ensemble) | Ya | **Tinggi**: Efektif dengan data berdimensi tinggi dan fitur biner |
+| **Support Vector Regression** (SVR) | Efektif di dimensi tinggi, perlu penyesuaian | Sedang | Ya, tetapi sensitif terhadap kernel | **Sedang**: Dapat bagus, tetapi butuh penyesuaian parameter |
+| **ElasticNet** (EN) | Cocok untuk data sparsi dan berdimensi tinggi | Sedang | Ya | **Sedang**: Membutuhkan tuning; bagus jika terdapat sparsitas |
+| **Decision Tree** (DT) | Sederhana tetapi mudah overfit | Tinggi | Tidak | **Sedang-Rendah**: Mungkin kesulitan dengan dataset kecil dan overfitting |
+| **XGBoost** (XGB) | Sangat baik untuk data berdimensi tinggi | Rendah | Ya | **Tinggi**: Kandidat kuat karena ketangguhan dan seleksi fitur |
+| **Extra Trees** (ET) | Mirip RF tetapi kurang rentan terhadap noise | Rendah | Ya | **Tinggi**: Andal dan efisien untuk tipe data ini |
+| **LightGBM** (LGBM) | Sangat baik untuk fitur biner/kategori berdimensi tinggi | Rendah | Ya | **Tinggi**: Kandidat kuat, efisien untuk fitur biner |
+
+### Sifat Model
+
+1. **Kontrol Overfitting**: Model ensemble seperti `RandomForest`, `ExtraTrees`, `XGBoost`, dan `LightGBM` memiliki metode bawaan untuk mencegah overfitting, sehingga cocok untuk dataset kecil dengan dimensi tinggi.
+2. **Penanganan Fitur Biner**: Model seperti `LightGBM` dan `XGBoost` sangat efisien dengan fitur sparsi atau biner, seperti fingerprint `ECFP`.
+3. **Sensitivitas Dimensi**: `KNN` dan `Decision Trees` sering mengalami kesulitan dengan dimensi tinggi, sehingga kemungkinan performanya kurang baik pada dataset ini.
+
+### Hipotesis
+
+* **Pilihan Terbaik**: `RandomForest`, `ExtraTrees`, `XGBoost`, dan `LightGBM` karena ketahanan dan kemampuannya untuk menggeneralisasi dengan baik pada dataset kecil.
+* **Underperform**: `KNN` dan `Decision Trees` untuk data berdimensi tinggi ini, kecuali jika direduksi melalui teknik seperti PCA.
+
+### Hyperparameter
+
+| Model          | Parameter            | Range/Choices                    | Optimal Value                     |
+|----------------|----------------------|----------------------------------|-----------------------------------|
+| **NeuralNetR** | epochs               | 34 - 35                          | 34                                |
+|                | patience             | 5 - 6                            | 5                                 |
+|                | batch_size           | 89 - 90                          | 89                                |
+|                | lr                   | 9e-4 - 2e-3                      | 0.0023                            |
+|                | weight_decay         | 5e-5 - 6e-5                      | 0.0001                            |
+| | | | |
+| **KNN**        | n_neighbors          | 5 - 6                            | 5                                 |
+|                | p                    | 1 - 2                            | 1                                 |
+|                | weights              | ['uniform', 'distance']          | distance                          |
+| | | | |
+| **RandomForest** | n_estimators       | 95 - 96                          | 96                                |
+|                | max_depth            | 11 - 12                          | 12                                |
+|                | min_samples_split    | 3 - 4                            | 4                                 |
+|                | min_samples_leaf     | 1 - 2                            | 1                                 |
+|                | bootstrap            | [True, False]                    | True                              |
+| | | | |
+| **SVR**        | C                    | 47 - 48                          | 48                                |
+|                | epsilon              | 0.1 - 0.3                        | 0.247                             |
+|                | gamma                | ['scale', 'auto']                | scale                             |
+|                | kernel               | ['rbf', 'linear']                | rbf                               |
+| | | | |
+| **ElasticNet** | alpha                | 0.1 - 0.2                        | 0.101                             |
+|                | l1_ratio             | 0.2 - 0.3                        | 0.234                             |
+| | | | |
+| **DecisionTree** | max_depth          | 3 - 5                            | 4                                 |
+|                | min_samples_split    | 3 - 4                            | 3                                 |
+|                | min_samples_leaf     | 2 - 3                            | 2                                 |
+| | | | |
+| **XGBoost**    | n_estimators         | 179 - 180                        | 179                               |
+|                | learning_rate        | 0.09 - 0.15                      | 0.092                             |
+|                | max_depth            | 4 - 5                            | 4                                 |
+|                | min_child_weight     | 1 - 2                            | 1                                 |
+| | | | |
+| **ExtraTrees** | n_estimators         | 198 - 199                        | 199                               |
+|                | max_depth            | 8 - 9                            | 8                                 |
+|                | min_samples_split    | 2 - 3                            | 2                                 |
+|                | min_samples_leaf     | 3 - 4                            | 4                                 |
+|                | bootstrap            | [True, False]                    | False                             |
+| | | | |
+| **LightGBM**   | n_estimators         | 119 - 120                        | 119                               |
+|                | learning_rate        | 0.1 - 0.2                        | 0.15                              |
+|                | max_depth            | 10 - 11                          | 10                                |
+|                | num_leaves           | 23 - 24                          | 23                                |
+|                | min_child_weight     | 1 - 2                            | 1                                 |
+|                | colsample_bytree     | 0.8 - 0.9                        | 0.9                               |
+|                | min_data_in_leaf     | 29 - 30                          | 29                                |
+|                | min_gain_to_split    | 0.07 - 0.08                      | 0.072                             |
 
 ## Evaluation
-Pada bagian ini anda perlu menyebutkan metrik evaluasi yang digunakan. Lalu anda perlu menjelaskan hasil proyek berdasarkan metrik evaluasi yang digunakan.
 
-Sebagai contoh, Anda memiih kasus klasifikasi dan menggunakan metrik **akurasi, precision, recall, dan F1 score**. Jelaskan mengenai beberapa hal berikut:
-- Penjelasan mengenai metrik yang digunakan
-- Menjelaskan hasil proyek berdasarkan metrik evaluasi
+### Matriks MAE, SE, dan R²
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+Evaluasi model menggunakan tiga parameter yaitu Mean Absolute Error (MAE), Squared Error (SE), dan R-squared (R²)
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+#### Mean Absolute Error (MAE)
+- **Definisi**: MAE adalah rata-rata selisih absolut antara nilai aktual dan prediksi. Metrik ini memberikan ukuran sederhana dari kesalahan prediksi, tanpa memperhatikan arah kesalahan.
+- **Rumus**: MAE = (1 / n) * Σ |y_i - ŷ_i|
+- **Interpretasi**: MAE mudah dipahami karena menunjukkan rata-rata besar kesalahan dalam satuan variabel yang diminati. Nilai yang lebih rendah menunjukkan akurasi model yang lebih baik.
 
-**---Ini adalah bagian akhir laporan---**
+#### Squared Error (SE)
+- **Definisi**: SE adalah jumlah selisih kuadrat antara nilai aktual dan prediksi. Metrik ini memberi bobot lebih pada kesalahan yang lebih besar, menjadikannya berguna untuk model yang ingin meminimalkan deviasi besar.
+- **Rumus**: SE = Σ (y_i - ŷ_i)^2
+- **Interpretasi**: SE memberikan bobot yang lebih besar pada kesalahan besar, sehingga bermanfaat dalam identifikasi model yang dapat mengurangi deviasi yang signifikan. SE biasanya digunakan sebagai perhitungan antara (misalnya, untuk MSE atau RMSE) dan tidak memberikan ukuran langsung seperti MAE.
 
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
+#### R-squared (R²)
+- **Definisi**: R² menggambarkan proporsi variansi dalam variabel target yang dapat diprediksi dari fitur. Ini mengukur seberapa baik model menangkap variabilitas data.
+- **Rumus**: R² = 1 - [Σ (y_i - ŷ_i)^2 / Σ (y_i - ȳ)^2]
+- **Interpretasi**: R² berkisar antara 0 hingga 1, di mana 1 menunjukkan prediksi sempurna. Nilai yang lebih tinggi menunjukkan performa model yang lebih baik karena menunjukkan bahwa model dapat menjelaskan sebagian besar variansi dalam variabel target.
+
+<p align="center">
+  <img src="./images/matriks_evaluasi_model.png">
+</p>
+
+- **Model Terbaik Secara Keseluruhan:** `SVR` dan `ElasticNet (EN)` menunjukkan generalisasi terbaik di semua metrik (MAE, SE, \(R^2\)), menjadikannya pilihan yang paling dapat diandalkan untuk data pengujian.  
+- **Model Kuat tetapi Sedikit Overfit:** `NeuralNetwork (nnR)`, `RandomForest (rfR)`, `ExtraTrees (etR)`, dan `XGBoost (xgbR)` memiliki performa baik namun menunjukkan sedikit overfitting, yang masih dapat diperbaiki dengan optimasi lebih lanjut.  
+- **Model yang Overfit:** `KNN (knnR)` dan `DecisionTree (dtR)` menunjukkan tanda overfitting yang signifikan dengan generalisasi yang buruk pada data uji, sehingga memerlukan perbaikan untuk meningkatkan performa uji.  
+
+<p align="center">
+  <img src="./images/matriks_evaluasi_model.png">
+</p>
+
+Berdasarkan analisis performa model dengan dan tanpa baseline ESOL, **`SVR`** dan **`ElasticNet (EN)`** adalah model terbaik karena memiliki generalisasi yang baik di semua metrik (MAE, SE, dan \( R^2 \)), melampaui atau mendekati baseline ESOL. Model seperti **`NeuralNetwork`**, **`RandomForest`**, **`ExtraTrees`**, dan **`XGBoost`** menunjukkan performa yang kuat tetapi sedikit overfit, sehingga masih dapat ditingkatkan dengan regularisasi. Di sisi lain, **`KNN`** dan **`DecisionTree`** cenderung overfit dengan performa uji yang buruk, sehingga membutuhkan penyesuaian signifikan untuk meningkatkan generalisasi. Performa ini memberikan panduan untuk memilih model terbaik berdasarkan kebutuhan prediksi kelarutan.
+
+### Komparasi Prediktif vs Aktual
+
+Untuk lebih detil terkait sifat model berdasarkan hasil prediksi-nya, berikut merupakan plot nilai `Prediktif` vs `Aktual` dengan nilai `R²`.
+
+<p align="center">
+  <img src="./images/pred_vs_act.png">
+</p>
+
+Berdasarkan nilai **R²**, model seperti `RandomForest`, `SVR`, `XGBoost`, dan `LightGBM` menunjukkan performa yang sangat baik dalam memprediksi data, dengan nilai **R²** pada data uji mendekati atau di atas 0.79. **LightGBM** memiliki performa terbaik dengan nilai **R²** sebesar 0.813, diikuti oleh **XGBoost** (0.798) dan **RandomForest** (0.792). Model **NeuralNetwork** juga menunjukkan performa yang solid dengan nilai **R²** sebesar 0.774, mendekati model dengan performa terbaik.
+
+Sebaliknya, model seperti **KNN** meskipun memiliki nilai **R²** yang cukup baik (0.708), menunjukkan indikasi **overfitting**. Hal ini terlihat dari nilai **MAE** pada data latih yang sempurna (0.0) namun lebih besar pada data uji (0.820), menunjukkan ketidakmampuan model untuk menangkap pola pada data yang belum terlihat sebelumnya. **DecisionTree** memiliki performa terendah di antara semua model, dengan nilai **R²** sebesar 0.616, dan pola prediksinya terlihat kurang fleksibel, seperti yang dapat dilihat pada grafik dengan banyak nilai prediksi konstan terhadap sumbu `y`.
+
+Meskipun model seperti **ExtraTrees** memiliki performa cukup baik (nilai **R²** 0.769), model ini menunjukkan keterbatasan pada rentang prediksi tertentu, terutama pada nilai ekstrem. **ElasticNet** juga memiliki performa yang cukup baik dengan nilai **R²** sebesar 0.704, namun relatif lebih rendah dibandingkan model lain seperti **SVR** (0.791).
+
+Performa **XGBoost** dan **LightGBM** sudah sangat baik, namun dengan tuning **hyperparameter** yang lebih optimal (seperti jumlah pohon, kedalaman maksimum, atau kecepatan pembelajaran), model ini dapat menunjukkan hasil yang lebih unggul, terutama pada dataset yang kompleks.
+
+Secara keseluruhan, pola prediksi menunjukkan bahwa distribusi data dan parameter model memiliki dampak besar pada hasil akhir, dengan beberapa model lebih sensitif terhadap parameter tertentu dibandingkan yang lain.
+
+### Feature Importance
+
+Pada tahap ini dilakukan pengukuran `Feature Importance` menggunakan `SHAP` pada `Model` terbaik berdasarkan nilai 'R²', 'MAE', dan 'SE' dari `ESOL`.
+
+| Model          | R²   | SE   | MAE  |
+|----------------|-------|------|------|
+| ESOL           | 0.69  | 1.01 | 0.75 |
+| | | |
+| LGBM           | 0.82  | 0.03 | 0.60 |
+| XGBoost        | 0.80  | 0.03 | 0.65 |
+| RandomForest   | 0.80  | 0.03 | 0.67 |
+| SVR            | 0.80  | 0.03 | 0.63 |
+| ExtraTrees     | 0.78  | 0.04 | 0.73 |
+| NeuralNetwork  | 0.77  | 0.04 | 0.66 |
+
+1. LGBM
+
+<p align="center">
+  <img src="./images/1_shap_lgbm.png">
+</p>
+
+Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 3 fitur yang sama digunakan `ESOL` yaitu `logP, `molWt`, dan `hba`. Dengan 3 fitur terbaik yaitu `logP`, `molMR`, dan `balabanj`.
+
+2. XGBoost
+
+<p align="center">
+  <img src="./images/2_shap_xgb.png">
+</p>
+
+Tidak jauh berbeda dengan `LGBM` pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 3 fitur yang digunakan `ESOL` yaitu `logP, `molWt`, dan `hba`. Dengan 3 fitur terbaik yaitu `logP`, `molMR`, dan `balabanj`.
+
+3. RandomForest
+
+<p align="center">
+  <img src="./images/3_shap_rf.png">
+</p>
+
+Tidak jauh berbeda dengan `LGBM` dan `XGBoost` ada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 3 fitur yang digunakan `ESOL` yaitu `logP, `molWt`, dan `hba`. Dengan 3 fitur terbaik yaitu `logP`, `molMR`, dan `balabanj`.
+
+4. SVR
+
+<p align="center">
+  <img src="./images/4_shap_svr.png">
+</p>
+
+Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 6 fitur yang digunakan `ESOL` yaitu `numAtoms`, `logP, `molWt`, `hba`, `hbd`, dan `tpsa`. Dengan 3 fitur terbaik yaitu `numAtoms`, `logP`, dan `molWt`.
+
+5. ExtraTrees
+
+<p align="center">
+  <img src="./images/5_shap_et.png">
+</p>
+
+Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 4 fitur yang digunakan `ESOL` yaitu `logP, `tpsa`, `numAtoms`, dan `molWt`. Dengan 3 fitur terbaik yaitu `logP`, `molMR`, dan `bertzCT`.
+
+6. NeuralNetwork
+
+<p align="center">
+  <img src="./images/6_shap_nn.png">
+</p>
+
+Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 6 fitur yang digunakan `ESOL` yaitu `logP, `numAtoms`, `molWt`, `tpsa`, `hba`, dan `rb`. Dengan 3 fitur terbaik yaitu `logP`, `numAtoms`, dan `molWt`.
+
+## Kesimpulan
 
