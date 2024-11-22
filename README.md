@@ -521,6 +521,8 @@ Terdapat 8 algoritma Machine Learning dan 1 algoritma Deep Learning yang digunak
 |                | min_data_in_leaf     | 29 - 30                          | 29                                |
 |                | min_gain_to_split    | 0.07 - 0.08                      | 0.072                             |
 
+`Range` Hyperparameter cukup sempit dikarenakan merupakan `validasi` terakhir setelah dilakukan `Tunning` pada beberapa `range` secara bertahap. 
+
 ## Evaluation
 
 ### Matriks MAE, SE, dan R²
