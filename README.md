@@ -341,6 +341,7 @@ Dari deskripsi data statistik di atas, dapat disimpulkan bahwa sebaran data `mea
 
 <p align="center">
   <img src="./images/outlier.png">
+  Box plot outlier pada variabel yang digunakan <b>ESOL</b>.
 </p>
 
 Interpretasi Outlier :
@@ -360,6 +361,7 @@ Yang dapat diartikan bahwa outlier merupakan interpretasi nilai fisika molekuler
 
 <p align="center">
   <img src="./images/Univariate_logS.png">
+  Plot histogram variabel <b>logS</b> sebagai label.
 </p>
 
 Berdasarkan sebaran label `logS` di atas, persebaran terpusat pada rentang `-7 - 0.1` yang memiliki `≥100` dataset yang merupakan daerah antara *poorly* hingga *highly Solubility* dari skala [SwissADME](https://www.nature.com/articles/srep42717).
@@ -370,6 +372,7 @@ Berdasarkan sebaran label `logS` di atas, persebaran terpusat pada rentang `-7 -
 
 <p align="center">
   <img src="./images/Univariate_rest.png">
+  Plot histogram variabel input.
 </p>
 
 Pengamatan Umum:
@@ -389,6 +392,7 @@ Pemahaman Fitur Spesifik:
 
 <p align="center">
   <img src="./images/corelation_matrix.png">
+  Plot matriks korelasi antar variabel.
 </p>
 
 Korelasi Positif `Kuat` dengan LogS:
@@ -429,29 +433,29 @@ Tahap ini dilakukan pada variabel dengan tipe `float` saja, dikarenakan kebanyak
 
 Standarisasi dilakukan pada beberapa `Scaler` sebagai berikut:
 
-| Scaler | Deskripsi | Rumus | Efek pada Data |
+| Scaler | Deskripsi | FormulaMatematis | Efek pada Data |
 |-|-|-|-| 
-| **StandardScaler** | Skala data agar memiliki mean 0 dan standar deviasi 1. Berguna ketika data mengikuti distribusi normal. | ![](./images/scaler_standard.png) | Menyelaraskan data (mean = 0) dengan variansi 1 (std = 1). |
-| **MinMaxScaler** | Mengubah skala data ke rentang tertentu (default 0 hingga 1). Berguna untuk transformasi dalam batas tertentu. | ![](./images/scaler_min%20max.png) | Menggeser dan menskalakan data agar sesuai dalam rentang tertentu, biasanya [0, 1]. |
-| **RobustScaler** | Menggunakan median dan interquartile range (IQR) untuk mengurangi pengaruh outlier dalam skala data. | ![](./images/scaler_robust.png) | Menyelaraskan data menggunakan median dan menskalakan berdasarkan IQR, mengurangi dampak outlier. |
-| **QuantileTransformerN** | Mengubah data agar mengikuti distribusi normal. Menerapkan transformasi peringkat, berguna untuk data non-Gaussian. | ![](./images/scaler_Q_normal.png) | Membuat distribusi data menjadi normal, menggeser mean dan standar deviasi. |
-| **QuantileTransformerU** | Mengubah data agar mengikuti distribusi uniform. Berguna untuk membuat distribusi lebih seragam. | ![](./images/scaler_Q_unifrom.png) | Mengubah data menjadi sebaran seragam, tanpa terpusat pada mean. |
-| **PowerTransformer** | Menerapkan transformasi daya (Yeo-Johnson) untuk menstabilkan variansi dan membuat data lebih mendekati distribusi Gaussian. | ![](./images/scaler_power.png) | Menggeser dan menskalakan data, sering kali mengurangi skewness untuk mendekati distribusi Gaussian. |
+| **Standard Scaler** | Skala data agar memiliki mean 0 dan standar deviasi 1. Berguna ketika data mengikuti distribusi normal. | ![](./images/scaler_standard.png) | Menyelaraskan data (mean = 0) dengan variansi 1 (std = 1). |
+| **Min Max Scaler** | Mengubah skala data ke rentang tertentu (default 0 hingga 1). Berguna untuk transformasi dalam batas tertentu. | ![](./images/scaler_min%20max.png) | Menggeser dan menskalakan data agar sesuai dalam rentang tertentu, biasanya [0, 1]. |
+| **Robust Scaler** | Menggunakan median dan interquartile range (IQR) untuk mengurangi pengaruh outlier dalam skala data. | ![](./images/scaler_robust.png) | Menyelaraskan data menggunakan median dan menskalakan berdasarkan IQR, mengurangi dampak outlier. |
+| **Quantile Transformer Normal** | Mengubah data agar mengikuti distribusi normal. Menerapkan transformasi peringkat, berguna untuk data non-Gaussian. | ![](./images/scaler_Q_normal.png) | Membuat distribusi data menjadi normal, menggeser mean dan standar deviasi. |
+| **Quantile Transformer Unifrom** | Mengubah data agar mengikuti distribusi uniform. Berguna untuk membuat distribusi lebih seragam. | ![](./images/scaler_Q_unifrom.png) | Mengubah data menjadi sebaran seragam, tanpa terpusat pada mean. |
+| **Power Transformer** | Menerapkan transformasi daya (Yeo-Johnson) untuk menstabilkan variansi dan membuat data lebih mendekati distribusi Gaussian. | ![](./images/scaler_power.png) | Menggeser dan menskalakan data, sering kali mengurangi skewness untuk mendekati distribusi Gaussian. |
 
 **Dimana:**
 
-- \( x_i \): Nilai asli dalam dataset yang sedang diskalakan atau ditransformasi.
-- \( x \): Semua titik data asli dalam dataset.
-- \( z_i \): Nilai yang ditransformasikan atau diskalakan dari \( x_i \) setelah menerapkan scaler atau transformasi.
-- \( \mu \): Rata-rata dari semua titik data \( x \).
-- \( \sigma \): Deviasi standar dari semua titik data \( x \).
-- \( Q_1(x) \): Kuartil pertama (persentil ke-25) dari dataset \( x \).
-- \( Q_2(x) \): Kuartil kedua (median atau persentil ke-50) dari dataset \( x \).
-- \( Q_3(x) \): Kuartil ketiga (persentil ke-75) dari dataset \( x \).
-- \( \text{min}(x) \): Nilai minimum dalam dataset \( x \).
-- \( \text{max}(x) \): Nilai maksimum dalam dataset \( x \).
-- \( \lambda \): Parameter transformasi dalam Power Transformer (Yeo-Johnson), ditentukan melalui Estimasi Likelihood Maksimum (MLE).
-- \( \phi^{-1}(x) \): Fungsi distribusi kumulatif terbalik (fungsi kuantil).
+- x<sub>i</sub> : Nilai asli dalam dataset yang sedang diskalakan atau ditransformasi.
+- x : Semua titik data asli dalam dataset.
+- z<sub>i</sub>: Nilai yang ditransformasikan atau diskalakan dari x<sub>i</sub> setelah menerapkan scaler atau transformasi.
+- μ : Rata-rata dari semua titik data x.
+- σ : Deviasi standar dari semua titik data x.
+- Q<sub>1</sub> : Kuartil pertama (persentil ke-25) dari dataset x.
+- Q<sub>2</sub> : Kuartil kedua (median atau persentil ke-50) dari dataset x.
+- Q<sub>3</sub> : Kuartil ketiga (persentil ke-75) dari dataset x.
+- min(x) : Nilai minimum dalam dataset x.
+- max(x) : Nilai maksimum dalam dataset x.
+- λ : Parameter transformasi dalam Power Transformer (Yeo-Johnson), ditentukan melalui Estimasi Likelihood Maksimum (MLE).
+- ϕ<sup>-1</sup> : Fungsi distribusi kumulatif terbalik (fungsi kuantil).
 
 
 Dengan scaler terbaik dengan score `Negative Mean Squared Error (Negative MSE)` : `-1.4793369599164947`, `QuantileTransformer` dengan distribusi `Uniform` dipilih.
@@ -460,8 +464,8 @@ Dengan scaler terbaik dengan score `Negative Mean Squared Error (Negative MSE)` 
 
 Terdapat 8 algoritma Machine Learning dan 1 algoritma Deep Learning yang digunakan untuk membuat model, yaitu:
 
-| Model               | Deskripsi                                                                | Penanganan Fitur       | Risiko Overfitting | Cocok untuk Dimensi Tinggi?  | Kemungkinan Performa-nya Baik |
-|---------------------|--------------------------------------------------------------------------|------------------------|---------------------|------------------------------|-------------------------------|
+| Model | Deskripsi | Penanganan Fitur | Risiko Overfitting | Cocok untuk Dimensi Tinggi? | Kemungkinan Performa-nya Baik |
+|-|-|-|-|-|-|
 | **Neural Network**  | Model berbasis lapisan neuron; cocok untuk kompleksitas tinggi dengan tuning | Baik dengan fitur banyak, perlu penyesuaian hati-hati | Sedang-Tinggi      | Ya, jika diatur regulerisasi-nya | **Sedang**: Potensi tinggi, tetapi berisiko overfitting dengan data terbatas |
 | **K-Nearest Neighbors** (KNN) | Model berbasis jarak yang sederhana; performa turun pada dimensi tinggi | Kesulitan dengan dimensi tinggi | Rendah | Tidak | **Rendah**: Kemungkinan underperform karena masalah dimensi tinggi |
 | **Random Forest** (RF) | Model ensemble berbasis pohon yang tahan noise dan mudah digunakan         | Menangani banyak fitur dengan baik | Rendah (karena rata-rata ensemble) | Ya | **Tinggi**: Efektif dengan data berdimensi tinggi dan fitur biner |
@@ -485,55 +489,55 @@ Terdapat 8 algoritma Machine Learning dan 1 algoritma Deep Learning yang digunak
 
 ### Hyperparameter
 
-| Model          | Parameter            | Range/Choices                    | Optimal Value                     |
-|----------------|----------------------|----------------------------------|-----------------------------------|
-| **NeuralNetR** | epochs               | 34 - 35                          | 34                                |
-|                | patience             | 5 - 6                            | 5                                 |
-|                | batch_size           | 89 - 90                          | 89                                |
-|                | lr                   | 9e-4 - 2e-3                      | 0.0023                            |
-|                | weight_decay         | 5e-5 - 6e-5                      | 0.0001                            |
+| Model | Parameter | Range/Choices | Optimal Value |
+|-|-|-|-|
+| **NeuralNetR** | epochs | 34 - 35 | 34 |
+|                | patience | 5 - 6 | 5 |
+|                | batch_size | 89 - 90 | 89 |
+|                | lr | 9e-4 - 2e-3 | 0.0023 |
+|                | weight_decay | 5e-5 - 6e-5 | 0.0001 |
 | | | | |
-| **KNN**        | n_neighbors          | 5 - 6                            | 5                                 |
-|                | p                    | 1 - 2                            | 1                                 |
-|                | weights              | ['uniform', 'distance']          | distance                          |
+| **KNN**        | n_neighbors | 5 - 6 | 5 |
+|                | p | 1 - 2 | 1 |
+|                | weights | ['uniform', 'distance'] | distance |
 | | | | |
-| **RandomForest** | n_estimators       | 95 - 96                          | 96                                |
-|                | max_depth            | 11 - 12                          | 12                                |
-|                | min_samples_split    | 3 - 4                            | 4                                 |
-|                | min_samples_leaf     | 1 - 2                            | 1                                 |
-|                | bootstrap            | [True, False]                    | True                              |
+| **RandomForest** | n_estimators | 95 - 96 | 96 |
+|                | max_depth | 11 - 12 | 12 |
+|                | min_samples_split | 3 - 4 | 4 |
+|                | min_samples_leaf | 1 - 2 | 1 |
+|                | bootstrap | [True, False] | True |
 | | | | |
-| **SVR**        | C                    | 47 - 48                          | 48                                |
-|                | epsilon              | 0.1 - 0.3                        | 0.247                             |
-|                | gamma                | ['scale', 'auto']                | scale                             |
-|                | kernel               | ['rbf', 'linear']                | rbf                               |
+| **SVR**        | C | 47 - 48 | 48 |
+|                | epsilon | 0.1 - 0.3 | 0.247 |
+|                | gamma | ['scale', 'auto'] | scale |
+|                | kernel | ['rbf', 'linear'] | rbf |
 | | | | |
-| **ElasticNet** | alpha                | 0.1 - 0.2                        | 0.101                             |
-|                | l1_ratio             | 0.2 - 0.3                        | 0.234                             |
+| **ElasticNet** | alpha | 0.1 - 0.2 | 0.101 |
+|                | l1_ratio | 0.2 - 0.3 | 0.234 |
 | | | | |
-| **DecisionTree** | max_depth          | 3 - 5                            | 4                                 |
-|                | min_samples_split    | 3 - 4                            | 3                                 |
-|                | min_samples_leaf     | 2 - 3                            | 2                                 |
+| **DecisionTree** | max_depth | 3 - 5 | 4 |
+|                | min_samples_split | 3 - 4 | 3 |
+|                | min_samples_leaf | 2 - 3 | 2 |
 | | | | |
-| **XGBoost**    | n_estimators         | 179 - 180                        | 179                               |
-|                | learning_rate        | 0.09 - 0.15                      | 0.092                             |
-|                | max_depth            | 4 - 5                            | 4                                 |
-|                | min_child_weight     | 1 - 2                            | 1                                 |
+| **XGBoost**    | n_estimators | 179 - 180 | 179 |
+|                | learning_rate | 0.09 - 0.15 | 0.092 |
+|                | max_depth | 4 - 5 | 4 |
+|                | min_child_weight | 1 - 2 | 1 |
 | | | | |
-| **ExtraTrees** | n_estimators         | 198 - 199                        | 199                               |
-|                | max_depth            | 8 - 9                            | 8                                 |
-|                | min_samples_split    | 2 - 3                            | 2                                 |
-|                | min_samples_leaf     | 3 - 4                            | 4                                 |
-|                | bootstrap            | [True, False]                    | False                             |
+| **ExtraTrees** | n_estimators | 198 - 199 | 199 |
+|                | max_depth | 8 - 9 | 8 |
+|                | min_samples_split | 2 - 3 | 2 |
+|                | min_samples_leaf | 3 - 4 | 4 |
+|                | bootstrap | [True, False] | False |
 | | | | |
-| **LightGBM**   | n_estimators         | 119 - 120                        | 119                               |
-|                | learning_rate        | 0.1 - 0.2                        | 0.15                              |
-|                | max_depth            | 10 - 11                          | 10                                |
-|                | num_leaves           | 23 - 24                          | 23                                |
-|                | min_child_weight     | 1 - 2                            | 1                                 |
-|                | colsample_bytree     | 0.8 - 0.9                        | 0.9                               |
-|                | min_data_in_leaf     | 29 - 30                          | 29                                |
-|                | min_gain_to_split    | 0.07 - 0.08                      | 0.072                             |
+| **LightGBM**   | n_estimators | 119 - 120 | 119 |
+|                | learning_rate | 0.1 - 0.2 | 0.15 |
+|                | max_depth | 10 - 11 | 10 |
+|                | num_leaves | 23 - 24 | 23 |
+|                | min_child_weight | 1 - 2 | 1 |
+|                | colsample_bytree | 0.8 - 0.9 | 0.9 |
+|                | min_data_in_leaf | 29 - 30 | 29 |
+|                | min_gain_to_split | 0.07 - 0.08 | 0.072 |
 
 `Range` Hyperparameter cukup sempit dikarenakan merupakan `validasi` terakhir setelah dilakukan `Tunning` pada beberapa `range` secara bertahap. 
 
@@ -546,23 +550,41 @@ Evaluasi model menggunakan tiga parameter yaitu Mean Absolute Error (MAE), Squar
 #### Mean Absolute Error (MAE)
 
 - **Definisi**: MAE adalah rata-rata selisih absolut antara nilai aktual dan prediksi. Metrik ini memberikan ukuran sederhana dari kesalahan prediksi, tanpa memperhatikan arah kesalahan.
-- **Rumus**: MAE = (1 / n) * Σ |y_i - ŷ_i|
+- **Rumus**: 
+  <p align="center">
+    <img src="./images/matriks_mae.png">
+  </p>
 - **Interpretasi**: MAE mudah dipahami karena menunjukkan rata-rata besar kesalahan dalam satuan variabel yang diminati. Nilai yang lebih rendah menunjukkan akurasi model yang lebih baik.
 
 #### Squared Error (SE)
 
 - **Definisi**: SE adalah jumlah selisih kuadrat antara nilai aktual dan prediksi. Metrik ini memberi bobot lebih pada kesalahan yang lebih besar, menjadikannya berguna untuk model yang ingin meminimalkan deviasi besar.
-- **Rumus**: SE = Σ (y_i - ŷ_i)^2
+- **Rumus**: 
+  <p align="center">
+    <img src="./images/matriks_se.png">
+  </p>
 - **Interpretasi**: SE memberikan bobot yang lebih besar pada kesalahan besar, sehingga bermanfaat dalam identifikasi model yang dapat mengurangi deviasi yang signifikan. SE biasanya digunakan sebagai perhitungan antara (misalnya, untuk MSE atau RMSE) dan tidak memberikan ukuran langsung seperti MAE.
 
 #### R-squared (R²)
 
 - **Definisi**: R² menggambarkan proporsi variansi dalam variabel target yang dapat diprediksi dari fitur. Ini mengukur seberapa baik model menangkap variabilitas data.
-- **Rumus**: R² = 1 - [Σ (y_i - ŷ_i)^2 / Σ (y_i - ȳ)^2]
+- **Rumus**: 
+  <p align="center">
+    <img src="./images/matriks_r2.png">
+  </p>
 - **Interpretasi**: R² berkisar antara 0 hingga 1, di mana 1 menunjukkan prediksi sempurna. Nilai yang lebih tinggi menunjukkan performa model yang lebih baik karena menunjukkan bahwa model dapat menjelaskan sebagian besar variansi dalam variabel target.
+
+### Keterangan:
+- y<sub>i</sub> : Nilai aktual yang diamati.
+- ŷ<sub>i</sub> : Nilai yang diprediksi.
+- ȳ<sub>i</sub> : Rata-rata dari nilai aktual yang diamati.
+- n : Jumlah total data.
+- ∑ : Operator penjumlahan.
+- ∣⋅∣ : Fungsi nilai mutlak.
 
 <p align="center">
   <img src="./images/matriks_evaluasi_model.png">
+  Plot bar matriks evaluasi (<b>MAE</b>, <b>SE</b>, dan <b>R²</b>) masing-masing model.
 </p>
 
 - **Model Terbaik Secara Keseluruhan:** `SVR` dan `ElasticNet (EN)` menunjukkan generalisasi terbaik di semua metrik (MAE, SE, \(R^2\)), menjadikannya pilihan yang paling dapat diandalkan untuk data pengujian.  
@@ -570,10 +592,11 @@ Evaluasi model menggunakan tiga parameter yaitu Mean Absolute Error (MAE), Squar
 - **Model yang Overfit:** `KNN (knnR)` dan `DecisionTree (dtR)` menunjukkan tanda overfitting yang signifikan dengan generalisasi yang buruk pada data uji, sehingga memerlukan perbaikan untuk meningkatkan performa uji.  
 
 <p align="center">
-  <img src="./images/matriks_evaluasi_model.png">
+  <img src="./images/matriks_evaluasi_model_ESOL_baseline.png">
+  Plot bar matriks evaluasi (<b>MAE</b>, <b>SE</b>, dan <b>R²</b>) masing-masing model dengan `ESOL` baseline.
 </p>
 
-Berdasarkan analisis performa model dengan dan tanpa baseline ESOL, **`SVR`** dan **`ElasticNet (EN)`** adalah model terbaik karena memiliki generalisasi yang baik di semua metrik (MAE, SE, dan \( R^2 \)), melampaui atau mendekati baseline ESOL. Model seperti **`NeuralNetwork`**, **`RandomForest`**, **`ExtraTrees`**, dan **`XGBoost`** menunjukkan performa yang kuat tetapi sedikit overfit, sehingga masih dapat ditingkatkan dengan regularisasi. Di sisi lain, **`KNN`** dan **`DecisionTree`** cenderung overfit dengan performa uji yang buruk, sehingga membutuhkan penyesuaian signifikan untuk meningkatkan generalisasi. Performa ini memberikan panduan untuk memilih model terbaik berdasarkan kebutuhan prediksi kelarutan.
+Berdasarkan analisis performa model tanpa dan dengan baseline ESOL, **`SVR`** dan **`ElasticNet (EN)`** adalah model terbaik karena memiliki generalisasi yang baik di semua metrik (MAE, SE, dan \( R^2 \)), melampaui atau mendekati baseline ESOL. Model seperti **`NeuralNetwork`**, **`RandomForest`**, **`ExtraTrees`**, dan **`XGBoost`** menunjukkan performa yang kuat tetapi sedikit overfit, sehingga masih dapat ditingkatkan dengan regularisasi. Di sisi lain, **`KNN`** dan **`DecisionTree`** cenderung overfit dengan performa uji yang buruk, sehingga membutuhkan penyesuaian signifikan untuk meningkatkan generalisasi. Performa ini memberikan panduan untuk memilih model terbaik berdasarkan kebutuhan prediksi kelarutan.
 
 ### Komparasi Prediktif vs Aktual
 
@@ -581,6 +604,7 @@ Untuk lebih detil terkait sifat model berdasarkan hasil prediksi-nya, berikut me
 
 <p align="center">
   <img src="./images/pred_vs_act.png">
+  Plot scatter <b>prediksi</b> model vs nilai <b>aktual</b> masing-masing model.
 </p>
 
 Berdasarkan nilai **R²**, model seperti `RandomForest`, `SVR`, `XGBoost`, dan `LightGBM` menunjukkan performa yang sangat baik dalam memprediksi data, dengan nilai **R²** pada data uji mendekati atau di atas 0.79. **LightGBM** memiliki performa terbaik dengan nilai **R²** sebesar 0.813, diikuti oleh **XGBoost** (0.798) dan **RandomForest** (0.792). Model **NeuralNetwork** juga menunjukkan performa yang solid dengan nilai **R²** sebesar 0.774, mendekati model dengan performa terbaik.
@@ -595,11 +619,12 @@ Secara keseluruhan, pola prediksi menunjukkan bahwa distribusi data dan paramete
 
 ### Feature Importance
 
-Pada tahap ini dilakukan pengukuran `Feature Importance` menggunakan `SHAP` pada `Model` terbaik berdasarkan nilai 'R²', 'MAE', dan 'SE' dari `ESOL`.
+Pada tahap ini dilakukan pengukuran `Feature Importance` menggunakan `SHAP` pada `Model` terbaik berdasarkan nilai 'R²', 'MAE', dan 'SE' dari `ESOL` dan `GSE`.
 
 | Model          | R²   | SE   | MAE  |
 |----------------|-------|------|------|
 | ESOL           | 0.69  | 1.01 | 0.75 |
+| GSE            | 0.67  | 1.05 | 0.81 |
 | | | |
 | LGBM           | 0.82  | 0.03 | 0.60 |
 | XGBoost        | 0.80  | 0.03 | 0.65 |
@@ -707,11 +732,18 @@ Berikut merupakan total kehadiran fitur dalam top 10 fitur untuk masing-masing m
 ## Saran
 
 1. Untuk meningkatkan akurasi `deskriptor`, geometri molekul dapat dioptimasi menggunakan pendekatan `Quantum Mechanic` seperti `B3LYP` daripada menggunakan `MMFF94` atau `UFF` tentu dengan `computational cost` yang lebih besar.
-2. Tahap pengembangan selanjutnya dapat fokus pada beberapa aspek seperti. Fokus pada satu `Model` dengan melakukan `Hyperparameter Tunning`, Data Engineering (`Un-balanced Dataset`, `PCA`, `Standarisasi`), Pemilihan dan penggunaan `Deskriptor` yang signifikan, Perbandingan `Performa Model` berdasarkan `Matriks-nya` dengan `Formula` maupun `Model` yang telah dipublis di jurnal seperti `GSE`, `ESOL` dan `SwissADME` menggunakan set molekul beragam berdasarkan `Lipinski’s Rule of 5`.
+2. Tahap pengembangan selanjutnya dapat fokus pada beberapa aspek seperti. Fokus pada satu `Model` dengan melakukan `Hyperparameter Tunning`, Data Engineering (`K-Fold Cross Validation`, `PCA`, `Standarisasi`), Pemilihan dan penggunaan `Deskriptor` yang signifikan, Perbandingan `Performa Model` berdasarkan `Matriks-nya` dengan `Formula` maupun `Model` yang telah dipublish di jurnal seperti `GSE`, `ESOL` dan, `SwissADME.
+3. Memperhatikan properti molekul berdasarkan `Lipinski’s Rule of 5`.
+4. Menentukan `Final Equation` dari model yang dikembangkan dan dibandingkan dengan persamaan yang telah dipublish seperti `GSE` dan `ESOL`.
 
-## Refrensi
-1. Ahmad I, Kuznetsov AE, Pirzada AS, Alsharif KF, Daglia M, Khan H. 2023. Computational pharmacology and computational chemistry of 4-hydroxyisoleucine: Physicochemical, pharmacokinetic, and DFT-based approaches. Front Chem. 11 April:1–15. [doi:10.3389/fchem.2023.1145974](https://www.frontiersin.org/journals/chemistry/articles/10.3389/fchem.2023.1145974/full).
-2. Daina A, Michielin O, Zoete V. 2017. SwissADME: a free web tool to evaluate pharmacokinetics, drug-likeness and medicinal chemistry friendliness of small molecules. Sci Rep. 7(1):42717. [doi:10.1038/srep42717](https://www.nature.com/articles/srep42717).
-3. Delaney JS. 2004. ESOL: Estimating aqueous solubility directly from molecular structure. J Chem Inf Comput Sci. 44(3):1000–1005. [doi:10.1021/ci034243x](https://pubs.acs.org/doi/10.1021/ci034243x).
-4. Ranjith D RC. 2019. SwissADME predictions of pharmacokinetics and drug-likeness properties of small molecules present in Ipomoea mauritiana Jacq. J Pharmacogn Phytochem. 8(5):2063–2073. https://www.phytojournal.com/archives/2019.v8.i5.9904/swissadme-predictions-of-pharmacokinetics-and-drug-likeness-properties-of-small-molecules-present-in-ltemgtipomoea-mauritiana-ltemgtjacq.
-5. Sanghvi T, Jain N, Yang G, Yalkowsky SH. 2003. Estimation of Aqueous Solubility By The General Solubility Equation (GSE) The Easy Way. QSAR Comb Sci. 22(2):258–262. [doi:10.1002/qsar.200390020](https://onlinelibrary.wiley.com/doi/10.1002/qsar.200390020).
+## Referensi
+
+1. Ahmad I, Kuznetsov AE, Pirzada AS, Alsharif KF, Daglia M, Khan H. 2023. Computational pharmacology and computational chemistry of 4-hydroxyisoleucine: Physicochemical, pharmacokinetic, and DFT-based approaches. *Front Chem.* 11 April:1–15. [doi:10.3389/fchem.2023.1145974](https://www.frontiersin.org/journals/chemistry/articles/10.3389/fchem.2023.1145974/full).
+
+2. Daina A, Michielin O, Zoete V. 2017. SwissADME: a free web tool to evaluate pharmacokinetics, drug-likeness and medicinal chemistry friendliness of small molecules. *Sci Rep.* 7(1):42717. [doi:10.1038/srep42717](https://www.nature.com/articles/srep42717).
+
+3. Delaney JS. 2004. ESOL: Estimating aqueous solubility directly from molecular structure. *J Chem Inf Comput Sci.* 44(3):1000–1005. [doi:10.1021/ci034243x](https://pubs.acs.org/doi/10.1021/ci034243x).
+
+4. Ranjith D RC. 2019. SwissADME predictions of pharmacokinetics and drug-likeness properties of small molecules present in *Ipomoea mauritiana Jacq.* *J Pharmacogn Phytochem.* 8(5):2063–2073. [https://www.phytojournal.com/archives/2019.v8.i5.9904/swissadme-predictions-of-pharmacokinetics-and-drug-likeness-properties-of-small-molecules-present-in-ltemgtipomoea-mauritiana-ltemgtjacq](https://www.phytojournal.com/archives/2019.v8.i5.9904/swissadme-predictions-of-pharmacokinetics-and-drug-likeness-properties-of-small-molecules-present-in-ltemgtipomoea-mauritiana-ltemgtjacq).
+
+5. Sanghvi T, Jain N, Yang G, Yalkowsky SH. 2003. Estimation of Aqueous Solubility By The General Solubility Equation (GSE) The Easy Way. *QSAR Comb Sci.* 22(2):258–262. [doi:10.1002/qsar.200390020](https://onlinelibrary.wiley.com/doi/10.1002/qsar.200390020).
