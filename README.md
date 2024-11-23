@@ -723,7 +723,7 @@ Berikut merupakan total kehadiran fitur dalam top 10 fitur untuk masing-masing m
 | **kappa2**         | 1     |
 
 
-## Kesimpulan
+## Simpulan
 
 1.  Prediksi LogS menggunakan `deskriptor` dari data `SMILES` molekul dapat dilakukan menggunakan model *Machine Learning* dan *Deep Learning*.
 2.  Model seperti `LGBM`, `XGBoost`, `RandomForest`, `SVR`, `ExtraTrees`, dan `NeuralNetwork` yang telah dilakukan `Hyperparameter Tuning` memiliki performa lebih baik daripada `ESOL`.
