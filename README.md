@@ -2,9 +2,7 @@
 
 ## Domain Proyek
 
-<p align="justify">
 Nilai kelarutan dalam air molekul organik merupakan salah satu kunci sifat fisik dalam dunia medis. Karena berbanding lurus dengan absorpsi yang merupakan parameter utama distribusi senyawa aktif biologi dalam makhluk hidup dan lingkungan, sehingga berpengaruh pada potensi bioavailability, efektifitas dan daya jual senyawa aktif tersebut.
-<p>
 
 Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* yang tidak kecil, mulai dari waktu, instruments, kelihaian penguji, serta sampel fisik yang terbatas. Beberapa metode perhitungan kelarutan dalam air (S) telah dikembangkan seperti [*General Solubility Equation (GSE)*](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685) dengan estimasi kelarutan dalam air (S) sebagai fungsi dari titik lebur (T) dan koefisien partisi oktanol-air (K):
 
@@ -16,10 +14,10 @@ Nilai partisi oktanol (P) dapat ditentukan berdasarkan struktur senyawa, namun p
 
 Metode lain yang telah dikembangkan dengan menggunakan model machine learning yaitu [*Estimated Solubility (ESOL)*](https://pubs.acs.org/doi/abs/10.1021/ci034243x) yang memanfaatkan delapan parameter yang diekstrak menggunakan *molecular descriptor* seperti *clogP*, *molecular weight (molWT)*, *rotatable bond (rb)*, *aromatic proportion (ap)*, *non-carbon proportion*, *H-bond donor (hbd)*, *H-bond acceptor (hba)*, dan *polar surface area (psa)*. Berdasarkan 2874 data latih ESOL menghasilkan estimasi yang lebih *robust* dibandingkan GSE dengan nilai:
 
-| | *R*² | SE | MAE |
-| - | - | - | - |
-| ESOL | 0.69 | 1.01 | 0.75 |
-| GSE | 0.67 | 1.05 | 0.47 |
+||*R*²|SE|MAE|
+|-|-|-|-|
+|ESOL|0.69|1.01|0.75|
+|GSE|0.67|1.05|0.47|
 
 Metode ESOL juga menyimpulkan bahwa parameter paling signifikan yaitu *clogP* diikuti *molecular weight (molWT)*, *aromatic proportion (ap)*, dan *rotatable bond (rb)*. Dengan seiringnya perkembangan jaman, machine learning telah berkembang mulai dari beragamnya database, hyperparameter tuning, dan model, penulis ingin melanjutkan perkembangan estimasi nilai kelarutan molekul dalam air menggunakan dataset yang lebih besar dan hanya mengandalkan variabel `smiles` dan `log S` sebagai data `input` dan `label` utama degan menggunakan dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) dengan melakukan descriptor 0D, 1D, 2D, dam 3D pada variable `smiles` dan didapatkan total 31 parameter yang akan digunakan sebagai input beberapa model. 
 
@@ -431,14 +429,30 @@ Tahap ini dilakukan pada variabel dengan tipe `float` saja, dikarenakan kebanyak
 
 Standarisasi dilakukan pada beberapa `Scaler` sebagai berikut:
 
-| **Scaler**               | **Deskripsi**                                                                                                   | **Rumus**                                                                                    | **Efek pada Data**                              |
-|--------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------|
-| **StandardScaler**       | Skala data agar memiliki mean 0 dan standar deviasi 1. Berguna ketika data mengikuti distribusi normal.         | z = (x - mean(x)) / std(x)                                                                   | Menyelaraskan data (mean = 0) dengan variansi 1 (std = 1).           |
-| **MinMaxScaler**         | Mengubah skala data ke rentang tertentu (default 0 hingga 1). Berguna untuk transformasi dalam batas tertentu.   | z = (x - min(x)) / (max(x) - min(x))                                                         | Menggeser dan menskalakan data agar sesuai dalam rentang tertentu, biasanya [0, 1]. |
-| **RobustScaler**         | Menggunakan median dan interquartile range (IQR) untuk mengurangi pengaruh outlier dalam skala data.            | z = (x - median(x)) / IQR(x)                                                                 | Menyelaraskan data menggunakan median dan menskalakan berdasarkan IQR, mengurangi dampak outlier. |
-| **QuantileTransformerN** | Mengubah data agar mengikuti distribusi normal. Menerapkan transformasi peringkat, berguna untuk data non-Gaussian. | Memetakan kuantil data ke distribusi normal standar.                                          | Membuat distribusi data menjadi normal, menggeser mean dan standar deviasi. |
-| **QuantileTransformerU** | Mengubah data agar mengikuti distribusi uniform. Berguna untuk membuat distribusi lebih seragam.                | Memetakan kuantil data ke distribusi uniform (sering dalam [0, 1]).                           | Mengubah data menjadi sebaran seragam, tanpa terpusat pada mean. |
-| **PowerTransformer**     | Menerapkan transformasi daya (Box-Cox atau Yeo-Johnson) untuk menstabilkan variansi dan membuat data lebih mendekati distribusi Gaussian. | z = (x^λ - 1) / λ (Box-Cox); x = log(x) untuk Yeo-Johnson | Menggeser dan menskalakan data, sering kali mengurangi skewness untuk mendekati distribusi Gaussian. |
+| Scaler | Deskripsi | Rumus | Efek pada Data |
+|-|-|-|-| 
+| **StandardScaler** | Skala data agar memiliki mean 0 dan standar deviasi 1. Berguna ketika data mengikuti distribusi normal. | ![](./images/scaler_standard.png) | Menyelaraskan data (mean = 0) dengan variansi 1 (std = 1). |
+| **MinMaxScaler** | Mengubah skala data ke rentang tertentu (default 0 hingga 1). Berguna untuk transformasi dalam batas tertentu. | ![](./images/scaler_min%20max.png) | Menggeser dan menskalakan data agar sesuai dalam rentang tertentu, biasanya [0, 1]. |
+| **RobustScaler** | Menggunakan median dan interquartile range (IQR) untuk mengurangi pengaruh outlier dalam skala data. | ![](./images/scaler_robust.png) | Menyelaraskan data menggunakan median dan menskalakan berdasarkan IQR, mengurangi dampak outlier. |
+| **QuantileTransformerN** | Mengubah data agar mengikuti distribusi normal. Menerapkan transformasi peringkat, berguna untuk data non-Gaussian. | ![](./images/scaler_Q_normal.png) | Membuat distribusi data menjadi normal, menggeser mean dan standar deviasi. |
+| **QuantileTransformerU** | Mengubah data agar mengikuti distribusi uniform. Berguna untuk membuat distribusi lebih seragam. | ![](./images/scaler_Q_unifrom.png) | Mengubah data menjadi sebaran seragam, tanpa terpusat pada mean. |
+| **PowerTransformer** | Menerapkan transformasi daya (Yeo-Johnson) untuk menstabilkan variansi dan membuat data lebih mendekati distribusi Gaussian. | ![](./images/scaler_power.png) | Menggeser dan menskalakan data, sering kali mengurangi skewness untuk mendekati distribusi Gaussian. |
+
+**Dimana:**
+
+- \( x_i \): Nilai asli dalam dataset yang sedang diskalakan atau ditransformasi.
+- \( x \): Semua titik data asli dalam dataset.
+- \( z_i \): Nilai yang ditransformasikan atau diskalakan dari \( x_i \) setelah menerapkan scaler atau transformasi.
+- \( \mu \): Rata-rata dari semua titik data \( x \).
+- \( \sigma \): Deviasi standar dari semua titik data \( x \).
+- \( Q_1(x) \): Kuartil pertama (persentil ke-25) dari dataset \( x \).
+- \( Q_2(x) \): Kuartil kedua (median atau persentil ke-50) dari dataset \( x \).
+- \( Q_3(x) \): Kuartil ketiga (persentil ke-75) dari dataset \( x \).
+- \( \text{min}(x) \): Nilai minimum dalam dataset \( x \).
+- \( \text{max}(x) \): Nilai maksimum dalam dataset \( x \).
+- \( \lambda \): Parameter transformasi dalam Power Transformer (Yeo-Johnson), ditentukan melalui Estimasi Likelihood Maksimum (MLE).
+- \( \phi^{-1}(x) \): Fungsi distribusi kumulatif terbalik (fungsi kuantil).
+
 
 Dengan scaler terbaik dengan score `Negative Mean Squared Error (Negative MSE)` : `-1.4793369599164947`, `QuantileTransformer` dengan distribusi `Uniform` dipilih.
 
