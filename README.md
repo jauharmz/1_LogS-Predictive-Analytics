@@ -2,26 +2,28 @@
 
 ## Domain Proyek
 
-Nilai kelarutan dalam air molekul organik merupakan salah satu kunci sifat fisik dalam dunia medis. Karena berbanding lurus dengan absorpsi yang merupakan parameter utama distribusi senyawa aktif biologi dalam makhluk hidup dan lingkungan, sehingga berpengaruh pada potensi bioavailability, efektifitas dan daya jual senyawa aktif tersebut.
+Nilai kelarutan dalam air molekul organik merupakan salah satu kunci sifat fisik dalam dunia medis. Karena berbanding lurus dengan absorpsi yang merupakan parameter utama distribusi senyawa aktif biologi dalam makhluk hidup dan lingkungan, sehingga berpengaruh pada potensi bioavailability, efektifitas serta daya jual senyawa aktif tersebut.
 
-Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* yang tidak kecil, mulai dari waktu, instruments, kelihaian penguji, serta sampel fisik yang terbatas. Beberapa metode perhitungan kelarutan dalam air (S) telah dikembangkan seperti [*General Solubility Equation (GSE)*](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685) dengan estimasi kelarutan dalam air (S) sebagai fungsi dari titik lebur (T) dan koefisien partisi oktanol-air (K):
+Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* yang tidak kecil, mulai dari waktu, instruments, kelihaian penguji, serta sampel fisik yang terbatas. Beberapa metode perhitungan kelarutan dalam air (S) telah dikembangkan seperti *`General Solubility Equation (GSE)`* oleh [Sanghvi T *et al.* pada tahun 2003](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685)  dengan estimasi kelarutan dalam air (S) sebagai fungsi dari titik lebur (T) dan koefisien partisi oktanol-air (K):
 
 <p align="center">
   <img src="./images/logS_GSE_dark.png">
 </p>
 
-Nilai partisi oktanol (P) dapat ditentukan berdasarkan struktur senyawa, namun penentuan titik lebur (T) masih memerlukan pengukuran lab. Sehingga metode GSE cocok untuk penentuan kelarutan dalam air suatu molekul jika tersedia data titik lebur-nya (T), sehingga metode yang dapat memanfaatkan struktur molekul untuk estimasi perlu dikembangkan.
+Nilai partisi oktanol (`P`) dapat ditentukan berdasarkan struktur senyawa, namun penentuan titik lebur (`T`) masih memerlukan pengukuran lab. Sehingga metode GSE cocok untuk penentuan kelarutan dalam air suatu molekul jika tersedia data titik lebur-nya (`T`), sehingga metode yang dapat memanfaatkan struktur molekul untuk estimasi perlu dikembangkan.
 
-Metode lain yang telah dikembangkan dengan menggunakan model machine learning yaitu [*Estimated Solubility (ESOL)*](https://pubs.acs.org/doi/abs/10.1021/ci034243x) yang memanfaatkan delapan parameter yang diekstrak menggunakan *molecular descriptor* seperti *clogP*, *molecular weight (molWT)*, *rotatable bond (rb)*, *aromatic proportion (ap)*, *non-carbon proportion*, *H-bond donor (hbd)*, *H-bond acceptor (hba)*, dan *polar surface area (psa)*. Berdasarkan 2874 data latih ESOL menghasilkan estimasi yang lebih *robust* dibandingkan GSE dengan nilai:
+Metode lain yang telah dikembangkan dengan menggunakan model machine learning yang dikembangkan oleh [Delaney JS pada tahun 2003](https://pubs.acs.org/doi/abs/10.1021/ci034243x), yaitu *`Estimated Solubility (ESOL)`* yang memanfaatkan delapan parameter yang diekstrak menggunakan *molecular descriptor* seperti *`clogP`*, *molecular weight (`molWT`)*, *rotatable bond (`rb`)*, *aromatic proportion (`ap`)*, *non-carbon proportion*, *H-bond donor (`hbd`)*, *H-bond acceptor (`hba`)*, dan *polar surface area (`psa`)*. Berdasarkan 2874 data latih ESOL menghasilkan estimasi yang lebih *robust* dibandingkan GSE dengan nilai:
 
 ||*R*²|SE|MAE|
 |-|-|-|-|
 |ESOL|0.69|1.01|0.75|
 |GSE|0.67|1.05|0.47|
 
-Metode ESOL juga menyimpulkan bahwa parameter paling signifikan yaitu *clogP* diikuti *molecular weight (molWT)*, *aromatic proportion (ap)*, dan *rotatable bond (rb)*. Dengan seiringnya perkembangan jaman, machine learning telah berkembang mulai dari beragamnya database, hyperparameter tuning, dan model, penulis ingin melanjutkan perkembangan estimasi nilai kelarutan molekul dalam air menggunakan dataset yang lebih besar dan hanya mengandalkan variabel `smiles` dan `log S` sebagai data `input` dan `label` utama degan menggunakan dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) dengan melakukan descriptor 0D, 1D, 2D, dam 3D pada variable `smiles` dan didapatkan total 31 parameter yang akan digunakan sebagai input beberapa model. 
+Metode ESOL juga menyimpulkan bahwa parameter paling signifikan yaitu *`clogP`* diikuti *molecular weight (`molWT`)*, *aromatic proportion (`ap`)*, dan *rotatable bond (`rb`)*. Dengan seiringnya perkembangan jaman, machine learning telah berkembang mulai dari beragamnya database, hyperparameter tuning, dan model, penulis ingin melanjutkan perkembangan estimasi nilai kelarutan molekul dalam air menggunakan dataset yang lebih besar dan hanya mengandalkan variabel `smiles` dan `log S` sebagai data `input` dan `label` utama degan menggunakan dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) dengan melakukan descriptor 0D, 1D, 2D, dam 3D pada variable `smiles` dan didapatkan total 31 parameter yang akan digunakan sebagai input beberapa model. 
 
-Model regressor berbasis machine learning beserta deep learning seperti Neural Network (NN), K-Nearest Neighbors (KNN), Random Forest (RF), Support Vector Regressor (SVR), Elastic Net (EN), Decision Tree (DT), Extreme Gradient Boosting (XGBoost), Extra Trees (ET), dan Light Gradient-Boosting Machine (LightGBM). Tiga model terbaik berdasarkan nilai *Mean Absolute Error* (MAE) dan *Standard Error* (SE) rendah beserta Koefisien Determinasi (R²) akan dilakukan interpretasi model menggunakan SHapley Additive exPlanations (SHAP) sehingga didapatkan beberapa parameter paling signifikan.
+Model regressor berbasis machine learning beserta deep learning seperti Neural Network (`NN`), K-Nearest Neighbors (`KNN`), Random Forest (`RF`), Support Vector Regressor (`SVR`), Elastic Net (`EN`), Decision Tree (`DT`), Extreme Gradient Boosting (`XGBoost`), Extra Trees (`ET`), dan Light Gradient-Boosting Machine (`LightGBM`). Tiga model terbaik berdasarkan nilai *Mean Absolute Error* (`MAE`) dan *Standard Error* (`SE`) rendah beserta Koefisien Determinasi (`R²`) akan dilakukan interpretasi model menggunakan SHapley Additive exPlanations (`SHAP`) sehingga didapatkan beberapa parameter paling signifikan.
+
+
 
 ## Business Understanding
 
@@ -40,12 +42,12 @@ Model regressor berbasis machine learning beserta deep learning seperti Neural N
 ### Solution statements
 
 * Melakukan prediksi `LogS` dengan menggunakan fitur yang diekstrak hanya dari anotasi `SMILES` suatu molekul menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana.
-* Menguji dan mengevaluasi beberapa model dengan *hyperparameter* yang telah ditetapkan sebelumnya, dan menetapkan model terbaik berdasarkan metrik *Mean Absolute Error* (MAE), *Standard Error* (SE), dan koefisien Determinasi (R²) tinggi .
+* Menguji dan mengevaluasi beberapa model dengan *hyperparameter* yang telah ditetapkan sebelumnya, dan menetapkan model terbaik berdasarkan metrik *Mean Absolute Error* (`MAE`), *Standard Error* (`SE`), dan koefisien Determinasi (`R²`).
 * Mengekstrak bobot fitur dari beberapa model.
 
 ## Data Understanding
 
-Dataset yang digunakan untuk memprediksi nilai `log S` suatu molekul diambil dari dataset [GitHub](https://github.com/summer-cola/smiles-enumeration-datasets) yang dipublish oleh `summer-cola` dengan nama repository [`SMILES-enumeration-datasets`](https://github.com/summer-cola/smiles-enumeration-datasets). Repository ini berisi beberapa dataset berisi sifat fisik suatu molekul seperti `log D`, `log P`, dan `log S`. Untuk dataset yang digunakan pada prediksi kali ini berada pada directory `logS` dengan nama file `traintest.csv` yang berisi 7954 baris data.
+Dataset yang digunakan untuk memprediksi nilai `log S` suatu molekul diambil dari dataset GitHub yang dipublish oleh `summer-cola` dengan nama repository `SMILES-enumeration-datasets` yang dapat diakses melalui tautan [berikut](https://github.com/summer-cola/smiles-enumeration-datasets). Repository ini berisi beberapa dataset berisi sifat fisik suatu molekul seperti `log D`, `log P`, dan `log S`. Untuk dataset yang digunakan pada prediksi kali ini berada pada directory `logS` dengan nama file `traintest.csv` yang berisi 7954 baris data.
 
 ### Informasi Keterangan Variabel pada Dataset
 
@@ -109,7 +111,11 @@ Berikut merupakan keterangan tipe data pada dataset.
 
 ## Data Cleaning
 
-Setelah dilakukan pengecekan data `Null`, `NaN` dan data duplikat hanya ditemukan `1` data duplikat sehingga dilakukan `drop` data dan didapatkan deskripsi statistik dataset sebagai berikut.
+### Drop Data Duplikat
+
+Setelah dilakukan pengecekan data `Null`, `NaN` dan data duplikat hanya ditemukan `1` data duplikat sehingga dilakukan `drop`.
+
+### Deskripsi Statistik. 
 
 <div>
 <table border="1" class="dataframe">
@@ -421,11 +427,17 @@ Unpack list feature dilakukan terhadap variabel `ecfp` karena berisi list 2048 `
 
 ### Data Splitting Train dan Test
 
-Dataset dibagi menjadi 2 yaitu:
+Dataset `Input` dan `Label` dibagi menjadi 2 kategori yaitu:
 
 * Train : Sebagai data latih model.
 * Test : Sebagai data validasi model dan matriks evaluasi.
-Pembagian data dilakukan dengan perbandingan `90:10` dari `7953` dataset.
+Pembagian data dilakukan dengan perbandingan `90:10` dari `7953` dataset, sehingga memiliki bentuk seperti berikut:
+
+    * Data Train  : (`7157`, `2078`)
+    * Label Train : (`7157`,)
+    * Data Test   : (`796`, `2078`)
+    * Label Test  : (`796`,)
+
 
 ### Standarisasi
 
@@ -616,6 +628,27 @@ Meskipun model seperti **ExtraTrees** memiliki performa cukup baik (nilai **R²*
 Performa **XGBoost** dan **LightGBM** sudah sangat baik, namun dengan tuning **hyperparameter** yang lebih optimal (seperti jumlah pohon, kedalaman maksimum, atau kecepatan pembelajaran), model ini dapat menunjukkan hasil yang lebih unggul, terutama pada dataset yang kompleks.
 
 Secara keseluruhan, pola prediksi menunjukkan bahwa distribusi data dan parameter model memiliki dampak besar pada hasil akhir, dengan beberapa model lebih sensitif terhadap parameter tertentu dibandingkan yang lain.
+
+### Random Data Tester
+
+| | 4823 | 66 | 6380 | 3674 | 4273 |
+|-|-|-|-|-|-|
+| **True LogS** | -2.003185 | -1.687449 | -1.944657 | -2.490308 | -3.41 |
+| NeuralNetwork | -3.575 | -2.375 | -2.675 | -2.825 | -1.953 |
+| KNN           | -2.235 | -2.517 | -2.301 | -3.093 | -2.13 |
+| RandomForest  | -2.87 | -2.713 | -2.733 | -2.553 | -2.925 |
+| SVR           | -3.091 | -2.32 | -2.413 | -2.769 | -1.983 |
+| ElasticNet    | -3.322 | -2.368 | -3.36 | -3.19 | -2.947 |
+| DecisionTree  | -3.992 | -2.886 | -2.774 | -3.882 | -2.774 |
+| XGBoost       | -2.689 | -2.785| -2.787| -2.593| -3.011 |
+| ExtraTrees    | -2.917 | -2.539 | -2.763 | -2.812 | -2.732 |
+| LGBM          | -2.472 | -2.774 | -2.611 | -2.686 | -2.708|
+| Closest Model 1 | KNN | SVR | KNN | RandomForest | XGBoost  |
+| Closest Model 2 | LGBM | ElasticNet | SVR | XGBoost | ElasticNet |
+| Closest Model 3 | XGBoost | NeuralNetwork | LGBM | LGBM | RandomForest |
+
+
+Terlihat beberapa model dengan performa terbaik seperti `RandomForest`, `SVR`, `XGBoost`, dan `LightGBM` lebih sering masuk dalam list `Top 3` dalam `Random Test` di atas.
 
 ### Feature Importance
 
