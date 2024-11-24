@@ -366,8 +366,11 @@ Yang dapat diartikan bahwa outlier merupakan interpretasi nilai fisika molekuler
 ### Univariate - Numerical Features
 
 <p align="center">
-  <img src="./images/Univariate_logS.png">
-  Plot histogram variabel <b>logS</b> sebagai label.
+  <img src="./images/Univariate_logS.png" alt="Histogram of logS"> 
+</p>
+
+<p align="center">
+  <small>Plot histogram variabel <b>logS</b> sebagai label.</small>
 </p>
 
 Berdasarkan sebaran label `logS` di atas, persebaran terpusat pada rentang `-7 - 0.1` yang memiliki `≥100` dataset yang merupakan daerah antara *poorly* hingga *highly Solubility* dari skala [SwissADME](https://www.nature.com/articles/srep42717).
@@ -377,7 +380,10 @@ Berdasarkan sebaran label `logS` di atas, persebaran terpusat pada rentang `-7 -
 </p>
 
 <p align="center">
-  <img src="./images/Univariate_rest.png">
+  <img src="./images/Univariate_rest.png"> 
+</p>
+
+<p align="center">
   Plot histogram variabel input.
 </p>
 
@@ -398,6 +404,9 @@ Pemahaman Fitur Spesifik:
 
 <p align="center">
   <img src="./images/corelation_matrix.png">
+</p>
+
+<p align="center">
   Plot matriks korelasi antar variabel.
 </p>
 
