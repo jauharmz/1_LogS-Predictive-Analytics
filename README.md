@@ -439,11 +439,11 @@ Pembagian data dilakukan dengan perbandingan `90:10` dari `7953` dataset, sehing
     * Label Test  : (`796`,)
 
 
-### Standarisasi
+### Scaling dan Normalization
 
 Tahap ini dilakukan pada variabel dengan tipe `float` saja, dikarenakan kebanyakan variabel dengan tipe `int` merupakan penjumlahan satuan bilangan bulat dan menghindari perubahan `bobot` dari variabel itu tersendiri.
 
-Standarisasi dilakukan pada beberapa `Scaler` sebagai berikut:
+Scaling dan Normalization dilakukan pada beberapa `algoritma` sebagai berikut:
 
 | Scaler | Deskripsi | FormulaMatematis | Efek pada Data |
 |-|-|-|-| 
@@ -470,7 +470,232 @@ Standarisasi dilakukan pada beberapa `Scaler` sebagai berikut:
 - ϕ<sup>-1</sup> : Fungsi distribusi kumulatif terbalik (fungsi kuantil).
 
 
-Dengan scaler terbaik dengan score `Negative Mean Squared Error (Negative MSE)` : `-1.4793369599164947`, `QuantileTransformer` dengan distribusi `Uniform` dipilih.
+Dengan `algoritma` terbaik dengan score `Negative Mean Squared Error (Negative MSE)` : `-1.4793369599164947`, `QuantileTransformer` dengan distribusi `Uniform` dipilih untuk melakukan `Normalization` pada data `float`.
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th>molWt</th>
+            <th>molMR</th>
+            <th>ap</th>
+            <th>logP</th>
+            <th>tpsa</th>
+            <th>balabanJ</th>
+            <th>bertzCT</th>
+            <th>hallKierAlpha</th>
+            <th>ipc</th>
+            <th>chi0</th>
+            <th>...</th>
+            <th>kappa1</th>
+            <th>kappa2</th>
+            <th>kappa3</th>
+            <th>fractionCSP3</th>
+            <th>asphericity</th>
+            <th>eccentricity</th>
+            <th>inertialShapeFactor</th>
+            <th>radiusOfGyration</th>
+            <th>spherocityIndex</th>
+            <th>ncp</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>count</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>...</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+            <td>7157.0000</td>
+        </tr>
+        <tr>
+            <td>mean</td>
+            <td>0.0000</td>
+            <td>0.0000</td>
+            <td>-1.0508</td>
+            <td>0.0001</td>
+            <td>-0.1798</td>
+            <td>0.0003</td>
+            <td>-0.0002</td>
+            <td>-0.0004</td>
+            <td>-0.0005</td>
+            <td>-0.0001</td>
+            <td>...</td>
+            <td>-0.0001</td>
+            <td>-0.0005</td>
+            <td>0.0003</td>
+            <td>0.0175</td>
+            <td>-0.0008</td>
+            <td>-0.0002</td>
+            <td>-0.0004</td>
+            <td>-0.0002</td>
+            <td>-0.0073</td>
+            <td>-0.0452</td>
+        </tr>
+        <tr>
+            <td>std</td>
+            <td>1.0020</td>
+            <td>1.0018</td>
+            <td>2.6046</td>
+            <td>1.0016</td>
+            <td>1.5030</td>
+            <td>1.0010</td>
+            <td>1.0033</td>
+            <td>1.0023</td>
+            <td>1.0011</td>
+            <td>1.0025</td>
+            <td>...</td>
+            <td>1.0016</td>
+            <td>1.0035</td>
+            <td>1.0024</td>
+            <td>2.3954</td>
+            <td>1.0058</td>
+            <td>1.0045</td>
+            <td>1.0051</td>
+            <td>1.0028</td>
+            <td>1.0329</td>
+            <td>1.1672</td>
+        </tr>
+        <tr>
+            <td>min</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>...</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+            <td>-5.1993</td>
+        </tr>
+        <tr>
+            <td>25%</td>
+            <td>-0.6743</td>
+            <td>-0.6748</td>
+            <td>-5.1993</td>
+            <td>-0.6738</td>
+            <td>-0.6737</td>
+            <td>-0.6750</td>
+            <td>-0.6748</td>
+            <td>-0.6769</td>
+            <td>-0.6749</td>
+            <td>-0.6737</td>
+            <td>...</td>
+            <td>-0.6763</td>
+            <td>-0.6744</td>
+            <td>-0.6751</td>
+            <td>-0.6784</td>
+            <td>-0.6741</td>
+            <td>-0.6749</td>
+            <td>-0.6740</td>
+            <td>-0.6740</td>
+            <td>-0.6751</td>
+            <td>-0.6518</td>
+        </tr>
+        <tr>
+            <td>50%</td>
+            <td>-0.0009</td>
+            <td>0.0006</td>
+            <td>-0.0125</td>
+            <td>-0.0003</td>
+            <td>-0.0013</td>
+            <td>0.0001</td>
+            <td>-0.0005</td>
+            <td>-0.0088</td>
+            <td>0.0005</td>
+            <td>-0.0000</td>
+            <td>...</td>
+            <td>0.0010</td>
+            <td>0.0002</td>
+            <td>-0.0008</td>
+            <td>-0.0038</td>
+            <td>-0.0008</td>
+            <td>-0.0006</td>
+            <td>0.0004</td>
+            <td>-0.0005</td>
+            <td>0.0002</td>
+            <td>0.0100</td>
+        </tr>
+        <tr>
+            <td>75%</td>
+            <td>0.6737</td>
+            <td>0.6742</td>
+            <td>0.7250</td>
+            <td>0.6745</td>
+            <td>0.6743</td>
+            <td>0.6751</td>
+            <td>0.6744</td>
+            <td>0.6737</td>
+            <td>0.6741</td>
+            <td>0.6743</td>
+            <td>...</td>
+            <td>0.6751</td>
+            <td>0.6747</td>
+            <td>0.6756</td>
+            <td>0.6911</td>
+            <td>0.6742</td>
+            <td>0.6742</td>
+            <td>0.6752</td>
+            <td>0.6747</td>
+            <td>0.6746</td>
+            <td>0.6211</td>
+        </tr>
+        <tr>
+            <td>max</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>...</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+            <td>5.1993</td>
+        </tr>
+    </tbody>
+</table>
+
+Data `train` dengan dtype `float` telah berhasil dilakukan transformasi menggunakan`QuantileTransformer Normal` dengan menseragamkan sebaran sehingga tidak terpusat pada `mean` hal ini ditandai oleh pembatasan sebaran pada nilai `min` dan `max` menjadi `-5.1993` dan `5.1993`, Hampir secara keseluruhan `Persentil Data` `50%` tepat berada di antara `25%` dan `75%` (`-0.6743`, `-0.0009` dan `0.6737`) serta nilai `mean` dan `50%` yang saling berdekatan (`0.0000` dan `-0.0009`). Selanjutnya, nilai transformasi data `train` diterapkan pada data `test` sehingga dimungkinkan adanya nilai transformasi di luar dari data `train` sehingga model dapat menghindari `overfitting`.
 
 ## Modeling
 
