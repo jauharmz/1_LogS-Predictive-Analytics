@@ -445,7 +445,7 @@ Tahap ini dilakukan pada variabel dengan tipe `float` saja, dikarenakan kebanyak
 
 Scaling dan Normalization dilakukan pada beberapa `algoritma` sebagai berikut:
 
-| Scaler | Deskripsi | FormulaMatematis | Efek pada Data |
+| Algoritma | Deskripsi | FormulaMatematis | Efek pada Data |
 |-|-|-|-| 
 | **Standard Scaler** | Skala data agar memiliki mean 0 dan standar deviasi 1. Berguna ketika data mengikuti distribusi normal. | ![](./images/scaler_standard.png) | Menyelaraskan data (mean = 0) dengan variansi 1 (std = 1). |
 | **Min Max Scaler** | Mengubah skala data ke rentang tertentu (default 0 hingga 1). Berguna untuk transformasi dalam batas tertentu. | ![](./images/scaler_min%20max.png) | Menggeser dan menskalakan data agar sesuai dalam rentang tertentu, biasanya [0, 1]. |
