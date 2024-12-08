@@ -513,11 +513,13 @@ $$z_i = \frac{\text{rank}(x_i)}{n + 1}$$
    Untuk distribusi Yeo-Johnson:
 
 $$
-z_i = \begin{cases} \frac{(x_i + 1)^{\lambda} - 1}{\lambda}, & \text{jika } x_i \geq 0 \text{ dan } \lambda \neq 0 \\ \log(x_i + 1), & \text{jika } x_i \geq 0 \text{ dan } \lambda = 0 \\ \frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}, & \text{jika } x_i < 0 \text{ dan } \lambda \neq 2 \\ -\log(|x_i| + 1), & \text{jika } x_i < 0 \text{ dan } \lambda = 2 \end{cases}
-$$
-
-$$
-z_i = \left\lbrace \begin{matrix} \frac{(x_i + 1)^{\lambda} - 1}{\lambda}, & \text{jika } x_i \geq 0 \text{ dan } \lambda \neq 0 \\ \log(x_i + 1), & \text{jika } x_i \geq 0 \text{ dan } \lambda = 0 \\ \frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}, & \text{jika } x_i < 0 \text{ dan } \lambda \neq 2 \\ -\log(|x_i| + 1), & \text{jika } x_i < 0 \text{ dan } \lambda = 2 \end{matrix} \\right.
+z_i = 
+\begin{cases} 
+\frac{(x_i + 1)^{\lambda} - 1}{\lambda}\text{, } & \text{if } x_i \geq 0 \text{, } \lambda \neq 0 \\\ 
+\log(x_i + 1)\text{, } & \text{if } x_i \geq 0 \text{, } \lambda = 0 \\\
+\frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}\text{, } & \text{if } x_i < 0 \text{, } \lambda \neq 2 \\\
+-\log(|x_i| + 1)\text{, } & \text{if } x_i < 0 \text{, } \lambda = 2 
+\end{cases}
 $$
 
    - $`x_i`$ : Nilai asli data (termasuk nilai negatif jika ada).  
