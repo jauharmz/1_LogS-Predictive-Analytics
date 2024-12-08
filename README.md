@@ -6,9 +6,7 @@ Kelarutan molekul organik dalam air adalah salah satu sifat fisik kunci dalam du
 
 Pengukuran kelarutan dalam air dengan tingkat akurasi tinggi membutuhkan biaya yang tidak sedikit, mencakup waktu, instrumen, keahlian penguji, serta keterbatasan sampel fisik. Beberapa metode untuk menghitung kelarutan dalam air (*S*) telah dikembangkan, salah satunya adalah *General Solubility Equation (GSE)* yang diperkenalkan oleh [Sanghvi T. *et al.*, 2003](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685). Metode ini memperkirakan kelarutan dalam air (*S*) sebagai fungsi dari titik lebur (*T*) dan koefisien partisi oktanol-air (*K*):  
 
-<p align="center">  
-  <img src="./images/logS_GSE_dark.png">  
-</p>  
+$$log(S) = -0.01 (T - 25°C) - log(K) + 0.50$$
 
 Nilai partisi oktanol (*P*) dapat ditentukan berdasarkan struktur senyawa, tetapi penentuan titik lebur (*T*) tetap membutuhkan pengukuran laboratorium. Metode GSE sangat berguna jika data titik lebur tersedia, namun untuk senyawa yang hanya diketahui strukturnya, diperlukan metode estimasi yang memanfaatkan struktur molekul secara langsung.  
 
@@ -380,10 +378,7 @@ Sebaran outlier diperiksa pada delapan variabel utama dari publikasi ESOL, yaitu
 **Label Variable (`logS`)**  
 Distribusi label `logS` menunjukkan persebaran utama di rentang `-7 - 0.1`, yang berisi lebih dari 100 data. Persebaran ini mencakup kategori dari *poorly soluble* hingga *highly soluble* berdasarkan skala [SwissADME](https://www.nature.com/articles/srep42717):
 
-<p align="center">
-  <img src="./images/logS_SwissADME_scale.png">
-</p>
-
+$$insoluble \lt −10 \lt poorly \lt −6 \lt moderately \lt −4 \lt soluble \lt −2 \lt very \lt 0 \lt highly$$
 
 <p align="center">
   <img src="./images/Univariate_rest.png"> 
@@ -480,57 +475,41 @@ Berikut adalah tabel algoritma yang diuji beserta penjelasan efeknya pada data:
 Berikut adalah formula matematis dari setiap algoritma yang digunakan:  
 
 1. **Standard Scaler**  
-   \[
-   z_i = \frac{x_i - \mu}{\sigma}
-   \]  
-   - \( x_i \): Nilai asli data.  
-   - \( z_i \): Nilai data setelah diskalakan.  
-   - \( \mu \): Rata-rata dari seluruh data.  
-   - \( \sigma \): Deviasi standar dari seluruh data.  
+   $$z_i = \frac{x_i - \mu}{\sigma}$$  
+   - $`x_i`$ : Nilai asli data.  
+   - $`z_i`$ : Nilai data setelah diskalakan.  
+   - $`\mu`$ : Rata-rata dari seluruh data.  
+   - $`\sigma`$ : Deviasi standar dari seluruh data.  
 
 2. **Min-Max Scaler**  
-   \[
-   z_i = \frac{x_i - \min(x)}{\max(x) - \min(x)}
-   \]  
-   - \( x_i \): Nilai asli data.  
-   - \( \min(x) \): Nilai minimum dalam dataset.  
-   - \( \max(x) \): Nilai maksimum dalam dataset.  
+   $$z_i = \frac{x_i - \min(x)}{\max(x) - \min(x)}$$ 
+   - $`x_i`$ : Nilai asli data.  
+   - $`\min(x)`$ : Nilai minimum dalam dataset.  
+   - $`\max(x)`$ : Nilai maksimum dalam dataset.  
 
 3. **Robust Scaler**  
-   \[
-   z_i = \frac{x_i - Q_2}{Q_3 - Q_1}
-   \]  
-   - \( Q_2 \): Median atau kuartil kedua.  
-   - \( Q_1 \): Kuartil pertama (persentil ke-25).  
-   - \( Q_3 \): Kuartil ketiga (persentil ke-75).  
+   $$z_i = \frac{x_i - Q_2}{Q_3 - Q_1}$$  
+   - $`Q_2`$ : Median atau kuartil kedua.  
+   - $`Q_1`$ : Kuartil pertama (persentil ke-25).  
+   - $`Q_3`$ : Kuartil ketiga (persentil ke-75).  
 
 4. **Quantile Transformer**  
     Untuk distribusi normal:  
-     \[
-     z_i = \Phi^{-1}\left(\frac{\text{rank}(x_i)}{n + 1}\right)
-     \]  
+     $$z_i = \Phi^{-1}\left(\frac{\text{rank}(x_i)}{n + 1}\right)$$  
     Untuk distribusi uniform:  
-     \[
-     z_i = \frac{\text{rank}(x_i)}{n + 1}
-     \]  
-   - \( \Phi^{-1} \): Fungsi distribusi kumulatif terbalik (fungsi kuantil).  
-   - \( \text{rank}(x_i) \): Peringkat dari nilai \( x_i \) dalam dataset.  
-   - \( n \): Jumlah total data.  
+     $$z_i = \frac{\text{rank}(x_i)}{n + 1}$$  
+   - $`\Phi^{-1}`$ : Fungsi distribusi kumulatif terbalik (fungsi kuantil).  
+   - $`\text{rank}(x_i)`$ : Peringkat dari nilai $`x_i`$ dalam dataset.  
+   - $`n`$ : Jumlah total data.  
 
 5. **Power Transformer**  
-   Untuk distribusi Yeo-Johnson:  
-   \[
-   z_i =
-   \begin{cases}
-   \frac{(x_i + 1)^{\lambda} - 1}{\lambda}, & \text{jika } x_i \geq 0 \text{ dan } \lambda \neq 0 \\ 
-   \log(x_i + 1), & \text{jika } x_i \geq 0 \text{ dan } \lambda = 0 \\ 
-   \frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}, & \text{jika } x_i < 0 \text{ dan } \lambda \neq 2 \\ 
-   -\log(|x_i| + 1), & \text{jika } x_i < 0 \text{ dan } \lambda = 2
-   \end{cases}
-   \]  
-   - \( x_i \): Nilai asli data (termasuk nilai negatif jika ada).  
-   - \( \lambda \): Parameter transformasi yang ditentukan melalui *Maximum Likelihood Estimation (MLE)*.  
-   - \( \log \): Logaritma natural (\( \ln \)).  
+   Untuk distribusi Yeo-Johnson:
+
+   $$z_i = \begin{cases} \frac{(x_i + 1)^{\lambda} - 1}{\lambda}, & \text{jika } x_i \geq 0 \text{ dan } \lambda \neq 0 \\ \log(x_i + 1), & \text{jika } x_i \geq 0 \text{ dan } \lambda = 0 \\ \frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}, & \text{jika } x_i < 0 \text{ dan } \lambda \neq 2 \\ -\log(|x_i| + 1), & \text{jika } x_i < 0 \text{ dan } \lambda = 2 \end{cases}$$
+   
+   - $`x_i`$ : Nilai asli data (termasuk nilai negatif jika ada).  
+   - $`\lambda`$ : Parameter transformasi yang ditentukan melalui *Maximum Likelihood Estimation (MLE)*.  
+   - $`\log`$ : Logaritma natural ($`\ln`$).  
 
 ---
 
