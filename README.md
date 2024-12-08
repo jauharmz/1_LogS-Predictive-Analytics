@@ -436,283 +436,117 @@ Untuk memahami hubungan antar fitur numerik, dilakukan analisis korelasi dengan 
 #### Korelasi Tinggi antar Deskriptor:  
 - Fitur seperti `molWt`, `numAtoms`, `bertzCT`, `balabanJ`, `chi0`, dan `chi1` menunjukkan korelasi positif tinggi satu sama lain. Hal ini menunjukkan bahwa fitur-fitur ini memberikan informasi yang mirip atau saling terkait dalam deskripsi struktur molekul.  
 
-## Data Preparation
+## Data Preparation  
 
-### Unpack List Feature
+### Unpack List Feature  
 
-Unpack list feature dilakukan terhadap variabel `ecfp` karena berisi list 2048 `1` untuk `True` dan `0` untuk `False` sehingga didapatkan 2048 kolom baru untuk masing-masing interpretasi yang berisi nilai `1` untuk `True` atau `0` untuk `False`.
+Fitur `ecfp` pada dataset berisi representasi molekuler berupa daftar *binary fingerprints* dengan panjang 2048 bit. Setiap elemen memiliki nilai `1` (True) atau `0` (False). Untuk mempermudah pemrosesan oleh model, fitur ini di-*unpack* menjadi 2048 kolom terpisah. Hasilnya, setiap kolom merepresentasikan satu elemen dari *fingerprint*, sehingga dapat digunakan sebagai variabel numerik individual oleh algoritma *machine learning*.  
 
-### Data Splitting Train dan Test
+### Pembagian Data: Train dan Test  
 
-Dataset `Input` dan `Label` dibagi menjadi 2 kategori yaitu:
+Dataset dibagi menjadi dua subset, yaitu:  
+1. **Train**: Digunakan untuk melatih model.  
+2. **Test**: Digunakan untuk memvalidasi model dan mengevaluasi performa.  
 
-* Train : Sebagai data latih model.
-* Test : Sebagai data validasi model dan matriks evaluasi.
-Pembagian data dilakukan dengan perbandingan `90:10` dari `7953` dataset, sehingga memiliki bentuk seperti berikut:
+Proporsi pembagian adalah `90:10`, menghasilkan bentuk data sebagai berikut:  
 
-    * Data Train  : (`7157`, `2078`)
-    * Label Train : (`7157`,)
-    * Data Test   : (`796`, `2078`)
-    * Label Test  : (`796`,)
+| **Kategori**   | **Shape**           |  
+|----------------|---------------------|  
+| Data Train     | (`7157`, `2078`)    |  
+| Label Train    | (`7157`,)           |  
+| Data Test      | (`796`, `2078`)     |  
+| Label Test     | (`796`,)            |  
 
+### Scaling dan Normalisasi  
 
-### Scaling dan Normalization
+Pada tahap ini, fitur numerik bertipe `float` distandarisasi atau dinormalisasi untuk meningkatkan konsistensi skala antar fitur. Sementara itu, fitur dengan tipe `int` tidak diubah untuk menghindari kehilangan informasi penting dari data diskret.  
 
-Tahap ini dilakukan pada variabel dengan tipe `float` saja, dikarenakan kebanyakan variabel dengan tipe `int` merupakan penjumlahan satuan bilangan bulat dan menghindari perubahan `bobot` dari variabel itu tersendiri.
+Berbagai teknik scaling dan normalisasi diuji, dengan metrik evaluasi *Negative Mean Squared Error (Negative MSE)*. Teknik terbaik adalah **Quantile Transformer** dengan distribusi **Uniform**, memberikan nilai evaluasi terbaik sebesar **`-1.4793369599164947`**.  
 
-Scaling dan Normalization dilakukan pada beberapa `algoritma` sebagai berikut:
+Berikut adalah tabel algoritma yang diuji beserta penjelasan efeknya pada data:  
 
-| Algoritma | Deskripsi | FormulaMatematis | Efek pada Data |
-|-|-|-|-| 
-| **Standard Scaler** | Skala data agar memiliki mean 0 dan standar deviasi 1. Berguna ketika data mengikuti distribusi normal. | ![](./images/scaler_standard.png) | Menyelaraskan data (mean = 0) dengan variansi 1 (std = 1). |
-| **Min Max Scaler** | Mengubah skala data ke rentang tertentu (default 0 hingga 1). Berguna untuk transformasi dalam batas tertentu. | ![](./images/scaler_min%20max.png) | Menggeser dan menskalakan data agar sesuai dalam rentang tertentu, biasanya [0, 1]. |
-| **Robust Scaler** | Menggunakan median dan interquartile range (IQR) untuk mengurangi pengaruh outlier dalam skala data. | ![](./images/scaler_robust.png) | Menyelaraskan data menggunakan median dan menskalakan berdasarkan IQR, mengurangi dampak outlier. |
-| **Quantile Transformer Normal** | Mengubah data agar mengikuti distribusi normal. Menerapkan transformasi peringkat, berguna untuk data non-Gaussian. | ![](./images/scaler_Q_normal.png) | Membuat distribusi data menjadi normal, menggeser mean dan standar deviasi. |
-| **Quantile Transformer Unifrom** | Mengubah data agar mengikuti distribusi uniform. Berguna untuk membuat distribusi lebih seragam. | ![](./images/scaler_Q_unifrom.png) | Mengubah data menjadi sebaran seragam, tanpa terpusat pada mean. |
-| **Power Transformer** | Menerapkan transformasi daya (Yeo-Johnson) untuk menstabilkan variansi dan membuat data lebih mendekati distribusi Gaussian. | ![](./images/scaler_power.png) | Menggeser dan menskalakan data, sering kali mengurangi skewness untuk mendekati distribusi Gaussian. |
+| **Algoritma**               | **Deskripsi**                                                                                  | **Efek pada Data**                                      |  
+|-----------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------|  
+| **Standard Scaler**         | Skala data agar memiliki rata-rata 0 dan standar deviasi 1.                                   | Menyelaraskan data (mean = 0, std = 1).               |  
+| **Min-Max Scaler**          | Mengubah skala data ke rentang tertentu (default 0 hingga 1).                                 | Menggeser data agar berada dalam rentang [0, 1].      |  
+| **Robust Scaler**           | Menggunakan median dan IQR untuk mengurangi pengaruh outlier.                                 | Mengurangi dampak outlier.                            |  
+| **Quantile Transformer**    | Mengubah data agar mengikuti distribusi tertentu (Normal/Uniform).                           | Membuat distribusi lebih seragam atau normal.         |  
+| **Power Transformer**       | Menerapkan transformasi daya (Yeo-Johnson) untuk menstabilkan variansi.                       | Mengurangi *skewness* untuk mendekati distribusi Gaussian. |  
 
-**Dimana:**
+---
 
-- x<sub>i</sub> : Nilai asli dalam dataset yang sedang diskalakan atau ditransformasi.
-- x : Semua titik data asli dalam dataset.
-- z<sub>i</sub>: Nilai yang ditransformasikan atau diskalakan dari x<sub>i</sub> setelah menerapkan scaler atau transformasi.
-- μ : Rata-rata dari semua titik data x.
-- σ : Deviasi standar dari semua titik data x.
-- Q<sub>1</sub> : Kuartil pertama (persentil ke-25) dari dataset x.
-- Q<sub>2</sub> : Kuartil kedua (median atau persentil ke-50) dari dataset x.
-- Q<sub>3</sub> : Kuartil ketiga (persentil ke-75) dari dataset x.
-- min(x) : Nilai minimum dalam dataset x.
-- max(x) : Nilai maksimum dalam dataset x.
-- λ : Parameter transformasi dalam Power Transformer (Yeo-Johnson), ditentukan melalui Estimasi Likelihood Maksimum (MLE).
-- ϕ<sup>-1</sup> : Fungsi distribusi kumulatif terbalik (fungsi kuantil).
+### Formula Matematis  
 
+Berikut adalah formula matematis dari setiap algoritma yang digunakan:  
 
-Dengan `algoritma` terbaik dengan score `Negative Mean Squared Error (Negative MSE)` : `-1.4793369599164947`, `QuantileTransformer` dengan distribusi `Uniform` dipilih untuk melakukan `Normalization` pada data `float`.
+1. **Standard Scaler**  
+   \[
+   z_i = \frac{x_i - \mu}{\sigma}
+   \]  
+   - \( x_i \): Nilai asli data.  
+   - \( z_i \): Nilai data setelah diskalakan.  
+   - \( \mu \): Rata-rata dari seluruh data.  
+   - \( \sigma \): Deviasi standar dari seluruh data.  
 
-<table>
-    <thead>
-        <tr>
-            <th></th>
-            <th>molWt</th>
-            <th>molMR</th>
-            <th>ap</th>
-            <th>logP</th>
-            <th>tpsa</th>
-            <th>balabanJ</th>
-            <th>bertzCT</th>
-            <th>hallKierAlpha</th>
-            <th>ipc</th>
-            <th>chi0</th>
-            <th>...</th>
-            <th>kappa1</th>
-            <th>kappa2</th>
-            <th>kappa3</th>
-            <th>fractionCSP3</th>
-            <th>asphericity</th>
-            <th>eccentricity</th>
-            <th>inertialShapeFactor</th>
-            <th>radiusOfGyration</th>
-            <th>spherocityIndex</th>
-            <th>ncp</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>count</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>...</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-            <td>7157.0000</td>
-        </tr>
-        <tr>
-            <td>mean</td>
-            <td>0.0000</td>
-            <td>0.0000</td>
-            <td>-1.0508</td>
-            <td>0.0001</td>
-            <td>-0.1798</td>
-            <td>0.0003</td>
-            <td>-0.0002</td>
-            <td>-0.0004</td>
-            <td>-0.0005</td>
-            <td>-0.0001</td>
-            <td>...</td>
-            <td>-0.0001</td>
-            <td>-0.0005</td>
-            <td>0.0003</td>
-            <td>0.0175</td>
-            <td>-0.0008</td>
-            <td>-0.0002</td>
-            <td>-0.0004</td>
-            <td>-0.0002</td>
-            <td>-0.0073</td>
-            <td>-0.0452</td>
-        </tr>
-        <tr>
-            <td>std</td>
-            <td>1.0020</td>
-            <td>1.0018</td>
-            <td>2.6046</td>
-            <td>1.0016</td>
-            <td>1.5030</td>
-            <td>1.0010</td>
-            <td>1.0033</td>
-            <td>1.0023</td>
-            <td>1.0011</td>
-            <td>1.0025</td>
-            <td>...</td>
-            <td>1.0016</td>
-            <td>1.0035</td>
-            <td>1.0024</td>
-            <td>2.3954</td>
-            <td>1.0058</td>
-            <td>1.0045</td>
-            <td>1.0051</td>
-            <td>1.0028</td>
-            <td>1.0329</td>
-            <td>1.1672</td>
-        </tr>
-        <tr>
-            <td>min</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>...</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-            <td>-5.1993</td>
-        </tr>
-        <tr>
-            <td>25%</td>
-            <td>-0.6743</td>
-            <td>-0.6748</td>
-            <td>-5.1993</td>
-            <td>-0.6738</td>
-            <td>-0.6737</td>
-            <td>-0.6750</td>
-            <td>-0.6748</td>
-            <td>-0.6769</td>
-            <td>-0.6749</td>
-            <td>-0.6737</td>
-            <td>...</td>
-            <td>-0.6763</td>
-            <td>-0.6744</td>
-            <td>-0.6751</td>
-            <td>-0.6784</td>
-            <td>-0.6741</td>
-            <td>-0.6749</td>
-            <td>-0.6740</td>
-            <td>-0.6740</td>
-            <td>-0.6751</td>
-            <td>-0.6518</td>
-        </tr>
-        <tr>
-            <td>50%</td>
-            <td>-0.0009</td>
-            <td>0.0006</td>
-            <td>-0.0125</td>
-            <td>-0.0003</td>
-            <td>-0.0013</td>
-            <td>0.0001</td>
-            <td>-0.0005</td>
-            <td>-0.0088</td>
-            <td>0.0005</td>
-            <td>-0.0000</td>
-            <td>...</td>
-            <td>0.0010</td>
-            <td>0.0002</td>
-            <td>-0.0008</td>
-            <td>-0.0038</td>
-            <td>-0.0008</td>
-            <td>-0.0006</td>
-            <td>0.0004</td>
-            <td>-0.0005</td>
-            <td>0.0002</td>
-            <td>0.0100</td>
-        </tr>
-        <tr>
-            <td>75%</td>
-            <td>0.6737</td>
-            <td>0.6742</td>
-            <td>0.7250</td>
-            <td>0.6745</td>
-            <td>0.6743</td>
-            <td>0.6751</td>
-            <td>0.6744</td>
-            <td>0.6737</td>
-            <td>0.6741</td>
-            <td>0.6743</td>
-            <td>...</td>
-            <td>0.6751</td>
-            <td>0.6747</td>
-            <td>0.6756</td>
-            <td>0.6911</td>
-            <td>0.6742</td>
-            <td>0.6742</td>
-            <td>0.6752</td>
-            <td>0.6747</td>
-            <td>0.6746</td>
-            <td>0.6211</td>
-        </tr>
-        <tr>
-            <td>max</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>...</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-            <td>5.1993</td>
-        </tr>
-    </tbody>
-</table>
+2. **Min-Max Scaler**  
+   \[
+   z_i = \frac{x_i - \min(x)}{\max(x) - \min(x)}
+   \]  
+   - \( x_i \): Nilai asli data.  
+   - \( \min(x) \): Nilai minimum dalam dataset.  
+   - \( \max(x) \): Nilai maksimum dalam dataset.  
 
-Data `train` dengan dtype `float` telah berhasil dilakukan transformasi menggunakan`QuantileTransformer Normal` dengan menseragamkan sebaran sehingga tidak terpusat pada `mean` hal ini ditandai oleh pembatasan sebaran pada nilai `min` dan `max` menjadi `-5.1993` dan `5.1993`, Hampir secara keseluruhan `Persentil Data` `50%` tepat berada di antara `25%` dan `75%` (`-0.6743`, `-0.0009` dan `0.6737`) serta nilai `mean` dan `50%` yang saling berdekatan (`0.0000` dan `-0.0009`). Selanjutnya, nilai transformasi data `train` diterapkan pada data `test` sehingga dimungkinkan adanya nilai transformasi di luar dari data `train` sehingga model dapat menghindari `overfitting`.
+3. **Robust Scaler**  
+   \[
+   z_i = \frac{x_i - Q_2}{Q_3 - Q_1}
+   \]  
+   - \( Q_2 \): Median atau kuartil kedua.  
+   - \( Q_1 \): Kuartil pertama (persentil ke-25).  
+   - \( Q_3 \): Kuartil ketiga (persentil ke-75).  
+
+4. **Quantile Transformer**  
+    Untuk distribusi normal:  
+     \[
+     z_i = \Phi^{-1}\left(\frac{\text{rank}(x_i)}{n + 1}\right)
+     \]  
+    Untuk distribusi uniform:  
+     \[
+     z_i = \frac{\text{rank}(x_i)}{n + 1}
+     \]  
+   - \( \Phi^{-1} \): Fungsi distribusi kumulatif terbalik (fungsi kuantil).  
+   - \( \text{rank}(x_i) \): Peringkat dari nilai \( x_i \) dalam dataset.  
+   - \( n \): Jumlah total data.  
+
+5. **Power Transformer**  
+   Untuk distribusi Yeo-Johnson:  
+   \[
+   z_i =
+   \begin{cases}
+   \frac{(x_i + 1)^{\lambda} - 1}{\lambda}, & \text{jika } x_i \geq 0 \text{ dan } \lambda \neq 0 \\ 
+   \log(x_i + 1), & \text{jika } x_i \geq 0 \text{ dan } \lambda = 0 \\ 
+   \frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}, & \text{jika } x_i < 0 \text{ dan } \lambda \neq 2 \\ 
+   -\log(|x_i| + 1), & \text{jika } x_i < 0 \text{ dan } \lambda = 2
+   \end{cases}
+   \]  
+   - \( x_i \): Nilai asli data (termasuk nilai negatif jika ada).  
+   - \( \lambda \): Parameter transformasi yang ditentukan melalui *Maximum Likelihood Estimation (MLE)*.  
+   - \( \log \): Logaritma natural (\( \ln \)).  
+
+---
+
+### Transformasi Data  
+
+Setelah diterapkan **Quantile Transformer (Uniform)**, distribusi data menjadi lebih seragam. Nilai minimum dan maksimum dibatasi pada `-5.1993` dan `5.1993`, sementara nilai median dan rata-rata berada dalam rentang yang seimbang, seperti terlihat pada persentil berikut:  
+
+| **Persentil** | **Nilai**    |  
+|---------------|--------------|  
+| Minimum       | `-5.1993`    |  
+| Kuartil-1     | `-0.6743`    |  
+| Median        | `-0.0009`    |  
+| Kuartil-3     | `0.6737`     |  
+| Maksimum      | `5.1993`     |  
+
+Transformasi ini diterapkan pada data train terlebih dahulu. Skala yang sama kemudian digunakan pada data test untuk memastikan konsistensi dan mencegah *overfitting* akibat distribusi data yang berbeda.  
 
 ## Modeling
 
