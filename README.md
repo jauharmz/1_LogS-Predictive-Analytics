@@ -1,123 +1,128 @@
 # Laporan Proyek Machine Learning - Jauhar Mumtaz
 
-## Domain Proyek
+## Domain Proyek  
 
-Nilai kelarutan dalam air molekul organik merupakan salah satu kunci sifat fisik dalam dunia medis. Karena berbanding lurus dengan absorpsi yang merupakan parameter utama distribusi senyawa aktif biologi dalam makhluk hidup dan lingkungan, sehingga berpengaruh pada potensi bioavailability, efektifitas serta daya jual senyawa aktif tersebut.
+Kelarutan molekul organik dalam air adalah salah satu sifat fisik kunci dalam dunia medis. Sifat ini memiliki hubungan langsung dengan absorpsi, yang merupakan parameter utama distribusi senyawa aktif biologis dalam makhluk hidup dan lingkungan. Oleh karena itu, kelarutan sangat memengaruhi bioavailabilitas, efektivitas, dan nilai jual senyawa aktif.  
 
-Pengukuran kelarutan dalam air dengan akurasi tinggi tentu membutuhkan *cost* yang tidak kecil, mulai dari waktu, instruments, kelihaian penguji, serta sampel fisik yang terbatas. Beberapa metode perhitungan kelarutan dalam air (S) telah dikembangkan seperti *`General Solubility Equation (GSE)`* oleh [Sanghvi T *et al.* pada tahun 2003](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685)  dengan estimasi kelarutan dalam air (S) sebagai fungsi dari titik lebur (T) dan koefisien partisi oktanol-air (K):
+Pengukuran kelarutan dalam air dengan tingkat akurasi tinggi membutuhkan biaya yang tidak sedikit, mencakup waktu, instrumen, keahlian penguji, serta keterbatasan sampel fisik. Beberapa metode untuk menghitung kelarutan dalam air (*S*) telah dikembangkan, salah satunya adalah *General Solubility Equation (GSE)* yang diperkenalkan oleh [Sanghvi T. *et al.*, 2003](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685). Metode ini memperkirakan kelarutan dalam air (*S*) sebagai fungsi dari titik lebur (*T*) dan koefisien partisi oktanol-air (*K*):  
 
-<p align="center">
-  <img src="./images/logS_GSE_dark.png">
-</p>
+<p align="center">  
+  <img src="./images/logS_GSE_dark.png">  
+</p>  
 
-Nilai partisi oktanol (`P`) dapat ditentukan berdasarkan struktur senyawa, namun penentuan titik lebur (`T`) masih memerlukan pengukuran lab. Sehingga metode GSE cocok untuk penentuan kelarutan dalam air suatu molekul jika tersedia data titik lebur-nya (`T`), sehingga metode yang dapat memanfaatkan struktur molekul untuk estimasi perlu dikembangkan.
+Nilai partisi oktanol (*P*) dapat ditentukan berdasarkan struktur senyawa, tetapi penentuan titik lebur (*T*) tetap membutuhkan pengukuran laboratorium. Metode GSE sangat berguna jika data titik lebur tersedia, namun untuk senyawa yang hanya diketahui strukturnya, diperlukan metode estimasi yang memanfaatkan struktur molekul secara langsung.  
 
-Metode lain yang telah dikembangkan dengan menggunakan model machine learning yang dikembangkan oleh [Delaney JS pada tahun 2003](https://pubs.acs.org/doi/abs/10.1021/ci034243x), yaitu *`Estimated Solubility (ESOL)`* yang memanfaatkan delapan parameter yang diekstrak menggunakan *molecular descriptor* seperti *`clogP`*, *molecular weight (`molWT`)*, *rotatable bond (`rb`)*, *aromatic proportion (`ap`)*, *non-carbon proportion*, *H-bond donor (`hbd`)*, *H-bond acceptor (`hba`)*, dan *polar surface area (`psa`)*. Berdasarkan 2874 data latih ESOL menghasilkan estimasi yang lebih *robust* dibandingkan GSE dengan nilai:
+Metode lain yang telah dikembangkan adalah *Estimated Solubility (ESOL)*, model *machine learning* yang dikembangkan oleh [Delaney JS, 2003](https://pubs.acs.org/doi/abs/10.1021/ci034243x). ESOL menggunakan delapan parameter deskriptor molekul seperti *clogP*, berat molekul (*molecular weight, molWT*), jumlah ikatan rotasi (*rotatable bond, rb*), proporsi aromatik (*aromatic proportion, ap*), proporsi non-karbon, donor dan akseptor ikatan hidrogen (*hbd, hba*), serta luas permukaan polar (*polar surface area, psa*). Berdasarkan 2874 data pelatihan, ESOL memberikan estimasi yang lebih *robust* dibandingkan GSE, dengan hasil sebagai berikut:  
 
-||*R*²|SE|MAE|
-|-|-|-|-|
-|ESOL|0.69|1.01|0.75|
-|GSE|0.67|1.05|0.47|
+| Metode  | *R*² | SE   | MAE  |  
+|---------|------|------|------|  
+| ESOL    | 0.69 | 1.01 | 0.75 |  
+| GSE     | 0.67 | 1.05 | 0.81 |  
 
-Metode ESOL juga menyimpulkan bahwa parameter paling signifikan yaitu *`clogP`* diikuti *molecular weight (`molWT`)*, *aromatic proportion (`ap`)*, dan *rotatable bond (`rb`)*. Dengan seiringnya perkembangan jaman, machine learning telah berkembang mulai dari beragamnya database, hyperparameter tuning, dan model, penulis ingin melanjutkan perkembangan estimasi nilai kelarutan molekul dalam air menggunakan dataset yang lebih besar dan hanya mengandalkan variabel `smiles` dan `log S` sebagai data `input` dan `label` utama degan menggunakan dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) dengan melakukan descriptor 0D, 1D, 2D, dam 3D pada variable `smiles` dan didapatkan total 31 parameter yang akan digunakan sebagai input beberapa model. 
+Hasil dari ESOL juga menunjukkan bahwa parameter paling signifikan adalah *clogP*, diikuti oleh berat molekul (*molWT*), proporsi aromatik (*ap*), dan jumlah ikatan rotasi (*rb*).  
 
-Model regressor berbasis machine learning beserta deep learning seperti Neural Network (`NN`), K-Nearest Neighbors (`KNN`), Random Forest (`RF`), Support Vector Regressor (`SVR`), Elastic Net (`EN`), Decision Tree (`DT`), Extreme Gradient Boosting (`XGBoost`), Extra Trees (`ET`), dan Light Gradient-Boosting Machine (`LightGBM`). Tiga model terbaik berdasarkan nilai *Mean Absolute Error* (`MAE`) dan *Standard Error* (`SE`) rendah beserta Koefisien Determinasi (`R²`) akan dilakukan interpretasi model menggunakan SHapley Additive exPlanations (`SHAP`) sehingga didapatkan beberapa parameter paling signifikan.
+Dengan perkembangan teknologi, model *machine learning* terus berkembang, baik dari segi ukuran basis data, *hyperparameter tuning*, maupun struktur model. Penelitian ini bertujuan untuk mengembangkan metode estimasi kelarutan molekul dalam air menggunakan dataset yang lebih besar. Dalam penelitian ini, hanya variabel *SMILES* dan *log S* yang digunakan sebagai input utama. Dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) menyediakan data *SMILES* dengan berbagai deskriptor molekul, mulai dari deskriptor 0D, 1D, 2D, hingga 3D, yang menghasilkan total 31 parameter untuk digunakan sebagai input ke berbagai model.  
 
+Penelitian ini mengimplementasikan berbagai model regresi berbasis *machine learning* dan *deep learning*, seperti Neural Network (*NN*), K-Nearest Neighbors (*KNN*), Random Forest (*RF*), Support Vector Regressor (*SVR*), Elastic Net (*EN*), Decision Tree (*DT*), Extreme Gradient Boosting (*XGBoost*), Extra Trees (*ET*), dan Light Gradient-Boosting Machine (*LightGBM*). Model terbaik akan dipilih berdasarkan nilai Mean Absolute Error (*MAE*), Standard Error (*SE*), dan Koefisien Determinasi (*R²*), serta dilakukan interpretasi model menggunakan SHapley Additive exPlanations (*SHAP*) untuk mengidentifikasi parameter paling signifikan.  
 
+## Business Understanding  
 
-## Business Understanding
+### Problem Statements  
 
-### Problem Statements
+1. Prediksi kelarutan dalam air (*logS*) suatu molekul *drug-like* merupakan langkah penting dalam dunia *drug discovery* karena memengaruhi efisiensi dan proses pengembangan obat. Apakah prediksi *logS* dapat dilakukan menggunakan model *machine learning* atau *deep learning* sederhana dengan fitur yang diekstrak hanya dari anotasi *SMILES* suatu molekul?  
+2. Di antara berbagai model *machine learning* dan *deep learning* sederhana, model manakah yang memiliki nilai Mean Absolute Error (*MAE*) dan Standard Error (*SE*) paling rendah, serta nilai Koefisien Determinasi (*R²*) yang tinggi dalam memprediksi *logS* berdasarkan fitur yang digunakan?  
+3. Dari delapan fitur yang digunakan dalam publikasi [ESOL](https://pubs.acs.org/doi/abs/10.1021/ci034243x#), yaitu *clogP*, berat molekul (*molWT*), jumlah ikatan rotasi (*rb*), proporsi aromatik (*ap*), donor dan akseptor ikatan hidrogen (*hbd, hba*), serta luas permukaan polar (*psa*), fitur mana yang paling berpengaruh terhadap nilai *logS*? Adakah fitur lain yang memberikan kontribusi signifikan?  
 
-* Memprediksi kelarutan dalam air `LogS` suatu molekul `*drug-like*` merupakan tahap utama dalam dunia `*drug discovery*` yang mana dapat mempengaruhi efisiensi dan pengembangan obat. Apakah prediksi `LogS` dapat dilakukan menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana dengan menggunakan fitur yang diekstrak hanya dari anotasi `SMILES` suatu molekul?
-* Di antara berbagai model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana, model manakah yang memiliki nilai *Mean Absolute Error* (MAE) dan *Standard Error* (SE) rendah beserta Koefisien Determinasi (R²) tinggi dalam memprediksi `LogS` berdasarkan fitur-fitur yang digunakan?
-* Dari delapan fitur yang digunakan dalam publikasi [ESOL](https://pubs.acs.org/doi/abs/10.1021/ci034243x#) yang dapat diekstrak menggunakan deskriptor dari `SMILES`, fitur mana yang paling berpengaruh terhadap nilai `LogS`? Apakah terdapat fitur lain yang
+### Goals  
 
-### Goals
+1. Mengidentifikasi apakah prediksi *logS* hanya dari fitur hasil ekstraksi *SMILES* dapat dilakukan menggunakan model *machine learning* atau *deep learning* sederhana.  
+2. Menentukan model *machine learning* atau *deep learning* sederhana dengan performa terbaik berdasarkan metrik *MAE*, *SE*, dan *R²*.  
+3. Mengidentifikasi fitur yang paling berpengaruh terhadap nilai *logS* (kelarutan molekul dalam air).  
 
-* Mengetahui prediksi LogS hanya dari ekstraksi fitur dari `SMILES` dapat dilakukan menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana.
-* Menentukan model *Machine Learning* yang tersedia ataupun Deep Learning sederhana dengan error terkecil untuk memprediksi nilai `LogS` berdasarkan fitur yang digunakan.
-* Mengidentifikasi fitur yang memiliki pengaruh terbesar terhadap nilai `LogS` (kelarutan molekul dalam air).
+### Solution Statements  
 
-### Solution statements
+1. Melakukan prediksi *logS* menggunakan fitur hasil ekstraksi dari anotasi *SMILES* molekul melalui model *machine learning* atau *deep learning*.  
+2. Menguji dan mengevaluasi berbagai model dengan *hyperparameter* yang telah ditetapkan sebelumnya, dan memilih model terbaik berdasarkan metrik *MAE*, *SE*, dan *R²*.  
+3. Mengekstraksi bobot fitur menggunakan teknik interpretasi model seperti SHapley Additive exPlanations (*SHAP*) untuk mengidentifikasi parameter yang paling signifikan.  
 
-* Melakukan prediksi `LogS` dengan menggunakan fitur yang diekstrak hanya dari anotasi `SMILES` suatu molekul menggunakan model *Machine Learning* yang tersedia ataupun *Deep Learning* sederhana.
-* Menguji dan mengevaluasi beberapa model dengan *hyperparameter* yang telah ditetapkan sebelumnya, dan menetapkan model terbaik berdasarkan metrik *Mean Absolute Error* (`MAE`), *Standard Error* (`SE`), dan koefisien Determinasi (`R²`).
-* Mengekstrak bobot fitur dari beberapa model.
+## Data Understanding  
 
-## Data Understanding
+Dataset yang digunakan untuk memprediksi nilai *logS* suatu molekul diambil dari dataset GitHub yang dipublikasikan oleh `summer-cola` dengan nama repository **`SMILES-enumeration-datasets`**. Dataset ini dapat diakses melalui tautan [berikut](https://github.com/summer-cola/smiles-enumeration-datasets) dan mencakup berbagai sifat fisik molekul, seperti *logD*, *logP*, dan *logS*. Dataset yang digunakan untuk prediksi *logS* terletak di direktori `logS` dengan nama file `traintest.csv`, yang berisi 7954 baris data.  
 
-Dataset yang digunakan untuk memprediksi nilai `log S` suatu molekul diambil dari dataset GitHub yang dipublish oleh `summer-cola` dengan nama repository `SMILES-enumeration-datasets` yang dapat diakses melalui tautan [berikut](https://github.com/summer-cola/smiles-enumeration-datasets). Repository ini berisi beberapa dataset berisi sifat fisik suatu molekul seperti `log D`, `log P`, dan `log S`. Untuk dataset yang digunakan pada prediksi kali ini berada pada directory `logS` dengan nama file `traintest.csv` yang berisi 7954 baris data.
+### Informasi Variabel  
 
-### Informasi Keterangan Variabel pada Dataset
+Dataset ini memiliki delapan variabel utama dengan deskripsi sebagai berikut:  
 
-Dataset memiliki 8 variabel dengan keterangan sebagai berikut.
+| **Variabel**   | **Deskripsi**                                                                                         | **Contoh Nilai**         |  
+|-----------------|-----------------------------------------------------------------------------------------------------|--------------------------|  
+| `Unnamed: 0`    | Indeks otomatis yang dihasilkan saat data diimpor.                                                  | 0                        |  
+| `Compound ID`   | ID unik untuk mengidentifikasi setiap senyawa dalam dataset.                                        | C4659                    |  
+| `InChIKey`      | Kode alfanumerik pendek dari *International Chemical Identifier* (InChI) untuk identifikasi global. | WIKXJKUZYYOTBP-UHFFFAOYSA-N |  
+| `SMILES`        | *Simplified Molecular Input Line Entry System*, notasi struktur molekul berbasis *ASCII strings*.   | CCCCC(COC(=O)N)(COC(=O)NC(C)C)C |  
+| `logS`          | Nilai logaritmik kelarutan dalam air (S), yang mengindikasikan tingkat kelarutan molekul dalam air.  | -3.633501683             |  
+| `logP`          | Nilai logaritmik koefisien partisi oktanol-air (*P*), mengukur lipofilisitas molekul.               | 3.504                    |  
+| `MW`            | Berat molekul (*Molecular Weight*), yaitu total massa atom molekul (dalam satuan Dalton/Da).        | 274.357                  |  
+| `smi`           | Representasi alternatif untuk *SMILES*.                                                            | C C C C C ( C O C ( = O ) N ) ... |  
 
-| Variabel | Deskripsi | Nilai |
-| - | - | - |
-| Unnamed: 0 | Indeks otomatis yang dihasilkan saat data diimpor. | 0 |
-| Compound ID | ID unik untuk mengidentifikasi setiap senyawa dalam dataset. | C4659 |
-| InChIKey | Kode alfanumerik yang merupakan versi singkat dari InChI (International Chemical Identifier) untuk identifikasi molekul unik secara global. | WIKXJKUZYYOTBP-UHFFFAOYSA-N |
-| SMILES  | Simplified molecular input line entry system, bentuk notasi untuk deskripsi struktur molekul menggunakan *short ASCII strings*. | CCCCC(COC(=O)N)(COC(=O)NC(C)C)C |
-| logS | Nilai logaritmik dari kelarutan dalam air (S), yang mengindikasikan seberapa larut suatu senyawa dalam air. | -3.633501683 |
-| logP | Nilai logaritmik dari koefisien partisi oktanol-air (P), yang menunjukkan lipofilisitas atau kecenderungan senyawa untuk larut dalam lemak atau air. | 3.504 |
-| MW  | Massa molekul (Molecular Weight), yaitu total massa atom dari molekul dalam satuan dalton (Da). | 274.357 |
-| smi | Representasi alternative SMILES | C C C C C ( C O C ( = O ) N ) ( C O C ( = O ) N C ( C ) C ) C |
+Dataset ini menggunakan deskriptor molekul berbasis struktur (*SMILES*) untuk menghasilkan total 31 variabel tambahan melalui kalkulasi deskriptor 0D, 1D, 2D, dan 3D, yang digunakan sebagai *input* ke model.  
 
-Dengan memanfaatkan `Descriptor` `0D`, `1D`, `2D`, dan `3D` variabel yang digunakan pada dari dataset yaitu `smiles` sebagai data `input mentah` dan `logS` sebagai `label`. Setelah dilakukan `Descriptor` pada variabel `smiles` didapatkan 31 variabel baru beserta keterangannya sebagai berikut.
+### Variabel Deskriptor  
 
-| Variabel | Deskripsi | Nilai |
-| - | - | - |
-| logS | LogS, nilai logaritmik kelarutan molekul (terutama obat) dalam air | -2.74 |
-| molWt | Molecule weight, berat molekul | 170.92 |
-| numAtoms | Jumlah atom berat (selain hidrogen dalam molekul). | 8 |
-| molMR | Molecular refractivity, kemampuan molekul untuk membiaskan cahaya, terkait dengan polarizabilitas molekul. |  21.6 |
-| rings | Jumlah cincin dalam struktur molekul | 0 |
-| aromatic | Jumlah cincin dengan sifat aromatik dalam molekul. | 0 |
-| ap | Aromatic proportion, rasio atom aromatik terhadap total atom. | 0.0 |
-| chiralC | Jumlah pusat kiral (Karbon) dalam molekul. | 0 |
-| logP | Koefisien partisi logaritmik mengukur kepolaran molekul. | 2.6496 |
-| hbd | Jumlah donor ikatan hidrogen | 0 |
-| hba | Jumlah akseptor ikatan hidrogen | 0 |
-| rb | Rotatable bond, umlah ikatan rotasi| 1 |
-| tpsa | Topological polar surface area, luas permukaan molekul yang bersifat polar | 0.0 |
-| nh2 |  Jumlah gugus amina | 0 |
-| oh | Jumlah gugus hidroksil | 0 |
-| balabanJ | Indeks Balaban (Balaban J Index), ukuran kekompakan topologi molekul. | 4.020392 |
-| bertzCT | Kompleksitas topologi Bertz (Bertz CT), ukuran kerumitan molekul berdasarkan struktur graf. | 67.01955 |
-| hallKierAlpha |  Indeks Hall-Kier Alpha, terkait dengan bentuk molekul dan polarizabilitasnya. | 0.3 |
-| ipc | Indeks polaritas informasi (Information Content Index), mengukur keragaman struktur molekul. |  21.306059 |
-| chi1 | Chi Path Index 0, pengukuran topologi molekul berdasarkan jumlah dan jenis atom. | 7.0 |
-| chi2 | Chi Path Index 1, pengukuran jalur molekul berdasarkan pola ikatan atom. |  3.25 |
-| kappa1 | Indeks kappa molekuler 1, mengukur fleksibilitas molekul. | 8.3 |
-| kappa2 | Indeks kappa molekuler 2, variasi lain untuk mengukur fleksibilitas molekul. |  1.91511 |
-| kappa3 | Indeks kappa molekuler 3, variasi lebih lanjut dari pengukuran fleksibilitas.| 2.046098 |
-|fractionCSP3 | Fraksi atom karbon dalam hibridisasi sp3 | 1.0|
-| asphericity |  Asferisitas, pengukuran penyimpangan bentuk molekul dari bentuk bola sempurna. | 0.072556 |
-| eccentricity | Eksentrisitas, pengukuran asimetri dalam distribusi atom molekul. | 0.785158 |
-| inertialShapeFactor | Faktor bentuk inersia, yang menunjukkan bentuk molekul berdasarkan distribusi massa atom. | 0.003042 |
-| radiusOfGyration | Jari-jari perputaran (Radius of Gyration), mengukur penyebaran atom dalam molekul relatif terhadap pusat massa. | 1.836359 |
-| spherocityIndex | Indeks sferisitas, yang menunjukkan seberapa dekat bentuk molekul dengan bola. | 0.711911 |
-| ncp | Proporsi non-karbon terhadap total atom dalam molekul. | 0.75 |
-| ecfp | Extended Circular Fingerprints, representasi molekul berbasis bit. | [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ... ] |
+| **Variabel**           | **Deskripsi**                                                                                  | **Contoh Nilai**     |  
+|------------------------|-----------------------------------------------------------------------------------------------|----------------------|  
+| `logS`                 | Nilai logaritmik kelarutan molekul (terutama obat) dalam air.                                  | -2.74                |  
+| `molWt`                | Berat molekul (*Molecular Weight*).                                                           | 170.92               |  
+| `numAtoms`             | Jumlah atom berat (selain hidrogen) dalam molekul.                                             | 8                    |  
+| `molMR`                | *Molecular refractivity*, kemampuan molekul untuk membiaskan cahaya, terkait polarizabilitas. | 21.6                 |  
+| `rings`                | Jumlah cincin dalam struktur molekul.                                                         | 0                    |  
+| `aromatic`             | Jumlah cincin dengan sifat aromatik dalam molekul.                                             | 0                    |  
+| `ap`                   | Proporsi aromatik, rasio atom aromatik terhadap total atom.                                    | 0.0                  |  
+| `chiralC`              | Jumlah pusat kiral (Karbon) dalam molekul.                                                    | 0                    |  
+| `logP`                 | Koefisien partisi logaritmik, mengukur kepolaran molekul.                                      | 2.6496               |  
+| `hbd`                  | Jumlah donor ikatan hidrogen (*Hydrogen Bond Donor*).                                          | 0                    |  
+| `hba`                  | Jumlah akseptor ikatan hidrogen (*Hydrogen Bond Acceptor*).                                    | 0                    |  
+| `rb`                   | Jumlah ikatan yang dapat berputar (*Rotatable Bond*).                                          | 1                    |  
+| `tpsa`                 | *Topological Polar Surface Area*, luas permukaan polar molekul.                               | 0.0                  |  
+| `nh2`                  | Jumlah gugus amina dalam molekul.                                                             | 0                    |  
+| `oh`                   | Jumlah gugus hidroksil dalam molekul.                                                         | 0                    |  
+| `balabanJ`             | Indeks Balaban, ukuran kekompakan topologi molekul.                                            | 4.020392             |  
+| `bertzCT`              | Kompleksitas topologi Bertz, mengukur kerumitan struktur molekul berdasarkan graf.             | 67.01955             |  
+| `hallKierAlpha`        | Indeks Hall-Kier Alpha, terkait bentuk molekul dan polarizabilitasnya.                         | 0.3                  |  
+| `ipc`                  | Indeks polaritas informasi (*Information Content Index*), mengukur keragaman struktur molekul. | 21.306059            |  
+| `chi0`                 | Indeks jalur Chi 0, mengukur topologi molekul berdasarkan jumlah dan jenis atom.               | 7.0                  |  
+| `chi1`                 | Indeks jalur Chi 1, mengukur pola ikatan atom dalam molekul.                                   | 3.25                 |  
+| `kappa1`               | Indeks kappa molekuler 1, mengukur fleksibilitas molekul.                                      | 8.3                  |  
+| `kappa2`               | Indeks kappa molekuler 2, variasi lain untuk mengukur fleksibilitas molekul.                  | 1.91511              |  
+| `kappa3`               | Indeks kappa molekuler 3, variasi lebih lanjut dari pengukuran fleksibilitas molekul.          | 2.046098             |  
+| `fractionCSP3`         | Fraksi atom karbon dengan hibridisasi sp³.                                                    | 1.0                  |  
+| `asphericity`          | Asferisitas, pengukuran penyimpangan bentuk molekul dari bola sempurna.                        | 0.072556             |  
+| `eccentricity`         | Eksentrisitas, mengukur asimetri distribusi atom dalam molekul.                                | 0.785158             |  
+| `inertialShapeFactor`  | Faktor bentuk inersia, menunjukkan bentuk molekul berdasarkan distribusi massa atom.           | 0.003042             |  
+| `radiusOfGyration`     | Jari-jari perputaran, mengukur penyebaran atom dalam molekul relatif terhadap pusat massa.      | 1.836359             |  
+| `spherocityIndex`      | Indeks sferisitas, menunjukkan seberapa dekat bentuk molekul dengan bola.                      | 0.711911             |  
+| `ncp`                  | Proporsi non-karbon terhadap total atom dalam molekul.                                         | 0.75                 |  
+| `ecfp`                 | Extended Circular Fingerprints, representasi molekul berbasis bit.                            | [0, 0, 1, ...]       |  
 
 Berikut merupakan keterangan tipe data pada dataset.
 
-| Tipe Data | Variabel | Keterangan |
-| - | - | - |
-| Float | logS, molWt, molMR, ap, logP, tpsa, balabanJ, bertzCT, hallKierAlpha, ipc, chi0, chi1, kappa1, kappa2, kappa3, fractionCSP3, asphericity, eccentricity, inertialShapeFactor, radiusOfGyration, spherocityIndex, dan ncp | Data hasil kalkulasi matematis dan fraksi. |
-| Integer | numAtoms, rings, aromatic, chiralC, hbd, hba, rb, nh2, dan oh | Data penjumlahan satuan |
-| List | ecfp | Data berisi 2048 bit interpretasi molekul.  |
+### Data Type Information  
+
+| **Tipe Data** | **Variabel**                                                                                      | **Keterangan**                                         |  
+|---------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------|  
+| **Float**     | `logS`, `molWt`, `molMR`, `ap`, `logP`, `tpsa`, `balabanJ`, `bertzCT`, `hallKierAlpha`, `ipc`, `chi0`, `chi1`, `kappa1`, `kappa2`, `kappa3`, `fractionCSP3`, `asphericity`, `eccentricity`, `inertialShapeFactor`, `radiusOfGyration`, `spherocityIndex`, `ncp`.   | Data hasil kalkulasi matematis dan fraksi.           |
+| **Integer**   | `numAtoms`, `rings`, `aromatic`, `chiralC`, `hbd`, `hba`, `rb`, `nh2`, `oh`.                      | Data penjumlahan satuan bilangan bulat.              |  
+| **List**      | `ecfp`.                                                                                          | Data berisi 2048 bit interpretasi molekul (0 dan 1). |  
 
 ## Data Cleaning
 
-### Drop Data Duplikat
+### Handling Duplicate Data  
 
-Setelah dilakukan pengecekan data `Null`, `NaN` dan data duplikat hanya ditemukan `1` data duplikat sehingga dilakukan `drop`.
+Setelah dilakukan pengecekan, dataset tidak memiliki data kosong (*Null* atau *NaN*) yang perlu diimputasi. Namun, ditemukan 1 baris data duplikat. Data duplikat ini dihapus untuk memastikan integritas dataset.  
 
-### Deskripsi Statistik. 
+### Statistical Description  
 
-<div>
+Berikut adalah deskripsi statistik dari data sebelum dilakukan proses pembersihan:  
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -341,92 +346,95 @@ Setelah dilakukan pengecekan data `Null`, `NaN` dan data duplikat hanya ditemuka
   </tbody>
 </table>
 <p>8 rows × 31 columns</p>
-</div>
 
-Dari deskripsi data statistik di atas, dapat disimpulkan bahwa sebaran data `mean`, `Q2`, dan `std` yang bervariatif. Outlier diperiksa menggunakan 8 variabel yang digunakan pada penelitian `ESOL` sebagai berikut.
+### Handling Outliers  
 
 <p align="center">
   <img src="./images/outlier.png">
   Box plot outlier pada variabel yang digunakan <b>ESOL</b>.
 </p>
 
-Interpretasi Outlier :
+Sebaran outlier diperiksa pada delapan variabel utama dari publikasi ESOL, yaitu `logP`, `molWt`, `rb`, `ap`, `ncp`, `hbd`, `hba`, dan `tpsa`. Berdasarkan analisis *box plot*, beberapa variabel memiliki nilai outlier:  
 
-1. `log P` : Sebaran data terpusat pada rentang `0.8 - 3.5` dari rentang `-46.6 - 20.8`.
-2. `molWt` : Sebaran data terpusat pada rentang `197.1 - 359.7` dari rentang `16 - 1583.5`.
-3. `rb` : Sebaran data terpusat pada rentang `3 - 9` dari rentang `0 - 59`.
-4. `ap` : Sebaran data terpusat pada rentang `0 - 0.5` dari rentang `0 - 1`.
-5. `ncp` : Sebaran data terpusat pada rentang `0.1 - 0.3` dari rentang `0 - 1`.
-6. `hbd` : Sebaran data terpusat pada rentang `0 - 2` dari rentang `0 - 19`.
-7. `hba` : Sebaran data terpusat pada rentang `2 - 4` dari rentang `0 - 35`.
-8. `tpsa` : Sebaran data terpusat pada rentang `25.3 - 71.4` dari rentang `25.3 - 601.8`.
+| **Variabel** | **Sebaran Data**                          | **Rentang**                         |  
+|--------------|-------------------------------------------|-------------------------------------|  
+| `logP`       | Terpusat pada rentang `0.8 - 3.5`         | `-46.6 - 20.8`                     |  
+| `molWt`      | Terpusat pada rentang `197.1 - 359.7`     | `16 - 1583.5`                      |  
+| `rb`         | Terpusat pada rentang `3 - 9`             | `0 - 59`                           |  
+| `ap`         | Terpusat pada rentang `0 - 0.5`           | `0 - 1`                            |  
+| `ncp`        | Terpusat pada rentang `0.1 - 0.3`         | `0 - 1`                            |  
+| `hbd`        | Terpusat pada rentang `0 - 2`             | `0 - 19`                           |  
+| `hba`        | Terpusat pada rentang `2 - 4`             | `0 - 35`                           |  
+| `tpsa`       | Terpusat pada rentang `25.3 - 71.4`       | `25.3 - 601.8`                     |  
 
-Yang dapat diartikan bahwa outlier merupakan interpretasi nilai fisika molekuler berdasarkan strukturnya, sehingga dimungkinkan terdapatnya outlier dan tidak dilakukan penghapusan outlier yang dapat berakibat hilangnya sebagian besar dataset.
+**Interpretasi**:  
+- Nilai outlier dianggap relevan karena mereka mencerminkan sifat fisika molekul berdasarkan struktur.  
+- Tidak ada penghapusan outlier dilakukan untuk menghindari hilangnya informasi signifikan dalam dataset.  
 
-### Univariate - Numerical Features
+### Univariate Analysis  
 
-<p align="center">
-  <img src="./images/Univariate_logS.png" alt="Histogram of logS"> 
-</p>
+<p align="center">  
+  <img src="./images/Univariate_logS.png" alt="Histogram of logS">  
+</p>  
 
-<p align="center">
-  <small>Plot histogram variabel <b>logS</b> sebagai label.</small>
-</p>
-
-Berdasarkan sebaran label `logS` di atas, persebaran terpusat pada rentang `-7 - 0.1` yang memiliki `≥100` dataset yang merupakan daerah antara *poorly* hingga *highly Solubility* dari skala [SwissADME](https://www.nature.com/articles/srep42717).
+**Label Variable (`logS`)**  
+Distribusi label `logS` menunjukkan persebaran utama di rentang `-7 - 0.1`, yang berisi lebih dari 100 data. Persebaran ini mencakup kategori dari *poorly soluble* hingga *highly soluble* berdasarkan skala [SwissADME](https://www.nature.com/articles/srep42717):
 
 <p align="center">
   <img src="./images/logS_SwissADME_scale.png">
 </p>
 
+
 <p align="center">
   <img src="./images/Univariate_rest.png"> 
 </p>
 
-<p align="center">
-  Plot histogram variabel input.
-</p>
 
-Pengamatan Umum:
+<p align="center">  
+  <small>Plot histogram variabel <b>logS</b> sebagai label.</small>  
+</p>  
 
-* Skewness: Banyak fitur menunjukkan distribusi yang miring ke kanan, mengindikasikan ekor panjang ke arah nilai yang lebih tinggi.
-* Clustering: Fitur seperti `rings`, `hbd`, `hba`, `rb`, dan `chio` menunjukkan cluster yang berbeda, yang mengindikasikan kelompok tertentu dalam data.
-* Distribusi Normal: Beberapa fitur seperti `ap` dan `tpsa` tampak mengikuti distribusi normal.
+**Input Features**  
+Sebagian besar fitur input menunjukkan distribusi yang skewed (*miring*). Fitur seperti `rings`, `hbd`, `hba`, `rb`, dan `chi0` menunjukkan kluster yang berbeda, yang mengindikasikan adanya kelompok tertentu dalam data.  
 
-Pemahaman Fitur Spesifik:
+#### Pemahaman Fitur Spesifik:  
+1. **Sifat Molekuler**:  
+   - Fitur seperti `molWt`, `numAtoms`, dan `molMR` menunjukkan korelasi positif. Molekul yang lebih besar cenderung memiliki nilai yang lebih tinggi pada fitur-fitur ini.  
 
-* Sifat Molekuler: Fitur seperti `molWt`, `numAtoms`, dan `molMR` menunjukkan korelasi positif, mengindikasikan molekul yang lebih besar cenderung memiliki nilai yang lebih tinggi.
-* Ikatan Hidrogen: `hbd` dan `hba` tampaknya memiliki korelasi negatif, menunjukkan bahwa molekul dengan lebih banyak donor ikatan hidrogen mungkin memiliki lebih sedikit akseptor.
-* Struktur Cincin: `rings` dan `aromatic` merupakan fitur terkait, dikarenakan dengan cincin aromatik masuk kategori cincin namun tidak berlaku untuk sebaliknya.
-* Deskripsi Bentuk: Fitur seperti `asphericity`, `eccentricity`, dan `spherocityIndex` memberikan wawasan tentang bentuk dan distribusi molekul.
+2. **Ikatan Hidrogen**:  
+   - `hbd` (jumlah donor ikatan hidrogen) dan `hba` (jumlah akseptor ikatan hidrogen) menunjukkan korelasi negatif. Molekul dengan lebih banyak donor ikatan hidrogen cenderung memiliki lebih sedikit akseptor.  
 
-### Multivariate - Numerical Features
+3. **Struktur Cincin**:  
+   - `rings` dan `aromatic` menunjukkan hubungan erat. Semua cincin aromatik termasuk dalam kategori cincin (`rings`), tetapi tidak semua cincin bersifat aromatik.  
 
-<p align="center">
-  <img src="./images/corelation_matrix.png">
-</p>
+4. **Deskripsi Bentuk**:  
+   - Fitur seperti `asphericity`, `eccentricity`, dan `spherocityIndex` memberikan wawasan tentang bentuk dan distribusi molekul, dengan molekul lebih kompleks menunjukkan nilai lebih tinggi untuk fitur-fitur ini.  
 
-<p align="center">
-  Plot matriks korelasi antar variabel.
-</p>
+### Multivariate - Numerical Features  
 
-Korelasi Positif `Kuat` dengan LogS:
+Untuk memahami hubungan antar fitur numerik, dilakukan analisis korelasi dengan matriks korelasi. Berikut adalah hasilnya:  
 
-* Molekul yang lebih besar (`berat molekul`, `jumlah atom`, dan `refraksi molar` yang lebih `tinggi`) cenderung memiliki `kelarutan` yang lebih `rendah`.
-* Molekul yang lebih `kompleks` dengan `cincin` dan struktur `aromatik` cenderung memiliki `kelarutan` yang lebih `rendah` karena terjadi `resonansi` atau `stabilisasi PEB (Pasangan Elektron Bebas}`.
+<p align="center">  
+  <img src="./images/corelation_matrix.png" alt="Correlation Matrix">  
+</p>  
 
-Korelasi Positif `Sedang` dengan LogS:
+<p align="center">  
+  <small>Plot matriks korelasi antar variabel.</small>  
+</p>  
 
-* Molekul yang lebih `lipofilik` (`logP` lebih `tinggi`) cenderung memiliki `kelarutan` yang lebih `rendah`.
-* Molekul dengan `luas permukaan polar` yang lebih `besar` cenderung memiliki `kelarutan` yang lebih `rendah`.
+#### Korelasi Positif Kuat dengan `logS`:  
+- Molekul yang lebih besar (`molWt`, `numAtoms`, dan `molMR`) cenderung memiliki kelarutan lebih rendah (`logS` lebih kecil).  
+- Molekul dengan lebih banyak cincin atau struktur aromatik cenderung memiliki kelarutan lebih rendah, kemungkinan akibat stabilisasi resonansi atau efek pasangan elektron bebas (*PEB*).  
 
-Korelasi `Lemah` atau `Tidak Signifikan` dengan LogS:
+#### Korelasi Positif Sedang dengan `logS`:  
+- Molekul yang lebih lipofilik (`logP` lebih tinggi) cenderung memiliki kelarutan lebih rendah.  
+- Molekul dengan luas permukaan polar lebih besar (`tpsa`) juga cenderung memiliki kelarutan lebih rendah.  
 
-* Banyak deskriptor molekuler lainnya memiliki korelasi `lemah` atau `tidak signifikan` dengan LogS. Ini menunjukkan bahwa fitur-fitur ini mungkin `tidak terlalu berpengaruh` dalam memprediksi kelarutan.
+#### Korelasi Lemah atau Tidak Signifikan dengan `logS`:  
+- Banyak deskriptor molekuler lainnya memiliki korelasi lemah atau tidak signifikan dengan `logS`. Ini menunjukkan bahwa fitur-fitur ini memiliki pengaruh minimal dalam prediksi kelarutan.  
 
-Korelasi `tinggi` antar deskriptor:
-
-* Banyaknya fitur yang memiliki korelasi positif seperti `molWt`, `numAtoms`, `molWt`, `bertzCT`, `chi0`, dan `chi1`. Fitur-fitur tersebut diduga memiliki bobot nilai yang sama kuat pada prediksi `logS` pada model.
+#### Korelasi Tinggi antar Deskriptor:  
+- Fitur seperti `molWt`, `numAtoms`, `bertzCT`, `balabanJ`, `chi0`, dan `chi1` menunjukkan korelasi positif tinggi satu sama lain. Hal ini menunjukkan bahwa fitur-fitur ini memberikan informasi yang mirip atau saling terkait dalam deskripsi struktur molekul.  
 
 ## Data Preparation
 
