@@ -475,29 +475,36 @@ Berikut adalah tabel algoritma yang diuji beserta penjelasan efeknya pada data:
 Berikut adalah formula matematis dari setiap algoritma yang digunakan:  
 
 1. **Standard Scaler**  
-   $$z_i = \frac{x_i - \mu}{\sigma}$$  
+
+$$z_i = \frac{x_i - \mu}{\sigma}$$
    - $`x_i`$ : Nilai asli data.  
    - $`z_i`$ : Nilai data setelah diskalakan.  
    - $`\mu`$ : Rata-rata dari seluruh data.  
    - $`\sigma`$ : Deviasi standar dari seluruh data.  
 
-2. **Min-Max Scaler**  
-   $$z_i = \frac{x_i - \min(x)}{\max(x) - \min(x)}$$ 
+2. **Min-Max Scaler**
+
+$$z_i = \frac{x_i - \min(x)}{\max(x) - \min(x)}$$
    - $`x_i`$ : Nilai asli data.  
    - $`\min(x)`$ : Nilai minimum dalam dataset.  
    - $`\max(x)`$ : Nilai maksimum dalam dataset.  
 
-3. **Robust Scaler**  
-   $$z_i = \frac{x_i - Q_2}{Q_3 - Q_1}$$  
+3. **Robust Scaler** 
+
+$$z_i = \frac{x_i - Q_2}{Q_3 - Q_1}$$
    - $`Q_2`$ : Median atau kuartil kedua.  
    - $`Q_1`$ : Kuartil pertama (persentil ke-25).  
    - $`Q_3`$ : Kuartil ketiga (persentil ke-75).  
 
 4. **Quantile Transformer**  
-    Untuk distribusi normal:  
-     $$z_i = \Phi^{-1}\left(\frac{\text{rank}(x_i)}{n + 1}\right)$$  
-    Untuk distribusi uniform:  
-     $$z_i = \frac{\text{rank}(x_i)}{n + 1}$$  
+   Untuk distribusi normal:  
+
+$$z_i = \Phi^{-1}\left(\frac{\text{rank}(x_i)}{n + 1}\right)$$
+    
+   Untuk distribusi uniform:
+
+$$z_i = \frac{\text{rank}(x_i)}{n + 1}$$
+
    - $`\Phi^{-1}`$ : Fungsi distribusi kumulatif terbalik (fungsi kuantil).  
    - $`\text{rank}(x_i)`$ : Peringkat dari nilai $`x_i`$ dalam dataset.  
    - $`n`$ : Jumlah total data.  
@@ -505,8 +512,14 @@ Berikut adalah formula matematis dari setiap algoritma yang digunakan:
 5. **Power Transformer**  
    Untuk distribusi Yeo-Johnson:
 
-   $$z_i = \begin{cases} \frac{(x_i + 1)^{\lambda} - 1}{\lambda}, & \text{jika } x_i \geq 0 \text{ dan } \lambda \neq 0 \\ \log(x_i + 1), & \text{jika } x_i \geq 0 \text{ dan } \lambda = 0 \\ \frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}, & \text{jika } x_i < 0 \text{ dan } \lambda \neq 2 \\ -\log(|x_i| + 1), & \text{jika } x_i < 0 \text{ dan } \lambda = 2 \end{cases}$$
-   
+$$
+z_i = \begin{cases} \frac{(x_i + 1)^{\lambda} - 1}{\lambda}, & \text{jika } x_i \geq 0 \text{ dan } \lambda \neq 0 \\ \log(x_i + 1), & \text{jika } x_i \geq 0 \text{ dan } \lambda = 0 \\ \frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}, & \text{jika } x_i < 0 \text{ dan } \lambda \neq 2 \\ -\log(|x_i| + 1), & \text{jika } x_i < 0 \text{ dan } \lambda = 2 \end{cases}
+$$
+
+$$
+z_i = \left\lbrace \begin{matrix} \frac{(x_i + 1)^{\lambda} - 1}{\lambda}, & \text{jika } x_i \geq 0 \text{ dan } \lambda \neq 0 \\ \log(x_i + 1), & \text{jika } x_i \geq 0 \text{ dan } \lambda = 0 \\ \frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}, & \text{jika } x_i < 0 \text{ dan } \lambda \neq 2 \\ -\log(|x_i| + 1), & \text{jika } x_i < 0 \text{ dan } \lambda = 2 \end{matrix} \\right.
+$$
+
    - $`x_i`$ : Nilai asli data (termasuk nilai negatif jika ada).  
    - $`\lambda`$ : Parameter transformasi yang ditentukan melalui *Maximum Likelihood Estimation (MLE)*.  
    - $`\log`$ : Logaritma natural ($`\ln`$).  
