@@ -474,29 +474,32 @@ Berikut adalah tabel algoritma yang diuji beserta penjelasan efeknya pada data:
 
 Berikut adalah formula matematis dari setiap algoritma yang digunakan:  
 
-### **Standard Scaler**  
+### **1. Standard Scaler**  
 
 $$z_i = \frac{x_i - \mu}{\sigma}$$
-   - $`x_i`$ : Nilai asli data.  
-   - $`z_i`$ : Nilai data setelah diskalakan.  
-   - $`\mu`$ : Rata-rata dari seluruh data.  
-   - $`\sigma`$ : Deviasi standar dari seluruh data.  
 
-### **Min-Max Scaler**
+Dimana:
+
+  - $`x_i`$ : Nilai asli data.
+  - $`z_i`$ : Nilai data setelah diskalakan.
+  - $`\mu`$ : Rata-rata dari seluruh data.
+  - $`\sigma`$ : Deviasi standar dari seluruh data.
+
+### **2. Min-Max Scaler**
 
 $$z_i = \frac{x_i - \min(x)}{\max(x) - \min(x)}$$
    - $`x_i`$ : Nilai asli data.  
    - $`\min(x)`$ : Nilai minimum dalam dataset.  
    - $`\max(x)`$ : Nilai maksimum dalam dataset.  
 
-### **Robust Scaler** 
+### **3. Robust Scaler** 
 
 $$z_i = \frac{x_i - Q_2}{Q_3 - Q_1}$$
    - $`Q_2`$ : Median atau kuartil kedua.  
    - $`Q_1`$ : Kuartil pertama (persentil ke-25).  
    - $`Q_3`$ : Kuartil ketiga (persentil ke-75).  
 
-### **Quantile Transformer (Normal Distribution)**  
+### **4. Quantile Transformer (Normal Distribution)**  
 
 $$z_i = \Phi^{-1}\left(\frac{\text{rank}(x_i)}{n + 1}\right)$$  
 
@@ -504,14 +507,14 @@ $$z_i = \Phi^{-1}\left(\frac{\text{rank}(x_i)}{n + 1}\right)$$
    - $`\text{rank}(x_i)`$ : Peringkat dari nilai $`x_i`$ dalam dataset.  
    - $`n`$ : Jumlah total data.  
 
-### **Quantile Transformer (Uniform Distribution)**  
+### **5. Quantile Transformer (Uniform Distribution)**  
      
 $$z_i = \frac{\text{rank}(x_i)}{n + 1}$$  
 
    - $`\text{rank}(x_i)`$ : Peringkat dari nilai $`x_i`$ dalam dataset.  
    - $`n`$ : Jumlah total data.  
 
-### **Power Transformer (Yeo-Johnson Distribution)**  
+### **6. Power Transformer (Yeo-Johnson Distribution)**  
 
 $$
 z_i = 
