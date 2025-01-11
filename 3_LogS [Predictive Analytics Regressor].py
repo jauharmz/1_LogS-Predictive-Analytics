@@ -965,7 +965,7 @@ rfR = RandomForestRegressor(
     min_samples_split=3,
     min_samples_leaf=1,
     random_state=rs,
-    n_jobs=-1
+    n_jobs=nj
     )
 
 rfR.fit(X_train, y_train)

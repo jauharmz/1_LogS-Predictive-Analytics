@@ -1,0 +1,20 @@
+{
+    "param_grid": {
+        "n_neighbors": {
+            "type": "randint",
+            "low": 5,
+            "high": 6
+        },
+        "p": {
+            "type": "randint",
+            "low": 1,
+            "high": 2
+        },
+        "weights": "['uniform', 'distance']"
+    },
+    "best_params": {
+        "n_neighbors": 5,
+        "p": 1,
+        "weights": "distance"
+    }
+}

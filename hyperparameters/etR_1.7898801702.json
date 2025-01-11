@@ -1,0 +1,32 @@
+{
+    "param_grid": {
+        "n_estimators": {
+            "type": "randint",
+            "low": 198,
+            "high": 199
+        },
+        "max_depth": {
+            "type": "randint",
+            "low": 8,
+            "high": 9
+        },
+        "min_samples_split": {
+            "type": "randint",
+            "low": 2,
+            "high": 3
+        },
+        "min_samples_leaf": {
+            "type": "randint",
+            "low": 3,
+            "high": 4
+        },
+        "bootstrap": "[True, False]"
+    },
+    "best_params": {
+        "bootstrap": false,
+        "max_depth": 8,
+        "min_samples_leaf": 3,
+        "min_samples_split": 2,
+        "n_estimators": 198
+    }
+}

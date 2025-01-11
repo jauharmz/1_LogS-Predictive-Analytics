@@ -1,0 +1,22 @@
+{
+    "param_grid": {
+        "C": {
+            "type": "randint",
+            "low": 47,
+            "high": 48
+        },
+        "epsilon": {
+            "type": "uniform",
+            "loc": 0.1,
+            "scale": 0.3
+        },
+        "gamma": "['scale', 'auto']",
+        "kernel": "['rbf', 'linear']"
+    },
+    "best_params": {
+        "C": 47,
+        "epsilon": 0.22407630963595704,
+        "gamma": "auto",
+        "kernel": "rbf"
+    }
+}

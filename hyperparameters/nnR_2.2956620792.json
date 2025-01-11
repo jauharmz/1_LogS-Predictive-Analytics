@@ -1,0 +1,36 @@
+{
+    "param_grid": {
+        "epochs": {
+            "type": "randint",
+            "low": 34,
+            "high": 35
+        },
+        "patience": {
+            "type": "randint",
+            "low": 5,
+            "high": 6
+        },
+        "batch_size": {
+            "type": "randint",
+            "low": 89,
+            "high": 90
+        },
+        "lr": {
+            "type": "uniform",
+            "loc": 0.0009,
+            "scale": 0.002
+        },
+        "weight_decay": {
+            "type": "uniform",
+            "loc": 5e-05,
+            "scale": 6e-05
+        }
+    },
+    "best_params": {
+        "batch_size": 89,
+        "epochs": 34,
+        "lr": 0.0028029159148926786,
+        "patience": 5,
+        "weight_decay": 5.076219182208606e-05
+    }
+}

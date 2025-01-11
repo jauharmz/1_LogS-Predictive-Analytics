@@ -1,0 +1,18 @@
+{
+    "param_grid": {
+        "alpha": {
+            "type": "uniform",
+            "loc": 0.1,
+            "scale": 0.2
+        },
+        "l1_ratio": {
+            "type": "uniform",
+            "loc": 0.2,
+            "scale": 0.3
+        }
+    },
+    "best_params": {
+        "alpha": 0.10102176775275998,
+        "l1_ratio": 0.2338572960895124
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "param_grid": {
+        "n_estimators": {
+            "type": "randint",
+            "low": 179,
+            "high": 180
+        },
+        "learning_rate": {
+            "type": "uniform",
+            "loc": 0.09,
+            "scale": 0.15
+        },
+        "max_depth": {
+            "type": "randint",
+            "low": 4,
+            "high": 5
+        },
+        "min_child_weight": {
+            "type": "randint",
+            "low": 1,
+            "high": 2
+        }
+    },
+    "best_params": {
+        "learning_rate": 0.19506556827867522,
+        "max_depth": 4,
+        "min_child_weight": 1,
+        "n_estimators": 179
+    }
+}
