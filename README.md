@@ -432,31 +432,37 @@ Model evaluation used three parameters: Mean Absolute Error (MAE), Squared Error
 #### Mean Absolute Error (MAE)
 
 - **Definition**: MAE is the average absolute difference between actual and predicted values. This metric provides a simple measure of prediction error without considering the direction of the error.
-- **Formula**: 
-  $$\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} \left| y_i - \hat{y}_i \right|$$
+- **Formula**:
+
+$$\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} \left| y_i - \hat{y}_i \right|$$
+
 - **Interpretation**: MAE is easy to understand as it shows the average magnitude of errors in the units of the target variable. A lower value indicates better model accuracy.
 
 #### Squared Error (SE)
 
 - **Definition**: SE is the sum of squared differences between actual and predicted values. This metric gives more weight to larger errors, making it useful for models aiming to minimize significant deviations.
-- **Formula**: 
+- **Formula**:
+
 $$\text{SE} = \sum_{i=1}^{n} \left( y_i - \hat{y}_i \right)^2$$
+
 - **Interpretation**: SE emphasizes larger errors, making it useful for identifying models that reduce significant deviations. It is typically used as an intermediate calculation (e.g., for MSE or RMSE) and does not provide a direct measure like MAE.
 
 #### R-squared (R²)
 
 - **Definition**: R² represents the proportion of variance in the target variable that can be explained by the features. It measures how well the model captures data variability.
-- **Formula**: 
-$$R^2 = 1 - \frac{\sum_{i=1}^{n} \left( y_i - \hat{y}_i \right)^2}{\sum_{i=1}^{n} \left( y_i - \bar{y} \right)^2}$$
+- **Formula**:
+
+$$R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}$$
+
 - **Interpretation**: R² ranges from 0 to 1, with 1 indicating perfect prediction. Higher values indicate better model performance, as they show the model explains a larger portion of the variance in the target variable.
 
-### Notes:
-- $y_i$: Observed actual value.
-- $\hat{y}_i$: Predicted value.
-- $\bar{y}_i$: Mean of observed actual values.
-- $n$: Total number of data points.
-- $\sum$: Summation operator.
-- $|\cdot|$: Absolute value function.
+#### Notes on Variables and Symbols:
+- \( y_i \): Actual (observed) value for the \( i \)-th data point.
+- \( \hat{y}_i \): Predicted value for the \( i \)-th data point.
+- \( \bar{y} \): Mean of the actual values.
+- \( n \): Total number of data points.
+- \( \sum \): Summation operator.
+- \( |\cdot| \): Absolute value function.
 
 <p align="center">
   <img src="./images/matriks_evaluasi_model.png">
