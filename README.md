@@ -11,7 +11,9 @@ $$log(S) = -0.01 (T - 25°C) - log(K) + 0.50$$
 The octanol partition coefficient (*P*) can be determined based on the compound's structure, but determining the melting point (*T*) still requires laboratory measurements. The GSE method is highly useful when melting point data is available, but for compounds known only by their structure, estimation methods that directly utilize molecular structure are needed.
 
 Another developed method is the *Estimated Solubility (ESOL)*, a *machine learning* model developed by [Delaney JS, 2003](https://pubs.acs.org/doi/abs/10.1021/ci034243x). ESOL uses eight molecular descriptor parameters, such as *clogP*, molecular weight (*molWT*), number of rotatable bonds (*rb*), aromatic proportion (*ap*), non-carbon proportion, hydrogen bond donors and acceptors (*hbd, hba*), and polar surface area (*psa*). The model estimates solubility using the following equation:
+
 $$\log(S) = 0.16 - 0.63 \log(P) - 0.0062 \text{MolWT} + 0.066 \text{RB} - 0.74 \text{AP}$$
+
 Based on 2,874 training data points, ESOL provides more robust estimates than GSE, with the following results:
 
 | Method | *R*² | SE   | MAE  |
