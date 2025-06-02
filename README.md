@@ -1,382 +1,171 @@
-# Laporan Proyek Machine Learning - Jauhar Mumtaz
+# Machine Learning Project Report - Jauhar Mumtaz
 
-## Domain Proyek  
+## Project Domain
 
-Kelarutan molekul organik dalam air adalah salah satu sifat fisik kunci dalam dunia medis. Sifat ini memiliki hubungan langsung dengan absorpsi, yang merupakan parameter utama distribusi senyawa aktif biologis dalam makhluk hidup dan lingkungan. Oleh karena itu, kelarutan sangat memengaruhi bioavailabilitas, efektivitas, dan nilai jual senyawa aktif.  
+The solubility of organic molecules in water is a critical physical property in the medical field. This property is directly related to absorption, a key parameter in the distribution of biologically active compounds in living organisms and the environment. Therefore, solubility significantly impacts bioavailability, efficacy, and commercial value of active compounds.
 
-Pengukuran kelarutan dalam air dengan tingkat akurasi tinggi membutuhkan biaya yang tidak sedikit, mencakup waktu, instrumen, keahlian penguji, serta keterbatasan sampel fisik. Beberapa metode untuk menghitung kelarutan dalam air (*S*) telah dikembangkan, salah satunya adalah *General Solubility Equation (GSE)* yang diperkenalkan oleh [Sanghvi T. *et al.*, 2003](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685). Metode ini memperkirakan kelarutan dalam air (*S*) sebagai fungsi dari titik lebur (*T*) dan koefisien partisi oktanol-air (*K*):  
+Measuring water solubility with high accuracy is costly, requiring significant time, instrumentation, expertise, and often limited by the availability of physical samples. Several methods for estimating water solubility (*S*) have been developed, one of which is the *General Solubility Equation (GSE)* introduced by [Sanghvi T. *et al.*, 2003](https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.4c00685). This method estimates water solubility (*S*) as a function of melting point (*T*) and the octanol-water partition coefficient (*K*):
 
 $$log(S) = -0.01 (T - 25°C) - log(K) + 0.50$$
 
-Nilai partisi oktanol (*P*) dapat ditentukan berdasarkan struktur senyawa, tetapi penentuan titik lebur (*T*) tetap membutuhkan pengukuran laboratorium. Metode GSE sangat berguna jika data titik lebur tersedia, namun untuk senyawa yang hanya diketahui strukturnya, diperlukan metode estimasi yang memanfaatkan struktur molekul secara langsung.  
+The octanol partition coefficient (*P*) can be determined based on the compound's structure, but determining the melting point (*T*) still requires laboratory measurements. The GSE method is highly useful when melting point data is available, but for compounds known only by their structure, estimation methods that directly utilize molecular structure are needed.
 
-Metode lain yang telah dikembangkan adalah *Estimated Solubility (ESOL)*, model *machine learning* yang dikembangkan oleh [Delaney JS, 2003](https://pubs.acs.org/doi/abs/10.1021/ci034243x). ESOL menggunakan delapan parameter deskriptor molekul seperti *clogP*, berat molekul (*molecular weight, molWT*), jumlah ikatan rotasi (*rotatable bond, rb*), proporsi aromatik (*aromatic proportion, ap*), proporsi non-karbon, donor dan akseptor ikatan hidrogen (*hbd, hba*), serta luas permukaan polar (*polar surface area, psa*). Berdasarkan 2874 data pelatihan, ESOL memberikan estimasi yang lebih *robust* dibandingkan GSE, dengan hasil sebagai berikut:  
+Another developed method is the *Estimated Solubility (ESOL)*, a *machine learning* model developed by [Delaney JS, 2003](https://pubs.acs.org/doi/abs/10.1021/ci034243x). ESOL uses eight molecular descriptor parameters, such as *clogP*, molecular weight (*molWT*), number of rotatable bonds (*rb*), aromatic proportion (*ap*), non-carbon proportion, hydrogen bond donors and acceptors (*hbd, hba*), and polar surface area (*psa*). The model estimates solubility using the following equation:
+$$\log(S) = 0.16 - 0.63 \log(P) - 0.0062 \text{MolWT} + 0.066 \text{RB} - 0.74 \text{AP}$$
+Based on 2,874 training data points, ESOL provides more robust estimates than GSE, with the following results:
 
-| Metode  | *R*² | SE   | MAE  |  
-|---------|------|------|------|  
-| ESOL    | 0.69 | 1.01 | 0.75 |  
-| GSE     | 0.67 | 1.05 | 0.81 |  
+| Method | *R*² | SE   | MAE  |
+|--------|------|------|------|
+| ESOL   | 0.69 | 1.01 | 0.75 |
+| GSE    | 0.67 | 1.05 | 0.81 |
 
-Hasil dari ESOL juga menunjukkan bahwa parameter paling signifikan adalah *clogP*, diikuti oleh berat molekul (*molWT*), proporsi aromatik (*ap*), dan jumlah ikatan rotasi (*rb*).  
+ESOL results also indicate that the most significant parameter is *clogP*, followed by molecular weight (*molWT*), aromatic proportion (*ap*), and the number of rotatable bonds (*rb*).
 
-Dengan perkembangan teknologi, model *machine learning* terus berkembang, baik dari segi ukuran basis data, *hyperparameter tuning*, maupun struktur model. Penelitian ini bertujuan untuk mengembangkan metode estimasi kelarutan molekul dalam air menggunakan dataset yang lebih besar. Dalam penelitian ini, hanya variabel *SMILES* dan *log S* yang digunakan sebagai input utama. Dataset [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) menyediakan data *SMILES* dengan berbagai deskriptor molekul, mulai dari deskriptor 0D, 1D, 2D, hingga 3D, yang menghasilkan total 31 parameter untuk digunakan sebagai input ke berbagai model.  
+With technological advancements, *machine learning* models continue to evolve in terms of dataset size, *hyperparameter tuning*, and model architecture. This study aims to develop a method for estimating molecular solubility in water using a larger dataset. In this research, only *SMILES* and *log S* variables are used as primary inputs. The [SMILES-enumeration-datasets](https://github.com/summer-cola/smiles-enumeration-datasets) dataset provides *SMILES* data with various molecular descriptors, ranging from 0D, 1D, 2D, to 3D descriptors, resulting in a total of 31 parameters used as inputs for various models.
 
-Penelitian ini mengimplementasikan berbagai model regresi berbasis *machine learning* dan *deep learning*, seperti Neural Network (*NN*), K-Nearest Neighbors (*KNN*), Random Forest (*RF*), Support Vector Regressor (*SVR*), Elastic Net (*EN*), Decision Tree (*DT*), Extreme Gradient Boosting (*XGBoost*), Extra Trees (*ET*), dan Light Gradient-Boosting Machine (*LightGBM*). Model terbaik akan dipilih berdasarkan nilai Mean Absolute Error (*MAE*), Standard Error (*SE*), dan Koefisien Determinasi (*R²*), serta dilakukan interpretasi model menggunakan SHapley Additive exPlanations (*SHAP*) untuk mengidentifikasi parameter paling signifikan.  
+This study implements various regression models based on *machine learning* and *deep learning*, such as Neural Network (*NN*), K-Nearest Neighbors (*KNN*), Random Forest (*RF*), Support Vector Regressor (*SVR*), Elastic Net (*EN*), Decision Tree (*DT*), Extreme Gradient Boosting (*XGBoost*), Extra Trees (*ET*), and Light Gradient-Boosting Machine (*LightGBM*). The best model will be selected based on Mean Absolute Error (*MAE*), Standard Error (*SE*), and Coefficient of Determination (*R²*), with model interpretation conducted using SHapley Additive exPlanations (*SHAP*) to identify the most significant parameters.
 
-## Business Understanding  
+## Business Understanding
 
-### Problem Statements  
+### Problem Statements
 
-1. Prediksi kelarutan dalam air (*logS*) suatu molekul *drug-like* merupakan langkah penting dalam dunia *drug discovery* karena memengaruhi efisiensi dan proses pengembangan obat. Apakah prediksi *logS* dapat dilakukan menggunakan model *machine learning* atau *deep learning* sederhana dengan fitur yang diekstrak hanya dari anotasi *SMILES* suatu molekul?  
-2. Di antara berbagai model *machine learning* dan *deep learning* sederhana, model manakah yang memiliki nilai Mean Absolute Error (*MAE*) dan Standard Error (*SE*) paling rendah, serta nilai Koefisien Determinasi (*R²*) yang tinggi dalam memprediksi *logS* berdasarkan fitur yang digunakan?  
-3. Dari delapan fitur yang digunakan dalam publikasi [ESOL](https://pubs.acs.org/doi/abs/10.1021/ci034243x#), yaitu *clogP*, berat molekul (*molWT*), jumlah ikatan rotasi (*rb*), proporsi aromatik (*ap*), donor dan akseptor ikatan hidrogen (*hbd, hba*), serta luas permukaan polar (*psa*), fitur mana yang paling berpengaruh terhadap nilai *logS*? Adakah fitur lain yang memberikan kontribusi signifikan?  
+1. Predicting the water solubility (*logS*) of a *drug-like* molecule is a crucial step in *drug discovery* as it affects the efficiency and process of drug development. Can *logS* prediction be performed using simple *machine learning* or *deep learning* models with features extracted solely from *SMILES* annotations of a molecule?
+2. Among various simple *machine learning* and *deep learning* models, which model achieves the lowest Mean Absolute Error (*MAE*) and Standard Error (*SE*), as well as a high Coefficient of Determination (*R²*) in predicting *logS* based on the used features?
+3. From the eight features used in the [ESOL publication](https://pubs.acs.org/doi/abs/10.1021/ci034243x#), namely *clogP*, molecular weight (*molWT*), number of rotatable bonds (*rb*), aromatic proportion (*ap*), hydrogen bond donors and acceptors (*hbd, hba*), and polar surface area (*psa*), which feature has the most significant impact on *logS*? Are there other features that contribute significantly?
 
-### Goals  
+### Goals
 
-1. Mengidentifikasi apakah prediksi *logS* hanya dari fitur hasil ekstraksi *SMILES* dapat dilakukan menggunakan model *machine learning* atau *deep learning* sederhana.  
-2. Menentukan model *machine learning* atau *deep learning* sederhana dengan performa terbaik berdasarkan metrik *MAE*, *SE*, dan *R²*.  
-3. Mengidentifikasi fitur yang paling berpengaruh terhadap nilai *logS* (kelarutan molekul dalam air).  
+1. Determine whether *logS* prediction can be performed using features extracted from *SMILES* annotations with simple *machine learning* or *deep learning* models.
+2. Identify the simple *machine learning* or *deep learning* model with the best performance based on *MAE*, *SE*, and *R²* metrics.
+3. Identify the features that most significantly influence *logS* (molecular solubility in water).
 
-### Solution Statements  
+### Solution Statements
 
-1. Melakukan prediksi *logS* menggunakan fitur hasil ekstraksi dari anotasi *SMILES* molekul melalui model *machine learning* atau *deep learning*.  
-2. Menguji dan mengevaluasi berbagai model dengan *hyperparameter* yang telah ditetapkan sebelumnya, dan memilih model terbaik berdasarkan metrik *MAE*, *SE*, dan *R²*.  
-3. Mengekstraksi bobot fitur menggunakan teknik interpretasi model seperti SHapley Additive exPlanations (*SHAP*) untuk mengidentifikasi parameter yang paling signifikan.  
+1. Predict *logS* using features extracted from *SMILES* annotations of molecules through *machine learning* or *deep learning* models.
+2. Test and evaluate various models with predefined *hyperparameters* and select the best model based on *MAE*, *SE*, and *R²* metrics.
+3. Extract feature weights using model interpretation techniques such as SHapley Additive exPlanations (*SHAP*) to identify the most significant parameters.
 
-## Data Understanding  
+## Data Understanding
 
-Dataset yang digunakan untuk memprediksi nilai *logS* suatu molekul diambil dari dataset GitHub yang dipublikasikan oleh `summer-cola` dengan nama repository **`SMILES-enumeration-datasets`**. Dataset ini dapat diakses melalui tautan [berikut](https://github.com/summer-cola/smiles-enumeration-datasets) dan mencakup berbagai sifat fisik molekul, seperti *logD*, *logP*, dan *logS*. Dataset yang digunakan untuk prediksi *logS* terletak di direktori `logS` dengan nama file `traintest.csv`, yang berisi 7954 baris data.  
+The dataset used to predict *logS* of a molecule is sourced from a GitHub dataset published by `summer-cola` under the repository named **`SMILES-enumeration-datasets`**. This dataset is accessible via the following [link](https://github.com/summer-cola/smiles-enumeration-datasets) and includes various physical properties of molecules, such as *logD*, *logP*, and *logS*. The dataset used for *logS* prediction is located in the `logS` directory with the file name `traintest.csv`, containing 7,954 rows of data.
 
-### Informasi Variabel  
+### Variable Information
 
-Dataset ini memiliki delapan variabel utama dengan deskripsi sebagai berikut:  
+The dataset includes eight main variables with the following descriptions:
 
-| **Variabel**   | **Deskripsi**                                                                                         | **Contoh Nilai**         |  
-|-----------------|-----------------------------------------------------------------------------------------------------|--------------------------|  
-| `Unnamed: 0`    | Indeks otomatis yang dihasilkan saat data diimpor.                                                  | 0                        |  
-| `Compound ID`   | ID unik untuk mengidentifikasi setiap senyawa dalam dataset.                                        | C4659                    |  
-| `InChIKey`      | Kode alfanumerik pendek dari *International Chemical Identifier* (InChI) untuk identifikasi global. | WIKXJKUZYYOTBP-UHFFFAOYSA-N |  
-| `SMILES`        | *Simplified Molecular Input Line Entry System*, notasi struktur molekul berbasis *ASCII strings*.   | CCCCC(COC(=O)N)(COC(=O)NC(C)C)C |  
-| `logS`          | Nilai logaritmik kelarutan dalam air (S), yang mengindikasikan tingkat kelarutan molekul dalam air.  | -3.633501683             |  
-| `logP`          | Nilai logaritmik koefisien partisi oktanol-air (*P*), mengukur lipofilisitas molekul.               | 3.504                    |  
-| `MW`            | Berat molekul (*Molecular Weight*), yaitu total massa atom molekul (dalam satuan Dalton/Da).        | 274.357                  |  
-| `smi`           | Representasi alternatif untuk *SMILES*.                                                            | C C C C C ( C O C ( = O ) N ) ... |  
+| **Variable**   | **Description**                                                                                         | **Example Value**         |
+|----------------|---------------------------------------------------------------------------------------------------------|---------------------------|
+| `Unnamed: 0`   | Automatically generated index when data is imported.                                                    | 0                         |
+| `Compound ID`  | Unique ID to identify each compound in the dataset.                                                     | C4659                     |
+| `InChIKey`     | Short alphanumeric code from *International Chemical Identifier* (InChI) for global identification.      | WIKXJKUZYYOTBP-UHFFFAOYSA-N |
+| `SMILES`       | *Simplified Molecular Input Line Entry System*, a molecular structure notation based on *ASCII strings*. | CCCCC(COC(=O)N)(COC(=O)NC(C)C)C |
+| `logS`         | Logarithmic value of water solubility (*S*), indicating the degree of solubility in water.               | -3.633501683             |
+| `logP`         | Logarithmic value of the octanol-water partition coefficient (*P*), measuring molecular lipophilicity.   | 3.504                     |
+| `MW`           | Molecular weight, the total atomic mass of the molecule (in Dalton/Da units).                           | 274.357                   |
+| `smi`          | Alternative representation for *SMILES*.                                                                | C C C C C ( C O C ( = O ) N ) ... |
 
-Dataset ini menggunakan deskriptor molekul berbasis struktur (*SMILES*) untuk menghasilkan total 31 variabel tambahan melalui kalkulasi deskriptor 0D, 1D, 2D, dan 3D, yang digunakan sebagai *input* ke model.  
+The dataset uses molecular descriptors based on structure (*SMILES*) to generate a total of 31 additional variables through calculations of 0D, 1D, 2D, and 3D descriptors, which are used as inputs for the models.
 
-### Variabel Deskriptor  
+### Descriptor Variables
 
-| **Variabel**           | **Deskripsi**                                                                                  | **Contoh Nilai**     |  
-|------------------------|-----------------------------------------------------------------------------------------------|----------------------|  
-| `logS`                 | Nilai logaritmik kelarutan molekul (terutama obat) dalam air.                                  | -2.74                |  
-| `molWt`                | Berat molekul (*Molecular Weight*).                                                           | 170.92               |  
-| `numAtoms`             | Jumlah atom berat (selain hidrogen) dalam molekul.                                             | 8                    |  
-| `molMR`                | *Molecular refractivity*, kemampuan molekul untuk membiaskan cahaya, terkait polarizabilitas. | 21.6                 |  
-| `rings`                | Jumlah cincin dalam struktur molekul.                                                         | 0                    |  
-| `aromatic`             | Jumlah cincin dengan sifat aromatik dalam molekul.                                             | 0                    |  
-| `ap`                   | Proporsi aromatik, rasio atom aromatik terhadap total atom.                                    | 0.0                  |  
-| `chiralC`              | Jumlah pusat kiral (Karbon) dalam molekul.                                                    | 0                    |  
-| `logP`                 | Koefisien partisi logaritmik, mengukur kepolaran molekul.                                      | 2.6496               |  
-| `hbd`                  | Jumlah donor ikatan hidrogen (*Hydrogen Bond Donor*).                                          | 0                    |  
-| `hba`                  | Jumlah akseptor ikatan hidrogen (*Hydrogen Bond Acceptor*).                                    | 0                    |  
-| `rb`                   | Jumlah ikatan yang dapat berputar (*Rotatable Bond*).                                          | 1                    |  
-| `tpsa`                 | *Topological Polar Surface Area*, luas permukaan polar molekul.                               | 0.0                  |  
-| `nh2`                  | Jumlah gugus amina dalam molekul.                                                             | 0                    |  
-| `oh`                   | Jumlah gugus hidroksil dalam molekul.                                                         | 0                    |  
-| `balabanJ`             | Indeks Balaban, ukuran kekompakan topologi molekul.                                            | 4.020392             |  
-| `bertzCT`              | Kompleksitas topologi Bertz, mengukur kerumitan struktur molekul berdasarkan graf.             | 67.01955             |  
-| `hallKierAlpha`        | Indeks Hall-Kier Alpha, terkait bentuk molekul dan polarizabilitasnya.                         | 0.3                  |  
-| `ipc`                  | Indeks polaritas informasi (*Information Content Index*), mengukur keragaman struktur molekul. | 21.306059            |  
-| `chi0`                 | Indeks jalur Chi 0, mengukur topologi molekul berdasarkan jumlah dan jenis atom.               | 7.0                  |  
-| `chi1`                 | Indeks jalur Chi 1, mengukur pola ikatan atom dalam molekul.                                   | 3.25                 |  
-| `kappa1`               | Indeks kappa molekuler 1, mengukur fleksibilitas molekul.                                      | 8.3                  |  
-| `kappa2`               | Indeks kappa molekuler 2, variasi lain untuk mengukur fleksibilitas molekul.                  | 1.91511              |  
-| `kappa3`               | Indeks kappa molekuler 3, variasi lebih lanjut dari pengukuran fleksibilitas molekul.          | 2.046098             |  
-| `fractionCSP3`         | Fraksi atom karbon dengan hibridisasi sp³.                                                    | 1.0                  |  
-| `asphericity`          | Asferisitas, pengukuran penyimpangan bentuk molekul dari bola sempurna.                        | 0.072556             |  
-| `eccentricity`         | Eksentrisitas, mengukur asimetri distribusi atom dalam molekul.                                | 0.785158             |  
-| `inertialShapeFactor`  | Faktor bentuk inersia, menunjukkan bentuk molekul berdasarkan distribusi massa atom.           | 0.003042             |  
-| `radiusOfGyration`     | Jari-jari perputaran, mengukur penyebaran atom dalam molekul relatif terhadap pusat massa.      | 1.836359             |  
-| `spherocityIndex`      | Indeks sferisitas, menunjukkan seberapa dekat bentuk molekul dengan bola.                      | 0.711911             |  
-| `ncp`                  | Proporsi non-karbon terhadap total atom dalam molekul.                                         | 0.75                 |  
-| `ecfp`                 | Extended Circular Fingerprints, representasi molekul berbasis bit.                            | [0, 0, 1, ...]       |  
+| **Variable**           | **Description**                                                                                  | **Example Value**     |
+|------------------------|-------------------------------------------------------------------------------------------------|-----------------------|
+| `logS`                 | Logarithmic value of molecular solubility (especially for drugs) in water.                       | -2.74                 |
+| `molWt`                | Molecular weight (*Molecular Weight*).                                                           | 170.92                |
+| `numAtoms`             | Number of heavy atoms (excluding hydrogen) in the molecule.                                      | 8                     |
+| `molMR`                | *Molecular refractivity*, the molecule's ability to refract light, related to polarizability.     | 21.6                  |
+| `rings`                | Number of rings in the molecular structure.                                                      | 0                     |
+| `aromatic`             | Number of aromatic rings in the molecule.                                                        | 0                     |
+| `ap`                   | Aromatic proportion, the ratio of aromatic atoms to total atoms.                                 | 0.0                   |
+| `chiralC`              | Number of chiral centers (carbon) in the molecule.                                               | 0                     |
+| `logP`                 | Logarithmic partition coefficient, measuring molecular polarity.                                 | 2.6496                |
+| `hbd`                  | Number of hydrogen bond donors (*Hydrogen Bond Donor*).                                          | 0                     |
+| `hba`                  | Number of hydrogen bond acceptors (*Hydrogen Bond Acceptor*).                                    | 0                     |
+| `rb`                   | Number of rotatable bonds (*Rotatable Bond*).                                                    | 1                     |
+| `tpsa`                 | *Topological Polar Surface Area*, the polar surface area of the molecule.                        | 0.0                   |
+| `nh2`                  | Number of amine groups in the molecule.                                                         | 0                     |
+| `oh`                   | Number of hydroxyl groups in the molecule.                                                       | 0                     |
+| `balabanJ`             | Balaban index, a measure of molecular topological compactness.                                   | 4.020392              |
+| `bertzCT`              | Bertz topological complexity, measuring molecular structure complexity based on graph theory.    | 67.01955              |
+| `hallKierAlpha`        | Hall-Kier Alpha index, related to molecular shape and polarizability.                            | 0.3                   |
+| `ipc`                  | Information Content Index, measuring molecular structure diversity.                              | 21.306059             |
+| `chi0`                 | Chi 0 path index, measuring molecular topology based on atom count and type.                     | 7.0                   |
+| `chi1`                 | Chi 1 path index, measuring atomic bonding patterns in the molecule.                             | 3.25                  |
+| `kappa1`               | Molecular kappa 1 index, measuring molecular flexibility.                                        | 8.3                   |
+| `kappa2`               | Molecular kappa 2 index, another variation for measuring molecular flexibility.                  | 1.91511               |
+| `kappa3`               | Molecular kappa 3 index, a further variation for measuring molecular flexibility.                | 2.046098              |
+| `fractionCSP3`         | Fraction of carbon atoms with sp³ hybridization.                                                 | 1.0                   |
+| `asphericity`          | Asphericity, a measure of the molecule's deviation from a perfect sphere.                        | 0.072556              |
+| `eccentricity`         | Eccentricity, measuring the asymmetry of atom distribution in the molecule.                      | 0.785158              |
+| `inertialShapeFactor`  | Inertial shape factor, indicating molecular shape based on atom mass distribution.               | 0.003042              |
+| `radiusOfGyration`     | Radius of gyration, measuring atom spread relative to the molecule's center of mass.             | 1.836359              |
+| `spherocityIndex`      | Sphericity index, indicating how closely the molecule's shape resembles a sphere.                | 0.711911              |
+| `ncp`                  | Non-carbon proportion relative to total atoms in the molecule.                                   | 0.75                  |
+| `ecfp`                 | Extended Circular Fingerprints, a bit-based molecular representation.                            | [0, 0, 1, ...]        |
 
-Berikut merupakan keterangan tipe data pada dataset.
+### Data Type Information
 
-### Data Type Information  
-
-| **Tipe Data** | **Variabel**                                                                                      | **Keterangan**                                         |  
-|---------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------|  
-| **Float**     | `logS`, `molWt`, `molMR`, `ap`, `logP`, `tpsa`, `balabanJ`, `bertzCT`, `hallKierAlpha`, `ipc`, `chi0`, `chi1`, `kappa1`, `kappa2`, `kappa3`, `fractionCSP3`, `asphericity`, `eccentricity`, `inertialShapeFactor`, `radiusOfGyration`, `spherocityIndex`, `ncp`.   | Data hasil kalkulasi matematis dan fraksi.           |
-| **Integer**   | `numAtoms`, `rings`, `aromatic`, `chiralC`, `hbd`, `hba`, `rb`, `nh2`, `oh`.                      | Data penjumlahan satuan bilangan bulat.              |  
-| **List**      | `ecfp`.                                                                                          | Data berisi 2048 bit interpretasi molekul (0 dan 1). |  
+| **Data Type** | **Variables**                                                                                      | **Description**                                         |
+|---------------|----------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| **Float**     | `logS`, `molWt`, `molMR`, `ap`, `logP`, `tpsa`, `balabanJ`, `bertzCT`, `hallKierAlpha`, `ipc`, `chi0`, `chi1`, `kappa1`, `kappa2`, `kappa3`, `fractionCSP3`, `asphericity`, `eccentricity`, `inertialShapeFactor`, `radiusOfGyration`, `spherocityIndex`, `ncp`. | Data from mathematical calculations and fractions.      |
+| **Integer**   | `numAtoms`, `rings`, `aromatic`, `chiralC`, `hbd`, `hba`, `rb`, `nh2`, `oh`.                       | Data from integer counts.                              |
+| **List**      | `ecfp`.                                                                                            | Data containing 2048-bit molecular interpretation (0 and 1). |
 
 ## Data Cleaning
 
-### Handling Duplicate Data  
+### Handling Duplicate Data
 
-Setelah dilakukan pengecekan, dataset tidak memiliki data kosong (*Null* atau *NaN*) yang perlu diimputasi. Namun, ditemukan 1 baris data duplikat. Data duplikat ini dihapus untuk memastikan integritas dataset.  
+After inspection, the dataset contains no missing data (*Null* or *NaN*) requiring imputation. However, one duplicate row was found. This duplicate was removed to ensure dataset integrity.
 
-### Statistical Description  
+### Statistical Description
 
-Berikut adalah deskripsi statistik dari data sebelum dilakukan proses pembersihan:  
+Below is the statistical description of the data before cleaning:
 
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>logS</th>
-      <th>molWt</th>
-      <th>numAtoms</th>
-      <th>molMR</th>
-      <th>rings</th>
-      <th>aromatic</th>
-      <th>ap</th>
-      <th>chiralC</th>
-      <th>logP</th>
-      <th>hbd</th>
-      <th>...</th>
-      <th>kappa1</th>
-      <th>kappa2</th>
-      <th>kappa3</th>
-      <th>fractionCSP3</th>
-      <th>asphericity</th>
-      <th>eccentricity</th>
-      <th>inertialShapeFactor</th>
-      <th>radiusOfGyration</th>
-      <th>spherocityIndex</th>
-      <th>ncp</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.00000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>...</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-      <td>7.954000e+03</td>
-      <td>7954.000000</td>
-      <td>7954.000000</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>-2.981528</td>
-      <td>292.151987</td>
-      <td>19.181795</td>
-      <td>75.840784</td>
-      <td>1.975107</td>
-      <td>1.195248</td>
-      <td>0.352023</td>
-      <td>0.97297</td>
-      <td>1.912550</td>
-      <td>1.239125</td>
-      <td>...</td>
-      <td>3.924647</td>
-      <td>6.902837</td>
-      <td>5.105968</td>
-      <td>0.459514</td>
-      <td>0.392271</td>
-      <td>0.937606</td>
-      <td>0.002492</td>
-      <td>3.618187e+00</td>
-      <td>0.250457</td>
-      <td>0.270458</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>2.200720</td>
-      <td>138.909559</td>
-      <td>9.048712</td>
-      <td>34.724211</td>
-      <td>1.461655</td>
-      <td>0.982673</td>
-      <td>0.260995</td>
-      <td>2.21534</td>
-      <td>2.510816</td>
-      <td>1.513059</td>
-      <td>...</td>
-      <td>2.528799</td>
-      <td>4.207856</td>
-      <td>22.793668</td>
-      <td>0.301113</td>
-      <td>0.193149</td>
-      <td>0.065069</td>
-      <td>0.010385</td>
-      <td>1.462360e+00</td>
-      <td>0.161920</td>
-      <td>0.133211</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>-16.259392</td>
-      <td>16.043000</td>
-      <td>1.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.00000</td>
-      <td>-46.668600</td>
-      <td>0.000000</td>
-      <td>...</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>-27.040000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>3.469447e-18</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>25%</th>
-      <td>-4.259388</td>
-      <td>197.190000</td>
-      <td>13.000000</td>
-      <td>51.231650</td>
-      <td>1.000000</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>0.00000</td>
-      <td>0.779440</td>
-      <td>0.000000</td>
-      <td>...</td>
-      <td>2.475306</td>
-      <td>4.088493</td>
-      <td>2.171001</td>
-      <td>0.235294</td>
-      <td>0.239931</td>
-      <td>0.913155</td>
-      <td>0.000463</td>
-      <td>2.823452e+00</td>
-      <td>0.131913</td>
-      <td>0.181818</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>-2.824600</td>
-      <td>273.798500</td>
-      <td>18.000000</td>
-      <td>72.044850</td>
-      <td>2.000000</td>
-      <td>1.000000</td>
-      <td>0.375000</td>
-      <td>0.00000</td>
-      <td>2.045950</td>
-      <td>1.000000</td>
-      <td>...</td>
-      <td>3.534830</td>
-      <td>6.038287</td>
-      <td>3.400000</td>
-      <td>0.428571</td>
-      <td>0.374412</td>
-      <td>0.957519</td>
-      <td>0.001016</td>
-      <td>3.473871e+00</td>
-      <td>0.230156</td>
-      <td>0.250000</td>
-    </tr>
-    <tr>
-      <th>75%</th>
-      <td>-1.489481</td>
-      <td>359.713500</td>
-      <td>23.000000</td>
-      <td>93.985125</td>
-      <td>3.000000</td>
-      <td>2.000000</td>
-      <td>0.545455</td>
-      <td>1.00000</td>
-      <td>3.401700</td>
-      <td>2.000000</td>
-      <td>...</td>
-      <td>4.818714</td>
-      <td>8.679717</td>
-      <td>5.344128</td>
-      <td>0.666667</td>
-      <td>0.532319</td>
-      <td>0.981270</td>
-      <td>0.002296</td>
-      <td>4.223524e+00</td>
-      <td>0.347257</td>
-      <td>0.333333</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>1.580000</td>
-      <td>1583.582000</td>
-      <td>109.000000</td>
-      <td>370.217200</td>
-      <td>16.000000</td>
-      <td>12.000000</td>
-      <td>1.000000</td>
-      <td>27.00000</td>
-      <td>20.854600</td>
-      <td>19.000000</td>
-      <td>...</td>
-      <td>72.265273</td>
-      <td>62.805231</td>
-      <td>1128.960000</td>
-      <td>1.000000</td>
-      <td>1.000000</td>
-      <td>1.000000</td>
-      <td>0.339204</td>
-      <td>5.985842e+01</td>
-      <td>0.999963</td>
-      <td>1.000000</td>
-    </tr>
-  </tbody>
-</table>
+| | logS | molWt | numAtoms | molMR | rings | aromatic | ap | chiralC | logP | hbd | ... | kappa1 | kappa2 | kappa3 | fractionCSP3 | asphericity | eccentricity | inertialShapeFactor | radiusOfGyration | spherocityIndex | ncp |
+|-|------|-------|----------|-------|-------|----------|-------|---------|------|-----|-----|--------|--------|--------|--------------|-------------|--------------|--------------------|------------------|-----------------|-----|
+| count | 7954.000000 | 7954.000000 | 7954.000000 | 7954.000000 | 7954.000000 | 7954.000000 | 7954.000000 | 7954.00000 | 7954.000000 | 7954.000000 | ... | 7954.000000 | 7954.000000 | 7954.000000 | 7954.000000 | 7954.000000 | 7954.000000 | 7954.000000 | 7.954000e+03 | 7954.000000 | 7954.000000 |
+| mean | -2.981528 | 292.151987 | 19.181795 | 75.840784 | 1.975107 | 1.195248 | 0.352023 | 0.97297 | 1.912550 | 1.239125 | ... | 3.924647 | 6.902837 | 5.105968 | 0.459514 | 0.392271 | 0.937606 | 0.002492 | 3.618187e+00 | 0.250457 | 0.270458 |
+| std | 2.200720 | 138.909559 | 9.048712 | 34.724211 | 1.461655 | 0.982673 | 0.260995 | 2.21534 | 2.510816 | 1.513059 | ... | 2.528799 | 4.207856 | 22.793668 | 0.301113 | 0.193149 | 0.065069 | 0.010385 | 1.462360e+00 | 0.161920 | 0.133211 |
+| min | -16.259392 | 16.043000 | 1.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.00000 | -46.668600 | 0.000000 | ... | 0.000000 | 0.000000 | -27.040000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 3.469447e-18 | 0.000000 | 0.000000 |
+| 25% | -4.259388 | 197.190000 | 13.000000 | 51.231650 | 1.000000 | 0.000000 | 0.000000 | 0.00000 | 0.779440 | 0.000000 | ... | 2.475306 | 4.088493 | 2.171001 | 0.235294 | 0.239931 | 0.913155 | 0.000463 | 2.823452e+00 | 0.131913 | 0.181818 |
+| 50% | -2.824600 | 273.798500 | 18.000000 | 72.044850 | 2.000000 | 1.000000 | 0.375000 | 0.00000 | 2.045950 | 1.000000 | ... | 3.534830 | 6.038287 | 3.400000 | 0.428571 | 0.374412 | 0.957519 | 0.001016 | 3.473871e+00 | 0.230156 | 0.250000 |
+| 75% | -1.489481 | 359.713500 | 23.000000 | 93.985125 | 3.000000 | 2.000000 | 0.545455 | 1.00000 | 3.401700 | 2.000000 | ... | 4.818714 | 8.679717 | 5.344128 | 0.666667 | 0.532319 | 0.981270 | 0.002296 | 4.223524e+00 | 0.347257 | 0.333333 |
+| max | 1.580000 | 1583.582000 | 109.000000 | 370.217200 | 16.000000 | 12.000000 | 1.000000 | 27.00000 | 20.854600 | 19.000000 | ... | 72.265273 | 62.805231 | 1128.960000 | 1.000000 | 1.000000 | 1.000000 | 0.339204 | 5.985842e+01 | 0.999963 | 1.000000 |
+
 <p>8 rows × 31 columns</p>
 
-### Handling Outliers  
+### Handling Outliers
 
 <p align="center">
   <img src="./images/outlier.png">
-  Box plot outlier pada variabel yang digunakan <b>ESOL</b>.
+  Box plot of outliers for variables used in <b>ESOL</b>.
 </p>
 
-Sebaran outlier diperiksa pada delapan variabel utama dari publikasi ESOL, yaitu `logP`, `molWt`, `rb`, `ap`, `ncp`, `hbd`, `hba`, dan `tpsa`. Berdasarkan analisis *box plot*, beberapa variabel memiliki nilai outlier:  
+Outlier distribution was examined for the eight main variables from the ESOL publication, namely `logP`, `molWt`, `rb`, `ap`, `ncp`, `hbd`, `hba`, and `tpsa`. Based on *box plot* analysis, several variables have outlier values:
 
-| **Variabel** | **Sebaran Data**                          | **Rentang**                         |  
-|--------------|-------------------------------------------|-------------------------------------|  
-| `logP`       | Terpusat pada rentang `0.8 - 3.5`         | `-46.6 - 20.8`                     |  
-| `molWt`      | Terpusat pada rentang `197.1 - 359.7`     | `16 - 1583.5`                      |  
-| `rb`         | Terpusat pada rentang `3 - 9`             | `0 - 59`                           |  
-| `ap`         | Terpusat pada rentang `0 - 0.5`           | `0 - 1`                            |  
-| `ncp`        | Terpusat pada rentang `0.1 - 0.3`         | `0 - 1`                            |  
-| `hbd`        | Terpusat pada rentang `0 - 2`             | `0 - 19`                           |  
-| `hba`        | Terpusat pada rentang `2 - 4`             | `0 - 35`                           |  
-| `tpsa`       | Terpusat pada rentang `25.3 - 71.4`       | `25.3 - 601.8`                     |  
+| **Variable** | **Data Distribution**                     | **Range**                         |
+|--------------|-------------------------------------------|-----------------------------------|
+| `logP`       | Centered around the range `0.8 - 3.5`     | `-46.6 - 20.8`                   |
+| `molWt`      | Centered around the range `197.1 - 359.7` | `16 - 1583.5`                    |
+| `rb`         | Centered around the range `3 - 9`         | `0 - 59`                         |
+| `ap`         | Centered around the range `0 - 0.5`       | `0 - 1`                          |
+| `ncp`        | Centered around the range `0.1 - 0.3`     | `0 - 1`                          |
+| `hbd`        | Centered around the range `0 - 2`         | `0 - 19`                         |
+| `hba`        | Centered around the range `2 - 4`         | `0 - 35`                         |
+| `tpsa`       | Centered around the range `25.3 - 71.4`   | `25.3 - 601.8`                   |
 
-**Interpretasi**:  
-- Nilai outlier dianggap relevan karena mereka mencerminkan sifat fisika molekul berdasarkan struktur.  
-- Tidak ada penghapusan outlier dilakukan untuk menghindari hilangnya informasi signifikan dalam dataset.  
+**Interpretation**:
+- Outlier values are considered relevant as they reflect the physical properties of molecules based on their structure.
+- No outlier removal was performed to avoid losing significant information from the dataset.
 
-### Univariate Analysis  
+### Univariate Analysis
 
 <p align="center">  
   <img src="./images/Univariate_logS.png" alt="Histogram of logS">  
 </p>  
 
 **Label Variable (`logS`)**  
-Distribusi label `logS` menunjukkan persebaran utama di rentang `-7 - 0.1`, yang berisi lebih dari 100 data. Persebaran ini mencakup kategori dari *poorly soluble* hingga *highly soluble* berdasarkan skala [SwissADME](https://www.nature.com/articles/srep42717):
+The distribution of the `logS` label shows a primary spread in the range `-7 - 0.1`, containing over 100 data points. This distribution covers categories from *poorly soluble* to *highly soluble* based on the [SwissADME](https://www.nature.com/articles/srep42717) scale:
 
 $$insoluble \lt −10 \lt poorly \lt −6 \lt moderately \lt −4 \lt soluble \lt −2 \lt very \lt 0 \lt highly$$
 
@@ -384,196 +173,201 @@ $$insoluble \lt −10 \lt poorly \lt −6 \lt moderately \lt −4 \lt soluble \l
   <img src="./images/Univariate_rest.png"> 
 </p>
 
-
 <p align="center">  
-  <small>Plot histogram variabel <b>logS</b> sebagai label.</small>  
+  <small>Histogram plot of the <b>logS</b> variable as the label.</small>  
 </p>  
 
 **Input Features**  
-Sebagian besar fitur input menunjukkan distribusi yang skewed (*miring*). Fitur seperti `rings`, `hbd`, `hba`, `rb`, dan `chi0` menunjukkan kluster yang berbeda, yang mengindikasikan adanya kelompok tertentu dalam data.  
+Most input features exhibit skewed distributions. Features such as `rings`, `hbd`, `hba`, `rb`, and `chi0` show distinct clusters, indicating the presence of specific groups within the data.
 
-#### Pemahaman Fitur Spesifik:  
-1. **Sifat Molekuler**:  
-   - Fitur seperti `molWt`, `numAtoms`, dan `molMR` menunjukkan korelasi positif. Molekul yang lebih besar cenderung memiliki nilai yang lebih tinggi pada fitur-fitur ini.  
+#### Specific Feature Insights:
+1. **Molecular Properties**:  
+   - Features like `molWt`, `numAtoms`, and `molMR` show positive correlations. Larger molecules tend to have higher values for these features.
 
-2. **Ikatan Hidrogen**:  
-   - `hbd` (jumlah donor ikatan hidrogen) dan `hba` (jumlah akseptor ikatan hidrogen) menunjukkan korelasi negatif. Molekul dengan lebih banyak donor ikatan hidrogen cenderung memiliki lebih sedikit akseptor.  
+2. **Hydrogen Bonds**:  
+   - `hbd` (number of hydrogen bond donors) and `hba` (number of hydrogen bond acceptors) exhibit a negative correlation. Molecules with more hydrogen bond donors tend to have fewer acceptors.
 
-3. **Struktur Cincin**:  
-   - `rings` dan `aromatic` menunjukkan hubungan erat. Semua cincin aromatik termasuk dalam kategori cincin (`rings`), tetapi tidak semua cincin bersifat aromatik.  
+3. **Ring Structure**:  
+   - `rings` and `aromatic` are closely related. All aromatic rings are included in the `rings` category, but not all rings are aromatic.
 
-4. **Deskripsi Bentuk**:  
-   - Fitur seperti `asphericity`, `eccentricity`, dan `spherocityIndex` memberikan wawasan tentang bentuk dan distribusi molekul, dengan molekul lebih kompleks menunjukkan nilai lebih tinggi untuk fitur-fitur ini.  
+4. **Shape Description**:  
+   - Features like `asphericity`, `eccentricity`, and `spherocityIndex` provide insights into the shape and distribution of molecules, with more complex molecules showing higher values for these features.
 
-### Multivariate - Numerical Features  
+### Multivariate - Numerical Features
 
-Untuk memahami hubungan antar fitur numerik, dilakukan analisis korelasi dengan matriks korelasi. Berikut adalah hasilnya:  
+To understand relationships between numerical features, a correlation analysis was performed using a correlation matrix. The results are as follows:
 
 <p align="center">  
   <img src="./images/corelation_matrix.png" alt="Correlation Matrix">  
 </p>  
 
 <p align="center">  
-  <small>Plot matriks korelasi antar variabel.</small>  
+  <small>Correlation matrix plot between variables.</small>  
 </p>  
 
-#### Korelasi Positif Kuat dengan `logS`:  
-- Molekul yang lebih besar (`molWt`, `numAtoms`, dan `molMR`) cenderung memiliki kelarutan lebih rendah (`logS` lebih kecil).  
-- Molekul dengan lebih banyak cincin atau struktur aromatik cenderung memiliki kelarutan lebih rendah, kemungkinan akibat stabilisasi resonansi atau efek pasangan elektron bebas (*PEB*).  
+#### Strong Positive Correlation with `logS`:
+- Larger molecules (`molWt`, `numAtoms`, and `molMR`) tend to have lower solubility (`logS` is smaller).
+- Molecules with more rings or aromatic structures tend to have lower solubility, likely due to resonance stabilization or free electron pair (*PEB*) effects.
 
-#### Korelasi Positif Sedang dengan `logS`:  
-- Molekul yang lebih lipofilik (`logP` lebih tinggi) cenderung memiliki kelarutan lebih rendah.  
-- Molekul dengan luas permukaan polar lebih besar (`tpsa`) juga cenderung memiliki kelarutan lebih rendah.  
+#### Moderate Positive Correlation with `logS`:
+- More lipophilic molecules (`logP` higher) tend to have lower solubility.
+- Molecules with larger polar surface areas (`tpsa`) also tend to have lower solubility.
 
-#### Korelasi Lemah atau Tidak Signifikan dengan `logS`:  
-- Banyak deskriptor molekuler lainnya memiliki korelasi lemah atau tidak signifikan dengan `logS`. Ini menunjukkan bahwa fitur-fitur ini memiliki pengaruh minimal dalam prediksi kelarutan.  
+#### Weak or Insignificant Correlation with `logS`:
+- Many other molecular descriptors have weak or insignificant correlations with `logS`, indicating minimal influence in solubility prediction.
 
-#### Korelasi Tinggi antar Deskriptor:  
-- Fitur seperti `molWt`, `numAtoms`, `bertzCT`, `balabanJ`, `chi0`, dan `chi1` menunjukkan korelasi positif tinggi satu sama lain. Hal ini menunjukkan bahwa fitur-fitur ini memberikan informasi yang mirip atau saling terkait dalam deskripsi struktur molekul.  
+#### High Correlation Between Descriptors:
+- Features like `molWt`, `numAtoms`, `bertzCT`, `balabanJ`, `chi0`, and `chi1` show high positive correlations with each other, indicating that these features provide similar or related information about molecular structure.
 
-## Data Preparation  
+## Data Preparation
 
-### Unpack List Feature  
+### Unpack List Feature
 
-Fitur `ecfp` pada dataset berisi representasi molekuler berupa daftar *binary fingerprints* dengan panjang 2048 bit. Setiap elemen memiliki nilai `1` (True) atau `0` (False). Untuk mempermudah pemrosesan oleh model, fitur ini di-*unpack* menjadi 2048 kolom terpisah. Hasilnya, setiap kolom merepresentasikan satu elemen dari *fingerprint*, sehingga dapat digunakan sebagai variabel numerik individual oleh algoritma *machine learning*.  
+The `ecfp` feature in the dataset contains a molecular representation in the form of a binary fingerprint list with a length of 2,048 bits. Each element has a value of `1` (True) or `0` (False). To facilitate processing by the model, this feature was *unpacked* into 2,048 separate columns. As a result, each column represents one element of the fingerprint, enabling its use as an individual numerical variable by machine learning algorithms.
 
-### Pembagian Data: Train dan Test  
+### Data Splitting: Train and Test
 
-Dataset dibagi menjadi dua subset, yaitu:  
-1. **Train**: Digunakan untuk melatih model.  
-2. **Test**: Digunakan untuk memvalidasi model dan mengevaluasi performa.  
+The dataset was divided into two subsets:
+1. **Train**: Used to train the model.
+2. **Test**: Used to validate the model and evaluate performance.
 
-Proporsi pembagian adalah `90:10`, menghasilkan bentuk data sebagai berikut:  
+The split ratio was `90:10`, resulting in the following data shapes:
 
-| **Kategori**   | **Shape**           |  
-|----------------|---------------------|  
-| Data Train     | (`7157`, `2078`)    |  
-| Label Train    | (`7157`,)           |  
-| Data Test      | (`796`, `2078`)     |  
-| Label Test     | (`796`,)            |  
+| **Category**   | **Shape**           |
+|----------------|---------------------|
+| Train Data     | (`7157`, `2078`)    |
+| Train Label    | (`7157`,)           |
+| Test Data      | (`796`, `2078`)     |
+| Test Label     | (`796`,)            |
 
-### Scaling dan Normalisasi  
+### Scaling and Normalization
 
-Pada tahap ini, fitur numerik bertipe `float` distandarisasi atau dinormalisasi untuk meningkatkan konsistensi skala antar fitur. Sementara itu, fitur dengan tipe `int` tidak diubah untuk menghindari kehilangan informasi penting dari data diskret.  
+At this stage, numerical features of type `float` were standardized or normalized to improve consistency in scale across features. Meanwhile, features of type `int` were left unchanged to avoid losing important information from discrete data.
 
-Berbagai teknik scaling dan normalisasi diuji, dengan metrik evaluasi *Negative Mean Squared Error (Negative MSE)*. Teknik terbaik adalah **Quantile Transformer** dengan distribusi **Uniform**, memberikan nilai evaluasi terbaik sebesar **`-1.4793369599164947`**.  
+Various scaling and normalization techniques were tested, with evaluation based on *Negative Mean Squared Error (Negative MSE)*. The best technique was the **Quantile Transformer** with a **Uniform** distribution, achieving the best evaluation score of **`-1.4793369599164947`**.
 
-Berikut adalah tabel algoritma yang diuji beserta penjelasan efeknya pada data:  
+The following table lists the tested algorithms and their effects on the data:
 
-| **Algoritma**               | **Deskripsi**                                                                                  | **Efek pada Data**                                      |  
-|-----------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------|  
-| **Standard Scaler**         | Skala data agar memiliki rata-rata 0 dan standar deviasi 1.                                   | Menyelaraskan data (mean = 0, std = 1).               |  
-| **Min-Max Scaler**          | Mengubah skala data ke rentang tertentu (default 0 hingga 1).                                 | Menggeser data agar berada dalam rentang [0, 1].      |  
-| **Robust Scaler**           | Menggunakan median dan IQR untuk mengurangi pengaruh outlier.                                 | Mengurangi dampak outlier.                            |  
-| **Quantile Transformer**    | Mengubah data agar mengikuti distribusi tertentu (Normal/Uniform).                           | Membuat distribusi lebih seragam atau normal.         |  
-| **Power Transformer**       | Menerapkan transformasi daya (Yeo-Johnson) untuk menstabilkan variansi.                       | Mengurangi *skewness* untuk mendekati distribusi Gaussian. |  
+| **Algorithm**               | **Description**                                                                                  | **Effect on Data**                                      |
+|-----------------------------|-------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| **Standard Scaler**         | Scales data to have a mean of 0 and a standard deviation of 1.                                   | Aligns data (mean = 0, std = 1).                       |
+| **Min-Max Scaler**          | Scales data to a specific range (default 0 to 1).                                                | Shifts data to the range [0, 1].                       |
+| **Robust Scaler**           | Uses median and IQR to reduce the impact of outliers.                                            | Reduces the impact of outliers.                        |
+| **Quantile Transformer**    | Transforms data to follow a specific distribution (Normal/Uniform).                              | Makes the distribution more uniform or normal.         |
+| **Power Transformer**       | Applies a power transformation (Yeo-Johnson) to stabilize variance.                              | Reduces *skewness* to approach a Gaussian distribution. |
 
 ---
 
-### Formula Matematis  
+### Mathematical Formulas
 
-Berikut adalah formula matematis dari setiap algoritma yang digunakan:  
+Below are the mathematical formulas for each algorithm used:
 
-### **1. Standard Scaler**  
+#### **1. Standard Scaler**
 
 $$z_i = \frac{x_i - \mu}{\sigma}$$
 
-Dimana:
+Where:
+  - $x_i$: Original data value.
+  - $z_i$: Scaled data value.
+  - $\mu$: Mean of the entire data.
+  - $\sigma$: Standard deviation of the entire data.
 
-  - $`x_i`$ : Nilai asli data.
-  - $`z_i`$ : Nilai data setelah diskalakan.
-  - $`\mu`$ : Rata-rata dari seluruh data.
-  - $`\sigma`$ : Deviasi standar dari seluruh data.
-
-### **2. Min-Max Scaler**
+#### **2. Min-Max Scaler**
 
 $$z_i = \frac{x_i - \min(x)}{\max(x) - \min(x)}$$
-   - $`x_i`$ : Nilai asli data.  
-   - $`\min(x)`$ : Nilai minimum dalam dataset.  
-   - $`\max(x)`$ : Nilai maksimum dalam dataset.  
 
-### **3. Robust Scaler** 
+Where:
+  - $x_i$: Original data value.
+  - $\min(x)$: Minimum value in the dataset.
+  - $\max(x)$: Maximum value in the dataset.
+
+#### **3. Robust Scaler**
 
 $$z_i = \frac{x_i - Q_2}{Q_3 - Q_1}$$
-   - $`Q_2`$ : Median atau kuartil kedua.  
-   - $`Q_1`$ : Kuartil pertama (persentil ke-25).  
-   - $`Q_3`$ : Kuartil ketiga (persentil ke-75).  
 
-### **4. Quantile Transformer (Normal Distribution)**  
+Where:
+  - $Q_2$: Median or second quartile.
+  - $Q_1$: First quartile (25th percentile).
+  - $Q_3$: Third quartile (75th percentile).
 
-$$z_i = \Phi^{-1}\left(\frac{\text{rank}(x_i)}{n + 1}\right)$$  
+#### **4. Quantile Transformer (Normal Distribution)**
 
-   - $`\Phi^{-1}`$ : Fungsi distribusi kumulatif terbalik (fungsi kuantil).  
-   - $`\text{rank}(x_i)`$ : Peringkat dari nilai $`x_i`$ dalam dataset.  
-   - $`n`$ : Jumlah total data.  
+$$z_i = \Phi^{-1}\left(\frac{\text{rank}(x_i)}{n + 1}\right)$$
 
-### **5. Quantile Transformer (Uniform Distribution)**  
-     
-$$z_i = \frac{\text{rank}(x_i)}{n + 1}$$  
+Where:
+  - $\Phi^{-1}$: Inverse cumulative distribution function (quantile function).
+  - $\text{rank}(x_i)$: Rank of the value $x_i$ in the dataset.
+  - $n$: Total number of data points.
 
-   - $`\text{rank}(x_i)`$ : Peringkat dari nilai $`x_i`$ dalam dataset.  
-   - $`n`$ : Jumlah total data.  
+#### **5. Quantile Transformer (Uniform Distribution)**
 
-### **6. Power Transformer (Yeo-Johnson Distribution)**  
+$$z_i = \frac{\text{rank}(x_i)}{n + 1}$$
+
+Where:
+  - $\text{rank}(x_i)$: Rank of the value $x_i$ in the dataset.
+  - $n$: Total number of data points.
+
+#### **6. Power Transformer (Yeo-Johnson Distribution)**
 
 $$
 z_i = 
 \begin{cases} 
 \frac{(x_i + 1)^{\lambda} - 1}{\lambda}\text{, } & \text{if } x_i \geq 0 \text{, } \lambda \neq 0 \\\ 
-\log(x_i + 1)\text{, } & \text{if } x_i \geq 0 \text{, } \lambda = 0 \\\
-\frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}\text{, } & \text{if } x_i < 0 \text{, } \lambda \neq 2 \\\
+\log(x_i + 1)\text{, } & \text{if } x_i \geq 0 \text{, } \lambda = 0 \\\ 
+\frac{-(|x_i| + 1)^{2 - \lambda} - 1}{2 - \lambda}\text{, } & \text{if } x_i < 0 \text{, } \lambda \neq 2 \\\ 
 -\log(|x_i| + 1)\text{, } & \text{if } x_i < 0 \text{, } \lambda = 2 
 \end{cases}
 $$
 
-   - $`x_i`$ : Nilai asli data (termasuk nilai negatif jika ada).  
-   - $`\lambda`$ : Parameter transformasi yang ditentukan melalui *Maximum Likelihood Estimation (MLE)*.  
-   - $`\log`$ : Logaritma natural ($`\ln`$).  
+Where:
+  - $x_i$: Original data value (including negative values if present).
+  - $\lambda$: Transformation parameter determined via *Maximum Likelihood Estimation (MLE)*.
+  - $\log$: Natural logarithm ($\ln$).
 
 ---
 
-### Transformasi Data  
+### Data Transformation
 
-Setelah diterapkan **Quantile Transformer (Uniform)**, distribusi data menjadi lebih seragam. Nilai minimum dan maksimum dibatasi pada `-5.1993` dan `5.1993`, sementara nilai median dan rata-rata berada dalam rentang yang seimbang, seperti terlihat pada persentil berikut:  
+After applying the **Quantile Transformer (Uniform)**, the data distribution became more uniform. The minimum and maximum values were limited to `-5.1993` and `5.1993`, while the median and mean were within a balanced range, as shown in the following percentiles:
 
-| **Persentil** | **Nilai**    |  
-|---------------|--------------|  
-| Minimum       | `-5.1993`    |  
-| Kuartil-1     | `-0.6743`    |  
-| Median        | `-0.0009`    |  
-| Kuartil-3     | `0.6737`     |  
-| Maksimum      | `5.1993`     |  
+| **Percentile** | **Value**    |
+|----------------|--------------|
+| Minimum        | `-5.1993`    |
+| Quartile-1     | `-0.6743`    |
+| Median         | `-0.0009`    |
+| Quartile-3     | `0.6737`     |
+| Maximum        | `5.1993`     |
 
-Transformasi ini diterapkan pada data train terlebih dahulu. Skala yang sama kemudian digunakan pada data test untuk memastikan konsistensi dan mencegah *overfitting* akibat distribusi data yang berbeda.  
+This transformation was applied to the training data first. The same scaling was then applied to the test data to ensure consistency and prevent *overfitting* due to differing data distributions.
 
 ## Modeling
 
-Terdapat 8 algoritma Machine Learning dan 1 algoritma Deep Learning yang digunakan untuk membuat model, yaitu:
+Nine algorithms were used to build the models, consisting of eight *machine learning* algorithms and one *deep learning* algorithm:
 
-| Model | Deskripsi | Penanganan Fitur | Risiko Overfitting | Cocok untuk Dimensi Tinggi? | Kemungkinan Performa-nya Baik |
+| Model | Description | Feature Handling | Overfitting Risk | Suitable for High Dimensions? | Likelihood of Good Performance |
 |-|-|-|-|-|-|
-| **Neural Network**  | Model berbasis lapisan neuron; cocok untuk kompleksitas tinggi dengan tuning | Baik dengan fitur banyak, perlu penyesuaian hati-hati | Sedang-Tinggi      | Ya, jika diatur regulerisasi-nya | **Sedang**: Potensi tinggi, tetapi berisiko overfitting dengan data terbatas |
-| **K-Nearest Neighbors** (KNN) | Model berbasis jarak yang sederhana; performa turun pada dimensi tinggi | Kesulitan dengan dimensi tinggi | Rendah | Tidak | **Rendah**: Kemungkinan underperform karena masalah dimensi tinggi |
-| **Random Forest** (RF) | Model ensemble berbasis pohon yang tahan noise dan mudah digunakan         | Menangani banyak fitur dengan baik | Rendah (karena rata-rata ensemble) | Ya | **Tinggi**: Efektif dengan data berdimensi tinggi dan fitur biner |
-| **Support Vector Regression** (SVR) | Model berbasis margin maksimal; sensitif pada kernel dan hyperparameter     | Efektif di dimensi tinggi, perlu penyesuaian | Sedang | Ya, tetapi sensitif terhadap kernel | **Sedang**: Dapat bagus, tetapi butuh penyesuaian parameter |
-| **ElasticNet** (EN) | Kombinasi regularisasi L1 (Lasso) dan L2 (Ridge); cocok untuk sparsitas data | Cocok untuk data sparsi dan berdimensi tinggi | Sedang | Ya | **Sedang**: Membutuhkan tuning; bagus jika terdapat sparsitas |
-| **Decision Tree** (DT) | Model pohon sederhana; sering overfit tanpa pruning                      | Sederhana tetapi mudah overfit | Tinggi | Tidak | **Sedang-Rendah**: Mungkin kesulitan dengan dataset kecil dan overfitting |
-| **XGBoost** (XGB) | Gradient boosting yang sangat cepat dan efisien; populer untuk kompetisi      | Sangat baik untuk data berdimensi tinggi | Rendah | Ya | **Tinggi**: Kandidat kuat karena ketangguhan dan seleksi fitur |
-| **Extra Trees** (ET) | Variasi Random Forest; lebih cepat karena splitting acak                   | Mirip RF tetapi kurang rentan terhadap noise | Rendah | Ya | **Tinggi**: Andal dan efisien untuk tipe data ini |
-| **LightGBM** (LGBM) | Model boosting berbasis histogram; sangat efisien untuk dataset besar       | Sangat baik untuk fitur biner/kategori berdimensi tinggi | Rendah | Ya | **Tinggi**: Kandidat kuat, efisien untuk fitur biner |
+| **Neural Network**  | Layer-based neuron model; suitable for high complexity with tuning | Handles many features well, requires careful tuning | Medium-High | Yes, with proper regularization | **Medium**: High potential but risks overfitting with limited data |
+| **K-Nearest Neighbors** (KNN) | Distance-based simple model; performance drops in high dimensions | Struggles with high dimensions | Low | No | **Low**: Likely to underperform due to high-dimensional issues |
+| **Random Forest** (RF) | Ensemble tree-based model, robust to noise and easy to use | Handles many features well | Low (due to ensemble averaging) | Yes | **High**: Effective for high-dimensional and binary feature data |
+| **Support Vector Regression** (SVR) | Margin-based model; sensitive to kernel and hyperparameters | Effective in high dimensions, requires tuning | Medium | Yes, but sensitive to kernel | **Medium**: Can perform well with proper parameter tuning |
+| **ElasticNet** (EN) | Combines L1 (Lasso) and L2 (Ridge) regularization; suitable for sparse data | Suitable for sparse and high-dimensional data | Medium | Yes | **Medium**: Requires tuning; good for sparse data |
+| **Decision Tree** (DT) | Simple tree-based model; prone to overfitting without pruning | Simple but prone to overfitting | High | No | **Medium-Low**: May struggle with small datasets and overfitting |
+| **XGBoost** (XGB) | Fast and efficient gradient boosting; popular in competitions | Excellent for high-dimensional data | Low | Yes | **High**: Strong candidate due to robustness and feature selection |
+| **Extra Trees** (ET) | Random Forest variation; faster due to random splitting | Similar to RF but less sensitive to noise | Low | Yes | **High**: Reliable and efficient for this data type |
+| **LightGBM** (LGBM) | Histogram-based boosting model; highly efficient for large datasets | Excellent for binary/categorical high-dimensional features | Low | Yes | **High**: Strong candidate, efficient for binary features |
 
-### Sifat Model
+### Model Characteristics
 
-1. **Kontrol Overfitting**: Model ensemble seperti `RandomForest`, `ExtraTrees`, `XGBoost`, dan `LightGBM` memiliki metode bawaan untuk mencegah overfitting, sehingga cocok untuk dataset kecil dengan dimensi tinggi.
-2. **Penanganan Fitur Biner**: Model seperti `LightGBM` dan `XGBoost` sangat efisien dengan fitur sparsi atau biner, seperti fingerprint `ECFP`.
-3. **Sensitivitas Dimensi**: `KNN` dan `Decision Trees` sering mengalami kesulitan dengan dimensi tinggi, sehingga kemungkinan performanya kurang baik pada dataset ini.
+1. **Overfitting Control**: Ensemble models like `RandomForest`, `ExtraTrees`, `XGBoost`, and `LightGBM` have built-in methods to prevent overfitting, making them suitable for small, high-dimensional datasets.
+2. **Binary Feature Handling**: Models like `LightGBM` and `XGBoost` are highly efficient with sparse or binary features, such as the `ECFP` fingerprint.
+3. **Dimension Sensitivity**: `KNN` and `Decision Trees` often struggle with high-dimensional data, making them less likely to perform well on this dataset.
 
-### Hipotesis
+### Hypothesis
 
-* **Pilihan Terbaik**: `RandomForest`, `ExtraTrees`, `XGBoost`, dan `LightGBM` karena ketahanan dan kemampuannya untuk menggeneralisasi dengan baik pada dataset kecil.
-* **Underperform**: `KNN` dan `Decision Trees` untuk data berdimensi tinggi ini, kecuali jika direduksi melalui teknik seperti PCA.
+* **Best Choices**: `RandomForest`, `ExtraTrees`, `XGBoost`, and `LightGBM` due to their robustness and ability to generalize well on small datasets.
+* **Underperformers**: `KNN` and `Decision Trees` for high-dimensional data, unless reduced through techniques like PCA.
 
-### Hyperparameter
+### Hyperparameters
 
 | Model | Parameter | Range/Choices | Optimal Value |
 |-|-|-|-|
@@ -625,83 +419,77 @@ Terdapat 8 algoritma Machine Learning dan 1 algoritma Deep Learning yang digunak
 |                | min_data_in_leaf | 29 - 30 | 29 |
 |                | min_gain_to_split | 0.07 - 0.08 | 0.072 |
 
-`Range` Hyperparameter cukup sempit dikarenakan merupakan `validasi` terakhir setelah dilakukan `Tunning` pada beberapa `range` secara bertahap. 
+The `Range` for hyperparameters is narrow as it represents the final `validation` after iterative tuning across multiple ranges.
 
 ## Evaluation
 
-### Matriks MAE, SE, dan R²
+### MAE, SE, and R² Metrics
 
-Evaluasi model menggunakan tiga parameter yaitu Mean Absolute Error (MAE), Squared Error (SE), dan R-squared (R²)
+Model evaluation used three parameters: Mean Absolute Error (MAE), Squared Error (SE), and R-squared (R²).
 
 #### Mean Absolute Error (MAE)
 
-- **Definisi**: MAE adalah rata-rata selisih absolut antara nilai aktual dan prediksi. Metrik ini memberikan ukuran sederhana dari kesalahan prediksi, tanpa memperhatikan arah kesalahan.
-- **Rumus**: 
-  <p align="center">
-    <img src="./images/matriks_mae.png">
-  </p>
-- **Interpretasi**: MAE mudah dipahami karena menunjukkan rata-rata besar kesalahan dalam satuan variabel yang diminati. Nilai yang lebih rendah menunjukkan akurasi model yang lebih baik.
+- **Definition**: MAE is the average absolute difference between actual and predicted values. This metric provides a simple measure of prediction error without considering the direction of the error.
+- **Formula**: 
+  $$\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} \left| y_i - \hat{y}_i \right|$$
+- **Interpretation**: MAE is easy to understand as it shows the average magnitude of errors in the units of the target variable. A lower value indicates better model accuracy.
 
 #### Squared Error (SE)
 
-- **Definisi**: SE adalah jumlah selisih kuadrat antara nilai aktual dan prediksi. Metrik ini memberi bobot lebih pada kesalahan yang lebih besar, menjadikannya berguna untuk model yang ingin meminimalkan deviasi besar.
-- **Rumus**: 
-  <p align="center">
-    <img src="./images/matriks_se.png">
-  </p>
-- **Interpretasi**: SE memberikan bobot yang lebih besar pada kesalahan besar, sehingga bermanfaat dalam identifikasi model yang dapat mengurangi deviasi yang signifikan. SE biasanya digunakan sebagai perhitungan antara (misalnya, untuk MSE atau RMSE) dan tidak memberikan ukuran langsung seperti MAE.
+- **Definition**: SE is the sum of squared differences between actual and predicted values. This metric gives more weight to larger errors, making it useful for models aiming to minimize significant deviations.
+- **Formula**: 
+$$\text{SE} = \sum_{i=1}^{n} \left( y_i - \hat{y}_i \right)^2$$
+- **Interpretation**: SE emphasizes larger errors, making it useful for identifying models that reduce significant deviations. It is typically used as an intermediate calculation (e.g., for MSE or RMSE) and does not provide a direct measure like MAE.
 
 #### R-squared (R²)
 
-- **Definisi**: R² menggambarkan proporsi variansi dalam variabel target yang dapat diprediksi dari fitur. Ini mengukur seberapa baik model menangkap variabilitas data.
-- **Rumus**: 
-  <p align="center">
-    <img src="./images/matriks_r2.png">
-  </p>
-- **Interpretasi**: R² berkisar antara 0 hingga 1, di mana 1 menunjukkan prediksi sempurna. Nilai yang lebih tinggi menunjukkan performa model yang lebih baik karena menunjukkan bahwa model dapat menjelaskan sebagian besar variansi dalam variabel target.
+- **Definition**: R² represents the proportion of variance in the target variable that can be explained by the features. It measures how well the model captures data variability.
+- **Formula**: 
+$$R^2 = 1 - \frac{\sum_{i=1}^{n} \left( y_i - \hat{y}_i \right)^2}{\sum_{i=1}^{n} \left( y_i - \bar{y} \right)^2}$$
+- **Interpretation**: R² ranges from 0 to 1, with 1 indicating perfect prediction. Higher values indicate better model performance, as they show the model explains a larger portion of the variance in the target variable.
 
-### Keterangan:
-- y<sub>i</sub> : Nilai aktual yang diamati.
-- ŷ<sub>i</sub> : Nilai yang diprediksi.
-- ȳ<sub>i</sub> : Rata-rata dari nilai aktual yang diamati.
-- n : Jumlah total data.
-- ∑ : Operator penjumlahan.
-- ∣⋅∣ : Fungsi nilai mutlak.
+### Notes:
+- $y_i$: Observed actual value.
+- $\hat{y}_i$: Predicted value.
+- $\bar{y}_i$: Mean of observed actual values.
+- $n$: Total number of data points.
+- $\sum$: Summation operator.
+- $|\cdot|$: Absolute value function.
 
 <p align="center">
   <img src="./images/matriks_evaluasi_model.png">
-  Plot bar matriks evaluasi (<b>MAE</b>, <b>SE</b>, dan <b>R²</b>) masing-masing model.
+  Bar plot of evaluation metrics (<b>MAE</b>, <b>SE</b>, and <b>R²</b>) for each model.
 </p>
 
-- **Model Terbaik Secara Keseluruhan:** `SVR` dan `ElasticNet (EN)` menunjukkan generalisasi terbaik di semua metrik (MAE, SE, \(R^2\)), menjadikannya pilihan yang paling dapat diandalkan untuk data pengujian.  
-- **Model Kuat tetapi Sedikit Overfit:** `NeuralNetwork (nnR)`, `RandomForest (rfR)`, `ExtraTrees (etR)`, dan `XGBoost (xgbR)` memiliki performa baik namun menunjukkan sedikit overfitting, yang masih dapat diperbaiki dengan optimasi lebih lanjut.  
-- **Model yang Overfit:** `KNN (knnR)` dan `DecisionTree (dtR)` menunjukkan tanda overfitting yang signifikan dengan generalisasi yang buruk pada data uji, sehingga memerlukan perbaikan untuk meningkatkan performa uji.  
+- **Overall Best Models**: `SVR` and `ElasticNet (EN)` show the best generalization across all metrics (MAE, SE, $R^2$), making them the most reliable choices for test data.
+- **Robust but Slightly Overfit Models**: `NeuralNetwork (nnR)`, `RandomForest (rfR)`, `ExtraTrees (etR)`, and `XGBoost (xgbR)` perform well but show slight overfitting, which can be improved with further optimization.
+- **Overfit Models**: `KNN (knnR)` and `DecisionTree (dtR)` exhibit significant overfitting with poor generalization on test data, requiring improvements to enhance test performance.
 
 <p align="center">
   <img src="./images/matriks_evaluasi_model_ESOL_baseline.png">
-  Plot bar matriks evaluasi (<b>MAE</b>, <b>SE</b>, dan <b>R²</b>) masing-masing model dengan `ESOL` baseline.
+  Bar plot of evaluation metrics (<b>MAE</b>, <b>SE</b>, and <b>R²</b>) for each model compared to the ESOL baseline.
 </p>
 
-Berdasarkan analisis performa model tanpa dan dengan baseline ESOL, **`SVR`** dan **`ElasticNet (EN)`** adalah model terbaik karena memiliki generalisasi yang baik di semua metrik (MAE, SE, dan \( R^2 \)), melampaui atau mendekati baseline ESOL. Model seperti **`NeuralNetwork`**, **`RandomForest`**, **`ExtraTrees`**, dan **`XGBoost`** menunjukkan performa yang kuat tetapi sedikit overfit, sehingga masih dapat ditingkatkan dengan regularisasi. Di sisi lain, **`KNN`** dan **`DecisionTree`** cenderung overfit dengan performa uji yang buruk, sehingga membutuhkan penyesuaian signifikan untuk meningkatkan generalisasi. Performa ini memberikan panduan untuk memilih model terbaik berdasarkan kebutuhan prediksi kelarutan.
+Based on the performance analysis of models with and without the ESOL baseline, **`SVR`** and **`ElasticNet (EN)`** are the best models due to their strong generalization across all metrics (MAE, SE, and $R^2$), matching or surpassing the ESOL baseline. Models like **`NeuralNetwork`**, **`RandomForest`**, **`ExtraTrees`**, and **`XGBoost`** show strong performance but slight overfitting, which can be improved with regularization. Conversely, **`KNN`** and **`DecisionTree`** tend to overfit with poor test performance, requiring significant adjustments to improve generalization. These results provide guidance for selecting the best model based on solubility prediction needs.
 
-### Komparasi Prediktif vs Aktual
+### Predictive vs. Actual Comparison
 
-Untuk lebih detil terkait sifat model berdasarkan hasil prediksi-nya, berikut merupakan plot nilai `Prediktif` vs `Aktual` dengan nilai `R²`.
+For a detailed analysis of model behavior based on predictions, the following is a scatter plot of `Predicted` vs. `Actual` values with $R^2$ values.
 
 <p align="center">
   <img src="./images/pred_vs_act.png">
-  Plot scatter <b>prediksi</b> model vs nilai <b>aktual</b> masing-masing model.
+  Scatter plot of <b>predicted</b> vs. <b>actual</b> values for each model.
 </p>
 
-Berdasarkan nilai **R²**, model seperti `RandomForest`, `SVR`, `XGBoost`, dan `LightGBM` menunjukkan performa yang sangat baik dalam memprediksi data, dengan nilai **R²** pada data uji mendekati atau di atas 0.79. **LightGBM** memiliki performa terbaik dengan nilai **R²** sebesar 0.813, diikuti oleh **XGBoost** (0.798) dan **RandomForest** (0.792). Model **NeuralNetwork** juga menunjukkan performa yang solid dengan nilai **R²** sebesar 0.774, mendekati model dengan performa terbaik.
+Based on **R²** values, models like `RandomForest`, `SVR`, `XGBoost`, and `LightGBM` show excellent performance in predicting data, with **R²** values on test data approaching or exceeding 0.79. **LightGBM** has the best performance with an **R²** of 0.813, followed by **XGBoost** (0.798) and **RandomForest** (0.792). The **NeuralNetwork** also shows solid performance with an **R²** of 0.774, close to the top-performing models.
 
-Sebaliknya, model seperti **KNN** meskipun memiliki nilai **R²** yang cukup baik (0.708), menunjukkan indikasi **overfitting**. Hal ini terlihat dari nilai **MAE** pada data latih yang sempurna (0.0) namun lebih besar pada data uji (0.820), menunjukkan ketidakmampuan model untuk menangkap pola pada data yang belum terlihat sebelumnya. **DecisionTree** memiliki performa terendah di antara semua model, dengan nilai **R²** sebesar 0.616, dan pola prediksinya terlihat kurang fleksibel, seperti yang dapat dilihat pada grafik dengan banyak nilai prediksi konstan terhadap sumbu `y`.
+In contrast, while **KNN** has a decent **R²** value (0.708), it shows signs of **overfitting**. This is evident from the perfect **MAE** on training data (0.0) but a higher value on test data (0.820), indicating an inability to capture patterns in unseen data. **DecisionTree** has the lowest performance among all models, with an **R²** of 0.616, and its prediction pattern appears less flexible, as seen in the graph with many constant predicted values along the `y`-axis.
 
-Meskipun model seperti **ExtraTrees** memiliki performa cukup baik (nilai **R²** 0.769), model ini menunjukkan keterbatasan pada rentang prediksi tertentu, terutama pada nilai ekstrem. **ElasticNet** juga memiliki performa yang cukup baik dengan nilai **R²** sebesar 0.704, namun relatif lebih rendah dibandingkan model lain seperti **SVR** (0.791).
+Although models like **ExtraTrees** perform reasonably well (**R²** 0.769), they show limitations in certain prediction ranges, particularly at extreme values. **ElasticNet** also performs adequately with an **R²** of 0.704 but is relatively lower compared to models like **SVR** (0.791).
 
-Performa **XGBoost** dan **LightGBM** sudah sangat baik, namun dengan tuning **hyperparameter** yang lebih optimal (seperti jumlah pohon, kedalaman maksimum, atau kecepatan pembelajaran), model ini dapat menunjukkan hasil yang lebih unggul, terutama pada dataset yang kompleks.
+The performance of **XGBoost** and **LightGBM** is already excellent, but with more optimal **hyperparameter tuning** (e.g., number of trees, maximum depth, or learning rate), these models could achieve even better results, especially on complex datasets.
 
-Secara keseluruhan, pola prediksi menunjukkan bahwa distribusi data dan parameter model memiliki dampak besar pada hasil akhir, dengan beberapa model lebih sensitif terhadap parameter tertentu dibandingkan yang lain.
+Overall, the prediction patterns indicate that data distribution and model parameters significantly impact the final results, with some models being more sensitive to certain parameters than others.
 
 ### Random Data Tester
 
@@ -714,19 +502,18 @@ Secara keseluruhan, pola prediksi menunjukkan bahwa distribusi data dan paramete
 | SVR           | -3.091 | -2.32 | -2.413 | -2.769 | -1.983 |
 | ElasticNet    | -3.322 | -2.368 | -3.36 | -3.19 | -2.947 |
 | DecisionTree  | -3.992 | -2.886 | -2.774 | -3.882 | -2.774 |
-| XGBoost       | -2.689 | -2.785| -2.787| -2.593| -3.011 |
+| XGBoost       | -2.689 | -2.785 | -2.787 | -2.593 | -3.011 |
 | ExtraTrees    | -2.917 | -2.539 | -2.763 | -2.812 | -2.732 |
-| LGBM          | -2.472 | -2.774 | -2.611 | -2.686 | -2.708|
+| LGBM          | -2.472 | -2.774 | -2.611 | -2.686 | -2.708 |
 | Closest Model 1 | KNN | SVR | KNN | RandomForest | XGBoost  |
 | Closest Model 2 | LGBM | ElasticNet | SVR | XGBoost | ElasticNet |
 | Closest Model 3 | XGBoost | NeuralNetwork | LGBM | LGBM | RandomForest |
 
-
-Terlihat beberapa model dengan performa terbaik seperti `RandomForest`, `SVR`, `XGBoost`, dan `LightGBM` lebih sering masuk dalam list `Top 3` dalam `Random Test` di atas.
+It is evident that top-performing models like `RandomForest`, `SVR`, `XGBoost`, and `LightGBM` frequently appear in the `Top 3` in the above `Random Test`.
 
 ### Feature Importance
 
-Pada tahap ini dilakukan pengukuran `Feature Importance` menggunakan `SHAP` pada `Model` terbaik berdasarkan nilai 'R²', 'MAE', dan 'SE' dari `ESOL` dan `GSE`.
+At this stage, `Feature Importance` was measured using `SHAP` for the best models based on 'R²', 'MAE', and 'SE' values compared to `ESOL` and `GSE`.
 
 | Model          | R²   | SE   | MAE  |
 |----------------|-------|------|------|
@@ -746,7 +533,7 @@ Pada tahap ini dilakukan pengukuran `Feature Importance` menggunakan `SHAP` pada
   <img src="./images/1_shap_lgbm.png">
 </p>
 
-Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 3 fitur yang sama digunakan `ESOL` yaitu `logP, `molWt`, dan `hba`. Dengan 3 fitur terbaik yaitu `logP`, `molMR`, dan `balabanj`.
+The `SHAP` plot above shows the top 10 features with the highest contribution weights, with three features used in `ESOL`: `logP`, `molWt`, and `hba`. The top three features are `logP`, `molMR`, and `balabanJ`.
 
 2. XGBoost
 
@@ -754,7 +541,7 @@ Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, 
   <img src="./images/2_shap_xgb.png">
 </p>
 
-Tidak jauh berbeda dengan `LGBM` pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 3 fitur yang digunakan `ESOL` yaitu `logP, `molWt`, dan `hba`. Dengan 3 fitur terbaik yaitu `logP`, `molMR`, dan `balabanj`.
+Similar to `LGBM`, the `SHAP` plot above shows the top 10 features with the highest contribution weights, with three features used in `ESOL`: `logP`, `molWt`, and `hba`. The top three features are `logP`, `molMR`, and `balabanJ`.
 
 3. RandomForest
 
@@ -762,7 +549,7 @@ Tidak jauh berbeda dengan `LGBM` pada plot `SHAP` di atas terdapat 10 fitur deng
   <img src="./images/3_shap_rf.png">
 </p>
 
-Tidak jauh berbeda dengan `LGBM` dan `XGBoost` ada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 3 fitur yang digunakan `ESOL` yaitu `logP, `molWt`, dan `hba`. Dengan 3 fitur terbaik yaitu `logP`, `molMR`, dan `balabanj`.
+Similar to `LGBM` and `XGBoost`, the `SHAP` plot above shows the top 10 features with the highest contribution weights, with three features used in `ESOL`: `logP`, `molWt`, and `hba`. The top three features are `logP`, `molMR`, and `balabanJ`.
 
 4. SVR
 
@@ -770,7 +557,7 @@ Tidak jauh berbeda dengan `LGBM` dan `XGBoost` ada plot `SHAP` di atas terdapat 
   <img src="./images/4_shap_svr.png">
 </p>
 
-Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 6 fitur yang digunakan `ESOL` yaitu `numAtoms`, `logP, `molWt`, `hba`, `hbd`, dan `tpsa`. Dengan 3 fitur terbaik yaitu `numAtoms`, `logP`, dan `molWt`.
+The `SHAP` plot above shows the top 10 features with the highest contribution weights, with six features used in `ESOL`: `numAtoms`, `logP`, `molWt`, `hba`, `hbd`, and `tpsa`. The top three features are `numAtoms`, `logP`, and `molWt`.
 
 5. ExtraTrees
 
@@ -778,7 +565,7 @@ Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, 
   <img src="./images/5_shap_et.png">
 </p>
 
-Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 4 fitur yang digunakan `ESOL` yaitu `logP, `tpsa`, `numAtoms`, dan `molWt`. Dengan 3 fitur terbaik yaitu `logP`, `molMR`, dan `bertzCT`.
+The `SHAP` plot above shows the top 10 features with the highest contribution weights, with four features used in `ESOL`: `logP`, `tpsa`, `numAtoms`, and `molWt`. The top three features are `logP`, `molMR`, and `bertzCT`.
 
 6. NeuralNetwork
 
@@ -786,26 +573,21 @@ Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, 
   <img src="./images/6_shap_nn.png">
 </p>
 
-Pada plot `SHAP` di atas terdapat 10 fitur dengan kontribusi `bobot` tertinggi, dengan 6 fitur yang digunakan `ESOL` yaitu `logP, `numAtoms`, `molWt`, `tpsa`, `hba`, dan `rb`. Dengan 3 fitur terbaik yaitu `logP`, `numAtoms`, dan `molWt`.
+The `SHAP` plot above shows the top 10 features with the highest contribution weights, with six features used in `ESOL`: `logP`, `numAtoms`, `molWt`, `tpsa`, `hba`, and `rb`. The top three features are `logP`, `numAtoms`, and `molWt`.
 
-Visualisasi dari model terbaik (`LGBM`, `XGBoost`, dan `Random Forest`) menunjukkan bahwa logP adalah fitur paling berpengaruh dalam memprediksi `logS`. Hal ini sejalan dengan formula `logS` yang dikenal, seperti:
+Visualizations from the best models (`LGBM`, `XGBoost`, and `RandomForest`) show that `logP` is the most influential feature in predicting `logS`. This aligns with known `logS` formulas, such as:
 
-<p align="center">
-  <img src="./images/logS_GSE_dark.png">
-</p>
+$$log(S) = -0.01 (T - 25°C) - log(P) + 0.50$$
 
-`logP` (`hidrofobisitas`) adalah faktor utama. Senyawa yang lebih `hidrofobik`, dengan nilai `logP` yang lebih tinggi, umumnya memiliki kelarutan lebih rendah dalam air, yang menjelaskan mengapa `logP` sangat memengaruhi prediksi `logS`.
+`logP` (hydrophobicity) is a primary factor. Compounds with higher `logP` values (more hydrophobic) generally have lower water solubility, explaining why `logP` significantly influences `logS` predictions.
 
-Fitur lain, seperti `molMR` (molar refractivity) dan `molWt` (berat molekul), juga relevan, seperti yang terlihat pada formula lain:
+Other features, such as `molMR` (molar refractivity) and `molWt` (molecular weight), are also relevant, as seen in another formula:
 
-<p align="center">
-  <img src="./images/logS_ESOL_dark.png">
-</p>
+$$\log(S) = 0.16 - 0.63 \log(P) - 0.0062 \text{MolWT} + 0.066 \text{RB} - 0.74 \text{AP}$$
 
+This formula further emphasizes the inverse relationship between `logP` and solubility. The consistent importance of `logP` in empirical formulas and machine learning models highlights its central role in reflecting molecular interactions with solvents that determine solubility.
 
-Formula ini semakin menekankan hubungan infers antara `logP` dan kelarutan. Konsistensi pentingnya `logP` pada formula empiris dan model pembelajaran mesin menunjukkan peran-nya yang sentral dalam merefleksikan interaksi molekul dengan pelarut yang menentukan kelarutan.
-
-Berikut merupakan total kehadiran fitur dalam top 10 fitur untuk masing-masing model.
+The following is the total presence of features in the top 10 features for each model:
 
 | Feature            | Count |
 |--------------------|-------|
@@ -829,21 +611,20 @@ Berikut merupakan total kehadiran fitur dalam top 10 fitur untuk masing-masing m
 | **rb**             | 1     |
 | **kappa2**         | 1     |
 
+## Conclusion
 
-## Simpulan
+1. Predicting *logS* using descriptors from *SMILES* molecular data is feasible with *machine learning* and *deep learning* models.
+2. Models such as `LGBM`, `XGBoost`, `RandomForest`, `SVR`, `ExtraTrees`, and `NeuralNetwork` with *hyperparameter tuning* outperform the *ESOL* baseline.
+3. Key *ESOL* features like `logP`, `molWt`, and `hba` frequently appear in the top 10 most significant features. However, across all models, `logP`, `molWt`, and `molMR` consistently appear.
 
-1.  Prediksi LogS menggunakan `deskriptor` dari data `SMILES` molekul dapat dilakukan menggunakan model *Machine Learning* dan *Deep Learning*.
-2.  Model seperti `LGBM`, `XGBoost`, `RandomForest`, `SVR`, `ExtraTrees`, dan `NeuralNetwork` yang telah dilakukan `Hyperparameter Tuning` memiliki performa lebih baik daripada `ESOL`.
-3.  Fitur-fitur utama `ESOL` seperti `logP`, `molWt`, dan `hba` sering hadir dalam 10 fitur paling signifikan. Namun keseluruhan fitur, `logP`, `molWt`, dan `molWR` selalu hadir pada seluruh model.
+## Recommendations
 
-## Saran
+1. To improve descriptor accuracy, molecular geometry can be optimized using *Quantum Mechanics* approaches like `B3LYP` instead of `MMFF94` or `UFF`, albeit at a higher computational cost.
+2. Further development can focus on aspects such as: focusing on a single model with *hyperparameter tuning*, data engineering (*K-Fold Cross Validation*, *PCA*, *Standardization*), selecting and using significant descriptors, comparing model performance based on metrics against published formulas or models like *GSE*, *ESOL*, and *SwissADME*.
+3. Consider molecular properties based on *Lipinski’s Rule of 5*.
+4. Derive a *Final Equation* from the developed model and compare it with published equations like *GSE* and *ESOL*.
 
-1. Untuk meningkatkan akurasi `deskriptor`, geometri molekul dapat dioptimasi menggunakan pendekatan `Quantum Mechanic` seperti `B3LYP` daripada menggunakan `MMFF94` atau `UFF` tentu dengan `computational cost` yang lebih besar.
-2. Tahap pengembangan selanjutnya dapat fokus pada beberapa aspek seperti. Fokus pada satu `Model` dengan melakukan `Hyperparameter Tunning`, Data Engineering (`K-Fold Cross Validation`, `PCA`, `Standarisasi`), Pemilihan dan penggunaan `Deskriptor` yang signifikan, Perbandingan `Performa Model` berdasarkan `Matriks-nya` dengan `Formula` maupun `Model` yang telah dipublish di jurnal seperti `GSE`, `ESOL` dan, `SwissADME.
-3. Memperhatikan properti molekul berdasarkan `Lipinski’s Rule of 5`.
-4. Menentukan `Final Equation` dari model yang dikembangkan dan dibandingkan dengan persamaan yang telah dipublish seperti `GSE` dan `ESOL`.
-
-## Referensi
+## References
 
 1. Ahmad I, Kuznetsov AE, Pirzada AS, Alsharif KF, Daglia M, Khan H. 2023. Computational pharmacology and computational chemistry of 4-hydroxyisoleucine: Physicochemical, pharmacokinetic, and DFT-based approaches. *Front Chem.* 11 April:1–15. [doi:10.3389/fchem.2023.1145974](https://www.frontiersin.org/journals/chemistry/articles/10.3389/fchem.2023.1145974/full).
 
